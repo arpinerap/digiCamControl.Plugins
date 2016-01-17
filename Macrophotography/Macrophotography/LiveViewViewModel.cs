@@ -28,6 +28,14 @@ namespace Macrophotography
         private bool _settingArea;
         private CameraProperty _cameraProperty;
 
+        private AsyncObservableCollection<string> _grids;
+        private int _gridType;
+
+        private PointCollection _luminanceHistogramPoints = null;
+        private PointCollection _redColorHistogramPoints;
+        private PointCollection _greenColorHistogramPoints;
+        private PointCollection _blueColorHistogramPoints;
+
         public ICameraDevice SelectedCameraDevice
         {
             get { return _cameraDevice; }
@@ -37,6 +45,55 @@ namespace Macrophotography
                 RaisePropertyChanged(() => SelectedCameraDevice);
             }
         }
+
+        #region Commands
+
+        public RelayCommand AutoFocusCommand { get; set; }
+        public RelayCommand RecordMovieCommand { get; set; }
+        public RelayCommand CaptureCommand { get; set; }
+        public RelayCommand CancelCaptureCommand { get; set; }
+
+        public RelayCommand FocusPCommand { get; set; }
+        public RelayCommand FocusPPCommand { get; set; }
+        public RelayCommand FocusPPPCommand { get; set; }
+        public RelayCommand FocusMCommand { get; set; }
+        public RelayCommand FocusMMCommand { get; set; }
+        public RelayCommand FocusMMMCommand { get; set; }
+        public RelayCommand MoveACommand { get; set; }
+        public RelayCommand MoveBCommand { get; set; }
+        public RelayCommand StartFocusStackingCommand { get; set; }
+        public RelayCommand PreviewFocusStackingCommand { get; set; }
+        public RelayCommand StopFocusStackingCommand { get; set; }
+
+        public RelayCommand StartSimpleFocusStackingCommand { get; set; }
+        public RelayCommand PreviewSimpleFocusStackingCommand { get; set; }
+        public RelayCommand StopSimpleFocusStackingCommand { get; set; }
+
+        //public RelayCommand StartLiveViewCommand { get; set; }
+        //public RelayCommand StopLiveViewCommand { get; set; }
+
+        public RelayCommand ResetBrigthnessCommand { get; set; }
+        public RelayCommand BrowseOverlayCommand { get; set; }
+        public RelayCommand HelpFocusStackingCommand { get; set; }
+
+        public RelayCommand ResetOverlayCommand { get; set; }
+
+        public RelayCommand ZoomOutCommand { get; set; }
+        public RelayCommand ZoomInCommand { get; set; }
+        public RelayCommand ZoomIn100 { get; set; }
+        public RelayCommand ToggleGridCommand { get; set; }
+
+        //public RelayCommand SetAreaCommand { get; set; }
+        //public RelayCommand DoneSetAreaCommand { get; set; }
+
+        public RelayCommand LockCurrentNearCommand { get; set; }
+        public RelayCommand LockCurrentFarCommand { get; set; }
+
+        public bool ShowHistogram { get; set; }
+
+        #endregion
+
+
         
         public bool ShowRuler
         {
@@ -152,6 +209,164 @@ namespace Macrophotography
                 SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
                 CameraProperty = SelectedCameraDevice.LoadProperties();
             }
+        }
+
+        public LiveViewViewModel(ICameraDevice device)
+        {
+            SelectedCameraDevice = device;
+            CameraProperty = device.LoadProperties();
+            InitCommands();
+            ShowHistogram = true;
+            Init();
+        }
+
+        private void Init()
+        {
+            IsActive = true;
+            //WaitTime = 2;
+            //PhotoNo = 2;
+           // FocusStep = 2;
+            //PhotoCount = 5;
+            //CaptureCount = 1;
+            //DelayedStart = false;
+
+            _timer.Stop();
+            _timer.AutoReset = true;
+            //CameraDevice.CameraDisconnected += CameraDeviceCameraDisconnected;
+            //_photoCapturedTime = DateTime.MinValue;
+           // CameraDevice.PhotoCaptured += CameraDevicePhotoCaptured;
+            StartLiveView();
+            //_freezeTimer.Interval = ServiceProvider.Settings.LiveViewFreezeTimeOut * 1000;
+            //_freezeTimer.Elapsed += _freezeTimer_Elapsed;
+            _timer.Elapsed += _timer_Elapsed;
+            //ServiceProvider.WindowsManager.Event += WindowsManager_Event;
+            //_focusStackingTimer.AutoReset = true;
+            //_focusStackingTimer.Elapsed += _focusStackingTimer_Elapsed;
+            //_restartTimer.AutoReset = true;
+            //_restartTimer.Elapsed += _restartTimer_Elapsed;
+        }
+
+        private void InitCommands()
+        {
+           //AutoFocusCommand = new RelayCommand(AutoFocus);
+            //RecordMovieCommand = new RelayCommand(delegate
+            //{
+             //   if (Recording)
+            //        StopRecordMovie();
+            //    else
+            //        RecordMovie();
+           // },
+            //     () => CameraDevice.GetCapability(CapabilityEnum.RecordMovie));
+            //CaptureCommand = new RelayCommand(CaptureInThread);
+            //FocusMCommand = new RelayCommand(() => SetFocus(SimpleManualFocus ? -ServiceProvider.Settings.SmallFocusStepCanon : -ServiceProvider.Settings.SmalFocusStep));
+           // FocusMMCommand = new RelayCommand(() => SetFocus(SimpleManualFocus ? -ServiceProvider.Settings.MediumFocusStepCanon : -ServiceProvider.Settings.MediumFocusStep));
+           // FocusMMMCommand = new RelayCommand(() => SetFocus(SimpleManualFocus ? -ServiceProvider.Settings.LargeFocusStepCanon : -ServiceProvider.Settings.LargeFocusStep));
+            //FocusPCommand = new RelayCommand(() => SetFocus(SimpleManualFocus ? ServiceProvider.Settings.SmallFocusStepCanon : ServiceProvider.Settings.SmalFocusStep));
+            //FocusPPCommand = new RelayCommand(() => SetFocus(SimpleManualFocus ? ServiceProvider.Settings.MediumFocusStepCanon : ServiceProvider.Settings.MediumFocusStep));
+            //FocusPPPCommand = new RelayCommand(() => SetFocus(SimpleManualFocus ? ServiceProvider.Settings.LargeFocusStepCanon : ServiceProvider.Settings.LargeFocusStep));
+            //MoveACommand = new RelayCommand(() => SetFocus(-FocusCounter));
+            //MoveBCommand = new RelayCommand(() => SetFocus(FocusValue));
+            //LockCurrentNearCommand = new RelayCommand(() =>
+            //{
+                //if (LockB)
+               // {
+               //     FocusValue = FocusValue - FocusCounter;
+               //     FocusCounter = 0;
+               // }
+              //  LockA = true;
+            //});
+
+            //LockCurrentFarCommand = new RelayCommand(() =>
+            //{
+            //    if (LockB || LockA)
+            //    {
+             //       FocusValue = FocusCounter;
+             //   }
+             //   LockB = true;
+            //});
+
+            //StartFocusStackingCommand = new RelayCommand(StartFocusStacking, () => LockB);
+            //PreviewFocusStackingCommand = new RelayCommand(PreviewFocusStacking, () => LockB);
+            //StopFocusStackingCommand = new RelayCommand(StopFocusStacking);
+            //StartLiveViewCommand = new RelayCommand(StartLiveView);
+            //StopLiveViewCommand = new RelayCommand(StopLiveView);
+            //ResetBrigthnessCommand = new RelayCommand(() => Brightness = 0);
+
+            //StartSimpleFocusStackingCommand = new RelayCommand(StartSimpleFocusStacking);
+            //PreviewSimpleFocusStackingCommand = new RelayCommand(PreviewSimpleFocusStacking);
+            //StopSimpleFocusStackingCommand = new RelayCommand(StopFocusStacking);
+            //HelpFocusStackingCommand = new RelayCommand(() => HelpProvider.Run(HelpSections.FocusStacking));
+
+            //BrowseOverlayCommand = new RelayCommand(BrowseOverlay);
+            //ResetOverlayCommand = new RelayCommand(ResetOverlay);
+            ZoomInCommand = new RelayCommand(() => SelectedCameraDevice.LiveViewImageZoomRatio.NextValue());
+            ZoomOutCommand = new RelayCommand(() => SelectedCameraDevice.LiveViewImageZoomRatio.PrevValue());
+            ZoomIn100 = new RelayCommand(ToggleZoom);
+            ToggleGridCommand = new RelayCommand(ToggleGrid);
+            //FocuseDone += LiveViewViewModel_FocuseDone;
+
+            SetAreaCommand = new RelayCommand(() => SettingArea = true);
+            DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
+
+            //CancelCaptureCommand = new RelayCommand(() => CaptureCancelRequested = true);
+
+        }
+
+        private void ToggleZoom()
+        {
+            try
+            {
+                if (SelectedCameraDevice.LiveViewImageZoomRatio == null || SelectedCameraDevice.LiveViewImageZoomRatio.Values == null)
+                    return;
+                // for canon cameras 
+                if (SelectedCameraDevice.LiveViewImageZoomRatio.Values.Count == 2)
+                {
+                    SelectedCameraDevice.LiveViewImageZoomRatio.Value = SelectedCameraDevice.LiveViewImageZoomRatio.Value ==
+                                                                SelectedCameraDevice.LiveViewImageZoomRatio.Values[0]
+                        ? SelectedCameraDevice.LiveViewImageZoomRatio.Values[1]
+                        : SelectedCameraDevice.LiveViewImageZoomRatio.Values[0];
+                }
+                else
+                {
+                    SelectedCameraDevice.LiveViewImageZoomRatio.Value = SelectedCameraDevice.LiveViewImageZoomRatio.Value ==
+                                                                SelectedCameraDevice.LiveViewImageZoomRatio.Values[0]
+                        ? SelectedCameraDevice.LiveViewImageZoomRatio.Values[SelectedCameraDevice.LiveViewImageZoomRatio.Values.Count - 2]
+                        : SelectedCameraDevice.LiveViewImageZoomRatio.Values[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Unable to set zoom", ex);
+            }
+        }
+
+        public AsyncObservableCollection<string> Grids
+        {
+            get { return _grids; }
+            set
+            {
+                _grids = value;
+                RaisePropertyChanged(() => Grids);
+            }
+        }
+
+        public int GridType
+        {
+            get { return _gridType; }
+            set
+            {
+                _gridType = value;
+                RaisePropertyChanged(() => GridType);
+            }
+        }
+
+        private void ToggleGrid()
+        {
+            var i = GridType;
+            i++;
+            if (i >= Grids.Count)
+                i = 0;
+            GridType = i;
         }
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -342,5 +557,72 @@ namespace Macrophotography
                 StaticHelper.Instance.SystemMessage = "Unable to stop liveview ! " + exception.Message;
             }
         }
+
+        #region histogram
+
+        public PointCollection LuminanceHistogramPoints
+        {
+            get { return _luminanceHistogramPoints; }
+            set
+            {
+                if (_luminanceHistogramPoints != value)
+                {
+                    _luminanceHistogramPoints = value;
+                    RaisePropertyChanged(() => LuminanceHistogramPoints);
+                }
+            }
+        }
+
+        public PointCollection RedColorHistogramPoints
+        {
+            get { return _redColorHistogramPoints; }
+            set
+            {
+                _redColorHistogramPoints = value;
+                RaisePropertyChanged(() => RedColorHistogramPoints);
+            }
+        }
+
+        public PointCollection GreenColorHistogramPoints
+        {
+            get { return _greenColorHistogramPoints; }
+            set
+            {
+                _greenColorHistogramPoints = value;
+                RaisePropertyChanged(() => GreenColorHistogramPoints);
+            }
+        }
+
+        public PointCollection BlueColorHistogramPoints
+        {
+            get { return _blueColorHistogramPoints; }
+            set
+            {
+                _blueColorHistogramPoints = value;
+                RaisePropertyChanged(() => BlueColorHistogramPoints);
+            }
+        }
+
+        public bool HighlightOverExp
+        {
+            get { return CameraProperty.LiveviewSettings.HighlightOverExp; }
+            set
+            {
+                CameraProperty.LiveviewSettings.HighlightOverExp = value;
+                RaisePropertyChanged(() => HighlightOverExp);
+            }
+        }
+
+        public bool HighlightUnderExp
+        {
+            get { return CameraProperty.LiveviewSettings.HighlightUnderExp; }
+            set
+            {
+                CameraProperty.LiveviewSettings.HighlightUnderExp = value;
+                RaisePropertyChanged(() => HighlightUnderExp);
+            }
+        }
+
+        #endregion
     }
 }

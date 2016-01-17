@@ -8,13 +8,25 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Duka|Any CPU = Duka|Any CPU
+		Duka|x86 = Duka|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|x86.ActiveCfg = Debug|x86
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|x86.Build.0 = Debug|x86
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Duka|Any CPU.ActiveCfg = Duka|Any CPU
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Duka|Any CPU.Build.0 = Duka|Any CPU
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Duka|x86.ActiveCfg = Duka|x86
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Duka|x86.Build.0 = Duka|x86
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Release|x86.ActiveCfg = Release|x86
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

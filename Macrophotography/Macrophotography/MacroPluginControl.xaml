@@ -9,7 +9,7 @@
         <Button Height="50" Name="but_qr" Width="50" Margin="5" Style="{DynamicResource MetroCircleButtonStyle}"  ToolTip="Macrophotography" Click="but_qr_Click">
             <Rectangle Width="25" Height="25">
                 <Rectangle.Fill>
-                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_camera_auto}" />
+                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_image_macro}" />
                 </Rectangle.Fill>
             </Rectangle>
         </Button>

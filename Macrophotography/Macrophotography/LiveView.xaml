@@ -4,11 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:translation="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
+             xmlns:T="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
              xmlns:wpf="clr-namespace:CameraControl.Core.Wpf;assembly=CameraControl.Core"
+             xmlns:RadialMenu="clr-namespace:RadialMenu.Controls;assembly=RadialMenu"
+             xmlns:my="clr-namespace:CameraControl.Controls;assembly=CameraControl.Core"             
+             xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:local="clr-namespace:Macrophotography.controls"
+
+                      
              mc:Ignorable="d" 
-             d:DesignHeight="742.898" d:DesignWidth="1006.84">
+             d:DesignHeight="1050.544" d:DesignWidth="1150.718"
+             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow">
+    
     <Window.DataContext>
         <macrophotography:LiveViewViewModel/>
     </Window.DataContext>
@@ -19,10 +29,18 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="Resources/Icons.xaml" />
+                <ResourceDictionary Source="Resources/Moreicons.xaml"/>
+                
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+            
             <!-- MoveThumb Template -->
             <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type wpf:MoveThumb}">
                 <Rectangle Fill="Transparent"/>
@@ -57,8 +75,198 @@
                     <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
                 </Grid>
             </ControlTemplate>
+
+            <!-- The IconButtonStyle -->
+            <Style x:Key="IconButtonStyle"
+               TargetType="{x:Type Button}">
+                <!-- set some default values -->
+                <Setter Property="Background"
+                    Value="Transparent" />
+                <Setter Property="BorderBrush"
+                    Value="Transparent" />
+                <!-- set the visual tree of the control -->
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <!-- here come the actual sub-controls -->
+                            <Border x:Name="border"
+                                Height="{TemplateBinding Height}"
+                                Width="{TemplateBinding Width}"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                Padding="0"
+                                CornerRadius="3,3,3,3">
+                                <Border x:Name="innerBorder"
+                                    SnapsToDevicePixels="True"
+                                    BorderThickness="1"
+                                    Padding="2"
+                                    CornerRadius="3,3,3,3">
+                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"
+                                                  Margin="{TemplateBinding Padding}">
+                                        <ContentPresenter.Effect>
+                                            <!-- give the content a bit of shadow -->
+                                            <DropShadowEffect x:Name="shadow"
+                                                          ShadowDepth="2"
+                                                          Opacity="0.7"
+                                                          BlurRadius="3" />
+                                        </ContentPresenter.Effect>
+                                        <ContentPresenter.RenderTransform>
+                                            <!-- push the content a bit to the left and the top -->
+                                            <TranslateTransform x:Name="translation"
+                                                            X="-1"
+                                                            Y="-1" />
+                                        </ContentPresenter.RenderTransform>
+                                    </ContentPresenter>
+                                </Border>
+                            </Border>
+                            <ControlTemplate.Triggers>
+
+                                <!-- when the control is disabled, just let the background shine through -->
+                                <Trigger Property="IsEnabled"
+                                     Value="false">
+                                    <Setter Property="Opacity"
+                                        Value="0.5" />
+                                </Trigger>
+                                <Trigger Property="IsPressed"
+                                     Value="True">
+                                    <!-- This Trigger manages the Animation of the button's content and its shadow -->
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="shadow"
+                                                             Storyboard.TargetProperty="(DropShadowEffect.ShadowDepth)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.X)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="1"
+                                                             Storyboard.TargetName="shadow"
+                                                             Storyboard.TargetProperty="(DropShadowEffect.ShadowDepth)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="-1"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.X)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="-1"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- This is what Expression Blend creates as default Template -->
+            <Style x:Key="ButtonFocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle SnapsToDevicePixels="true"
+                                   Margin="2"
+                                   Stroke="Black"
+                                   StrokeDashArray="1 2"
+                                   StrokeThickness="1" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <LinearGradientBrush x:Key="ButtonNormalBackground"
+                             EndPoint="0,1"
+                             StartPoint="0,0">
+                <GradientStop Color="#F3F3F3"
+                          Offset="0" />
+                <GradientStop Color="#EBEBEB"
+                          Offset="0.5" />
+                <GradientStop Color="#DDDDDD"
+                          Offset="0.5" />
+                <GradientStop Color="#CDCDCD"
+                          Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="ButtonNormalBorder"
+                         Color="#FF707070" />
+            <Style x:Key="DefaultButtonStyle"
+               TargetType="{x:Type Button}">
+                <Setter Property="FocusVisualStyle"
+                    Value="{StaticResource ButtonFocusVisual}" />
+                <Setter Property="Background"
+                    Value="{StaticResource ButtonNormalBackground}" />
+                <Setter Property="BorderBrush"
+                    Value="{StaticResource ButtonNormalBorder}" />
+                <Setter Property="BorderThickness"
+                    Value="1" />
+                <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+                <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+                <Setter Property="Padding"
+                    Value="1" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Microsoft_Windows_Themes:ButtonChrome SnapsToDevicePixels="true"
+                                                               x:Name="Chrome"
+                                                               Background="{TemplateBinding Background}"
+                                                               BorderBrush="{TemplateBinding BorderBrush}"
+                                                               RenderDefaulted="{TemplateBinding IsDefaulted}"
+                                                               RenderMouseOver="{TemplateBinding IsMouseOver}"
+                                                               RenderPressed="{TemplateBinding IsPressed}">
+                                <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True" />
+                            </Microsoft_Windows_Themes:ButtonChrome>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused"
+                                     Value="true">
+                                    <Setter Property="RenderDefaulted"
+                                        TargetName="Chrome"
+                                        Value="true" />
+                                </Trigger>
+                                <Trigger Property="ToggleButton.IsChecked"
+                                     Value="true">
+                                    <Setter Property="RenderPressed"
+                                        TargetName="Chrome"
+                                        Value="true" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                     Value="false">
+                                    <Setter Property="Foreground"
+                                        Value="#ADADAD" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -68,7 +276,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" Source="{Binding Bitmap}" Name="_image" />
+        <Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="{Binding Bitmap}" Name="_image" />
 
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.LayoutTransform>
@@ -100,20 +308,100 @@
             </Viewbox>
         </Grid>
 
-        <GroupBox Header="Live view" HorizontalAlignment="Stretch" Margin="579,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
+        <GroupBox Header="Live view" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
             <StackPanel Orientation="Vertical">
                 <Button Content="Start live view" Command="{Binding StartLiveViewCommand}" Margin="5"/>
                 <Button Content="Stop live view" Command="{Binding StopLiveViewCommand}" Margin="5" />
             </StackPanel>
         </GroupBox>
-        <Expander Grid.Row="0" Grid.Column="0" ExpandDirection="Right" IsExpanded="True" Width="250" Padding="0">
-            <ScrollViewer>
-                <StackPanel Orientation="Vertical">
-                    <Expander Header="Luminosity" Height="100">
 
+        <StackPanel Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" IsEnabled="{Binding FocusingEnabled}" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10">
+            <Button Height="40" Width="40" Margin="0" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ZoomOutCommand}">
+                <Rectangle Width="20" Height="20">
+                    <Rectangle.Fill>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_zoom_out}"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+            <Button Height="40" Width="40" Margin="0" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ZoomInCommand}">
+                <Rectangle Width="20" Height="20">
+                    <Rectangle.Fill>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_zoom_in}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+            <Button Content="100" Height="40" Width="40" Margin="0" FontWeight="SemiBold" Foreground="White" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ZoomIn100}"/>
+            <Button Height="40" Width="40" Margin="0" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ToggleGridCommand}">
+                <Rectangle Width="20" Height="20">
+                    <Rectangle.Fill>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_grid}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+            <ToggleButton  ToolTip="{T:TranslateExtension LabelEdgeDetection}" Height="40" Width="40" Margin="0" IsChecked="{Binding EdgeDetection}" Style="{DynamicResource MetroCircleToggleButtonStyle}" >
+                <Rectangle Width="20" Height="20">
+                    <Rectangle.Fill>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_contrast}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </ToggleButton>
+            <Canvas Width="40" Height="40" Margin="5" RenderTransformOrigin="0.5,0.5" ToolTip="{Binding LevelAngle}">
+                <Path x:Name="Cutter" Width="30" Height="30" RenderTransformOrigin="0.5,0.5"  Canvas.Left="5" Canvas.Top="5" Stretch="Fill" Fill="{Binding LevelAngleColor}" Data="F1 M 56,36L 56,40L 40,40L 40,56L 36,56L 36,40L 20,40L 20,36L 36,36L 36,20L 40,20L 40,36L 56,36 Z M 8,37L 8,39L 3.01401,39L 3,38L 3.01401,37L 8,37 Z M 13,37L 13,39L 10,39L 10,37L 13,37 Z M 18,37L 18,39L 15,39L 15,37L 18,37 Z M 39,8.00005L 37,8.00005L 37,3.01403L 38,3.00002L 39,3.01403L 39,8.00005 Z M 39,18.0001L 37,18.0001L 37,15.0001L 39,15.0001L 39,18.0001 Z M 37,10.0001L 39,10.0001L 39,13.0001L 37,13.0001L 37,10.0001 Z M 68,39L 68,37L 72.986,37L 73,38L 72.986,39L 68,39 Z M 63,39L 63,37L 66,37L 66,39L 63,39 Z M 57.9999,39L 57.9999,37L 61,37L 61,39L 57.9999,39 Z M 37,68L 39,68L 39,72.986L 38,73L 37,72.986L 37,68 Z M 37,63L 39,63L 39,66L 37,66L 37,63 Z M 37,58L 39,58L 39,61L 37,61L 37,58 Z ">
+                    <Path.RenderTransform>
+                        <RotateTransform Angle="{Binding LevelAngle}"  />
+                    </Path.RenderTransform>
+                </Path>
+                <Path Width="40" Height="40" Stretch="Uniform" Fill="{DynamicResource BlackBrush}" Data="F1 M 66.6667,1.52588e-005C 29.907,1.52588e-005 0,29.907 0,66.6667C 0,103.425 29.907,133.333 66.6667,133.333C 103.427,133.333 133.333,103.425 133.333,66.6667C 133.333,29.907 103.427,1.52588e-005 66.6667,1.52588e-005 Z M 72.0429,122.315L 72.0429,104.302L 61.2904,104.302L 61.2904,122.318C 34.7428,119.772 13.5612,98.5912 11.0176,72.043L 29.0332,72.043L 29.0332,61.2904L 11.0176,61.2904C 13.5625,34.7428 34.7428,13.5625 61.2904,11.0176L 61.2904,29.0319L 72.0429,29.0319L 72.0429,11.0176C 98.5912,13.5612 119.772,34.7416 122.315,61.2904L 104.302,61.2904L 104.302,72.043L 122.318,72.043C 119.772,98.5912 98.5912,119.772 72.0429,122.315 Z "/>
+            </Canvas>
+        </StackPanel>
+
+
+        <Expander
+            IsExpanded="True" 
+            Grid.Row="0" Grid.Column="0" Width="auto" MinWidth="30"
+            ExpandDirection="Right"  Padding="0">
+            <Expander.Header>
+                <TextBlock Text="CAMERA CONTROL" TextAlignment="Right" FontSize="12">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical">                  
+                    <Expander Header="{T:TranslateExtension LabelLuminosity}" IsExpanded="{Binding ShowHistogram}"
+                              Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowLuminosityLiveView, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                        <Expander.Content>
+                            <Grid Height="75" >
+                                <Polygon Points="{Binding Path=LuminanceHistogramPoints}" Stretch="Fill" Fill="LightGray" Opacity="1" Visibility="{Binding ElementName=TgGray, Path=IsChecked,  Converter={StaticResource BooleanToVisibilityConverter1}}"/>
+                                <Polygon Points="{Binding Path=RedColorHistogramPoints}" Stretch="Fill" Fill="Red" Opacity="0.9" Visibility="{Binding ElementName=TgRed, Path=IsChecked,  Converter={StaticResource BooleanToVisibilityConverter1}}" />
+                                <Polygon Points="{Binding Path=GreenColorHistogramPoints}" Stretch="Fill" Fill="Green" Opacity="0.7" Visibility="{Binding ElementName=TgGreen, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
+                                <Polygon Points="{Binding Path=BlueColorHistogramPoints}" Stretch="Fill" Fill="Blue" Opacity="0.5" Visibility="{Binding ElementName=TgBlue, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
+                                <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Horizontal">
+                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="True" Name="TgRed">
+                                        <Ellipse Height="10" Width="10" Fill="Red"/>
+                                    </ToggleButton>
+                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="True" Name="TgGreen">
+                                        <Ellipse Height="10" Width="10" Fill="Green"/>
+                                    </ToggleButton>
+                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="True" Name="TgBlue">
+                                        <Ellipse Height="10" Width="10" Fill="Blue"/>
+                                    </ToggleButton>
+                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="False" Name="TgGray">
+                                        <Ellipse Height="10" Width="10" Fill="Gray"/>
+                                    </ToggleButton>
+                                </StackPanel>
+                                <CheckBox IsChecked="{Binding HighlightUnderExp}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18"/>
+                                <CheckBox VerticalAlignment="Top" HorizontalAlignment="Right" Width="18" IsChecked="{Binding HighlightOverExp}"/>
+                            </Grid>
+                        </Expander.Content>
                     </Expander>
+
+
+
                     <Expander Header="Control" IsExpanded="True" >
                         <StackPanel>
+                            <local:ExposureStatusControl ExposureStatus="{Binding Path=SelectedCameraDevice.ExposureStatus, Mode=TwoWay}"/>
                             <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Label Content="{translation:TranslateExtension Aperture}" Target="{Binding ElementName=cmb_aperture}"/>
                                 <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.FNumber.ErrorColor}" >
@@ -159,7 +447,7 @@
 
                         </StackPanel>
                     </Expander>
-                    <Expander Header="Display" >
+                    <Expander Header="Display" IsExpanded="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="5" />
@@ -172,7 +460,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                            </Grid.RowDefinitions>
                             <CheckBox Content="{translation:TranslateExtension LabelShowActiveArea}" IsChecked="{Binding Path=ShowRuler}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2"/>
                             <Button Content="{translation:TranslateExtension LabelSetArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding SetAreaCommand}" Visibility="{Binding NoSettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
                             <Button Content="{translation:TranslateExtension LabelDoneArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding DoneSetAreaCommand}" Visibility="{Binding SettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
@@ -183,8 +471,34 @@
             </ScrollViewer>
 
         </Expander>
-        <Expander Grid.Row="1" Grid.Column="0" Header="Expander" Grid.ColumnSpan="2" ExpandDirection="Up" IsExpanded="True" Height="100">
-            <Grid />
+
+        <local:Joystick Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
+
+        <Expander Header="Stacking Control"
+            IsExpanded="True"
+            Grid.Row="1" Grid.ColumnSpan="3" Height="auto" MinHeight="30"        
+            ExpandDirection="Up" Padding="0"
+            BorderBrush="Transparent" Margin="0,0.4,-0.2,0">
+
+            <controls:MetroAnimatedTabControl Height="250">
+                <TabItem Header="Settings">
+                    <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+                        <local:Settings/>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Rail Control">
+                    <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto">
+                        <local:RailControl/>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Session">
+                   
+
+                </TabItem>
+            </controls:MetroAnimatedTabControl>
+
+
+
         </Expander>
 
     </Grid>

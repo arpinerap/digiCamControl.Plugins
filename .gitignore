@@ -6,3 +6,6 @@
 /ExamplePlugin/obj/Debug
 /ExamplePlugin/*.suo
 /Macrophotography/Macrophotography/obj/Debug
+/Macrophotography/Macrophotography/bin
+/Macrophotography/Macrophotography/obj
+/Macrophotography/packages/desktop.ini
