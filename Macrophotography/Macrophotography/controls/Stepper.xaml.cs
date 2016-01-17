@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO.Ports;
+using GalaSoft.MvvmLight.Command;
 using Macrophotography.controls;
 
 namespace Macrophotography.controls
@@ -24,8 +25,18 @@ namespace Macrophotography.controls
     {
         public Stepper()
         {
+            StepCommand = new RelayCommand<int>(Step);
             InitializeComponent();
             /// DataContext = new RailControl();
+            
         }
+
+        private void Step(int obj)
+        {
+            StepperManager.Instance.SendCommand(1,0,obj,10);
+        }
+
+        public RelayCommand<int> StepCommand { get; set; }
+
     }
 }
