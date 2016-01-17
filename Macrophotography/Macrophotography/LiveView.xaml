@@ -276,7 +276,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="{Binding Bitmap}" Name="_image" />
+        <Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Bitmap}" Name="_image" />
 
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.LayoutTransform>
@@ -315,7 +315,8 @@
             </StackPanel>
         </GroupBox>
 
-        <StackPanel Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" IsEnabled="{Binding FocusingEnabled}" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10">
+        <!--<StackPanel Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" IsEnabled="{Binding FocusingEnabled}" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10">-->
+        <StackPanel Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10">
             <Button Height="40" Width="40" Margin="0" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ZoomOutCommand}">
                 <Rectangle Width="20" Height="20">
                     <Rectangle.Fill>
@@ -331,6 +332,7 @@
                 </Rectangle>
             </Button>
             <Button Content="100" Height="40" Width="40" Margin="0" FontWeight="SemiBold" Foreground="White" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ZoomIn100}"/>
+
             <Button Height="40" Width="40" Margin="0" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ToggleGridCommand}">
                 <Rectangle Width="20" Height="20">
                     <Rectangle.Fill>
@@ -460,10 +462,20 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <CheckBox Content="{translation:TranslateExtension LabelShowActiveArea}" IsChecked="{Binding Path=ShowRuler}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2"/>
                             <Button Content="{translation:TranslateExtension LabelSetArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding SetAreaCommand}" Visibility="{Binding NoSettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
                             <Button Content="{translation:TranslateExtension LabelDoneArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding DoneSetAreaCommand}" Visibility="{Binding SettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
+
+                            <Label Content="{T:TranslateExtension LabelBrightness}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" />
+                            <Slider Maximum="255" Minimum="-255" Value="{Binding Brightness}" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="1" TickFrequency="255" TickPlacement="BottomRight">
+                                <Slider.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{T:TranslateExtension LabelReset}" Command="{Binding Path=ResetBrigthnessCommand}" />
+                                    </ContextMenu>
+                                </Slider.ContextMenu>
+                            </Slider>
                         </Grid>
                     </Expander>
 

@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AForge;
+using AForge.Imaging;
+using AForge.Imaging.Filters;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Core.Translation;
@@ -14,12 +19,17 @@ using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Color = System.Windows.Media.Color;
+using Point = System.Windows.Point;
 using Timer = System.Timers.Timer;
 
 namespace Macrophotography
 {
     public class LiveViewViewModel : ViewModelBase
     {
+        private const int DesiredFrameRate = 20;
+        private int _totalframes = 0;
+
         private bool _operInProgress = false;
         private Timer _timer = new Timer(1000 / 25.0);
 
@@ -176,6 +186,36 @@ namespace Macrophotography
             }
         }
 
+        public int Brightness
+        {
+            get { return CameraProperty.LiveviewSettings.Brightness; }
+            set
+            {
+                CameraProperty.LiveviewSettings.Brightness = value;
+                RaisePropertyChanged(() => Brightness);
+            }
+        }
+
+        public bool BlackAndWhite
+        {
+            get { return CameraProperty.LiveviewSettings.BlackAndWhite; }
+            set
+            {
+                CameraProperty.LiveviewSettings.BlackAndWhite = value;
+                RaisePropertyChanged(() => BlackAndWhite);
+            }
+        }
+
+        public bool EdgeDetection
+        {
+            get { return CameraProperty.LiveviewSettings.EdgeDetection; }
+            set
+            {
+                CameraProperty.LiveviewSettings.EdgeDetection = value;
+                RaisePropertyChanged(() => EdgeDetection);
+            }
+        }
+
         public BitmapSource Bitmap
         {
             get { return _bitmap; }
@@ -186,6 +226,8 @@ namespace Macrophotography
             }
         }
         
+
+
         public bool IsActive { get; set; }
         public LiveViewData LiveViewData { get; set; }
 
@@ -208,6 +250,9 @@ namespace Macrophotography
             {
                 SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
                 CameraProperty = SelectedCameraDevice.LoadProperties();
+                InitCommands();
+                ShowHistogram = true;
+                Init();
             }
         }
 
@@ -290,7 +335,7 @@ namespace Macrophotography
             //StopFocusStackingCommand = new RelayCommand(StopFocusStacking);
             //StartLiveViewCommand = new RelayCommand(StartLiveView);
             //StopLiveViewCommand = new RelayCommand(StopLiveView);
-            //ResetBrigthnessCommand = new RelayCommand(() => Brightness = 0);
+            
 
             //StartSimpleFocusStackingCommand = new RelayCommand(StartSimpleFocusStacking);
             //PreviewSimpleFocusStackingCommand = new RelayCommand(PreviewSimpleFocusStacking);
@@ -299,6 +344,8 @@ namespace Macrophotography
 
             //BrowseOverlayCommand = new RelayCommand(BrowseOverlay);
             //ResetOverlayCommand = new RelayCommand(ResetOverlay);
+            
+            ResetBrigthnessCommand = new RelayCommand(() => Brightness = 0);
             ZoomInCommand = new RelayCommand(() => SelectedCameraDevice.LiveViewImageZoomRatio.NextValue());
             ZoomOutCommand = new RelayCommand(() => SelectedCameraDevice.LiveViewImageZoomRatio.PrevValue());
             ZoomIn100 = new RelayCommand(ToggleZoom);
@@ -307,6 +354,8 @@ namespace Macrophotography
 
             SetAreaCommand = new RelayCommand(() => SettingArea = true);
             DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
+
+            RaisePropertyChanged(()=>ZoomIn100);
 
             //CancelCaptureCommand = new RelayCommand(() => CaptureCancelRequested = true);
 
@@ -407,17 +456,91 @@ namespace Macrophotography
                             Length -
                         LiveViewData.
                             ImageDataPosition);
-                    BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    bi.StreamSource = stream;
-                    bi.EndInit();
-                    bi.Freeze();
-                    WriteableBitmap bitmap = BitmapFactory.ConvertToPbgra32Format(bi);
-                    DrawGrid(bitmap);
-                    bitmap.Freeze();
-                    Bitmap = bitmap;
-                    _operInProgress = false;
+
+
+                    using (var res = new Bitmap(stream))
+                    {
+                        Bitmap bmp = res;
+                        if (_totalframes%DesiredFrameRate == 0 && ShowHistogram)
+                        {
+                            ImageStatisticsHSL hslStatistics =
+                                new ImageStatisticsHSL(bmp);
+                            LuminanceHistogramPoints =
+                                ConvertToPointCollection(
+                                    hslStatistics.Luminance.Values);
+                            ImageStatistics statistics = new ImageStatistics(bmp);
+                            RedColorHistogramPoints = ConvertToPointCollection(
+                                statistics.Red.Values);
+                            GreenColorHistogramPoints = ConvertToPointCollection(
+                                statistics.Green.Values);
+                            BlueColorHistogramPoints = ConvertToPointCollection(
+                                statistics.Blue.Values);
+                        }
+
+                        if (HighlightUnderExp)
+                        {
+                            ColorFiltering filtering = new ColorFiltering();
+                            filtering.Blue = new IntRange(0, 5);
+                            filtering.Red = new IntRange(0, 5);
+                            filtering.Green = new IntRange(0, 5);
+                            filtering.FillOutsideRange = false;
+                            filtering.FillColor = new RGB(System.Drawing.Color.Blue);
+                            filtering.ApplyInPlace(bmp);
+                        }
+
+                        if (HighlightOverExp)
+                        {
+                            ColorFiltering filtering = new ColorFiltering();
+                            filtering.Blue = new IntRange(250, 255);
+                            filtering.Red = new IntRange(250, 255);
+                            filtering.Green = new IntRange(250, 255);
+                            filtering.FillOutsideRange = false;
+                            filtering.FillColor = new RGB(System.Drawing.Color.Red);
+                            filtering.ApplyInPlace(bmp);
+                        }
+
+                        var preview = BitmapFactory.ConvertToPbgra32Format(
+                            BitmapSourceConvert.ToBitmapSource(bmp));
+
+                        if (Brightness != 0)
+                        {
+                            BrightnessCorrection filter = new BrightnessCorrection(Brightness);
+                            bmp = filter.Apply(bmp);
+                        }
+
+
+                        Bitmap newbmp = bmp;
+                        if (EdgeDetection)
+                        {
+                            var filter = new FiltersSequence(
+                                Grayscale.CommonAlgorithms.BT709,
+                                new HomogenityEdgeDetector()
+                                );
+                            newbmp = filter.Apply(bmp);
+                        }
+
+                        WriteableBitmap writeableBitmap;
+
+                        if (BlackAndWhite)
+                        {
+                            Grayscale filter = new Grayscale(0.299, 0.587, 0.114);
+                            writeableBitmap =
+                                BitmapFactory.ConvertToPbgra32Format(
+                                    BitmapSourceConvert.ToBitmapSource(
+                                        filter.Apply(newbmp)));
+                        }
+                        else
+                        {
+                            writeableBitmap =
+                                BitmapFactory.ConvertToPbgra32Format(
+                                    BitmapSourceConvert.ToBitmapSource(newbmp));
+                        }
+                        DrawGrid(writeableBitmap);
+                        DrawFocusPoint(writeableBitmap);
+                        writeableBitmap.Freeze();
+                        Bitmap = writeableBitmap;
+                        _operInProgress = false;
+                    }
                     return;
                 }
             }
@@ -426,6 +549,40 @@ namespace Macrophotography
                 Log.Error("Error geting lv", ex);
                 _operInProgress = false;
                 return;
+            }
+        }
+
+        private void DrawFocusPoint(WriteableBitmap bitmap, bool fill = false)
+        {
+            try
+            {
+                if (LiveViewData == null)
+                    return;
+                double xt = bitmap.Width / LiveViewData.ImageWidth;
+                double yt = bitmap.Height / LiveViewData.ImageHeight;
+
+                if (fill)
+                {
+                    bitmap.FillRectangle2((int)(LiveViewData.FocusX * xt - (LiveViewData.FocusFrameXSize * xt / 2)),
+                        (int)(LiveViewData.FocusY * yt - (LiveViewData.FocusFrameYSize * yt / 2)),
+                        (int)(LiveViewData.FocusX * xt + (LiveViewData.FocusFrameXSize * xt / 2)),
+                        (int)(LiveViewData.FocusY * yt + (LiveViewData.FocusFrameYSize * yt / 2)),
+                        LiveViewData.HaveFocusData
+                            ? System.Windows.Media.Color.FromArgb(0x60, 0, 0xFF, 0)
+                            : System.Windows.Media.Color.FromArgb(0x60, 0xFF, 0, 0));
+                }
+                else
+                {
+                    bitmap.DrawRectangle((int)(LiveViewData.FocusX * xt - (LiveViewData.FocusFrameXSize * xt / 2)),
+                        (int)(LiveViewData.FocusY * yt - (LiveViewData.FocusFrameYSize * yt / 2)),
+                        (int)(LiveViewData.FocusX * xt + (LiveViewData.FocusFrameXSize * xt / 2)),
+                        (int)(LiveViewData.FocusY * yt + (LiveViewData.FocusFrameYSize * yt / 2)),
+                        LiveViewData.HaveFocusData ? Colors.Green : Colors.Red);
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error("Error draw helper lines", exception);
             }
         }
 
@@ -623,6 +780,26 @@ namespace Macrophotography
             }
         }
 
+        private PointCollection ConvertToPointCollection(int[] values)
+        {
+            int max = values.Max();
+
+            PointCollection points = new PointCollection();
+            // first point (lower-left corner)
+            points.Add(new Point(0, max));
+            // middle points
+            for (int i = 0; i < values.Length; i++)
+            {
+                points.Add(new Point(i, max - values[i]));
+            }
+            // last point (lower-right corner)
+            points.Add(new Point(values.Length - 1, max));
+            points.Freeze();
+            return points;
+        }
+
         #endregion
+
+
     }
 }
