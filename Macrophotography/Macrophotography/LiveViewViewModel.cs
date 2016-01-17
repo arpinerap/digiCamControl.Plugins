@@ -552,6 +552,37 @@ namespace Macrophotography
             }
         }
 
+        public virtual void SetFocusPos(int x, int y)
+        {
+            try
+            {
+                SelectedCameraDevice.Focus(x, y);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("Error set focus pos :", exception);
+                StaticHelper.Instance.SystemMessage = TranslationStrings.LabelErrorSetFocusPos;
+            }
+        }
+
+        public void SetFocusPos(Point initialPoint, double refWidth, double refHeight)
+        {
+            if (LiveViewData != null)
+            {
+                var CropRatio = 0;
+                //CropOffsetX = (writeableBitmap.PixelWidth / 2) * CropRatio / 100;
+                double offsetX = (((refWidth * 100) / (100 - CropRatio)) - refWidth) / 2;
+                double offsety = (((refHeight * 100) / (100 - CropRatio)) - refHeight) / 2; ; ;
+                double xt = (LiveViewData.ImageWidth) / (refWidth + (offsetX * 2));
+                double yt = (LiveViewData.ImageHeight) / (refHeight + (offsety * 2));
+                int posx = (int)((offsetX + initialPoint.X) * xt);
+                //if (FlipImage)
+                //    posx = (int)(((refWidth) - initialPoint.X + offsetX) * xt);
+                int posy = (int)((initialPoint.Y + offsety) * yt);
+                Task.Factory.StartNew(() => SetFocusPos(posx, posy));
+            }
+        }
+
         private void DrawFocusPoint(WriteableBitmap bitmap, bool fill = false)
         {
             try

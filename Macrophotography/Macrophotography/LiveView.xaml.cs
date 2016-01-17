@@ -18,6 +18,7 @@ using CameraControl.Core.Classes;
 using CameraControl.Core.Translation;
 using System.IO.Ports;
 using System.Timers;
+using CameraControl.Devices;
 
 namespace Macrophotography
 {
@@ -32,6 +33,26 @@ namespace Macrophotography
         {
             InitializeComponent();
 
+        }
+
+        private void _image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+            if (e.ButtonState == MouseButtonState.Pressed && e.ChangedButton == MouseButton.Left &&
+                ((LiveViewViewModel) DataContext).SelectedCameraDevice.LiveViewImageZoomRatio.Value == "All")
+            {
+                try
+                {
+                    ((LiveViewViewModel) DataContext).SetFocusPos(e.MouseDevice.GetPosition(_image), _image.ActualWidth,
+                        _image.ActualHeight);
+
+                }
+                catch (Exception exception)
+                {
+                    Log.Error("Focus Error", exception);
+                    StaticHelper.Instance.SystemMessage = "Focus error: " + exception.Message;
+                }
+            }
         }
     }
 }
