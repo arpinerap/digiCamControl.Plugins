@@ -6,6 +6,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:macrophotography="clr-namespace:Macrophotography"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="1800">
     <UserControl.Resources>
@@ -240,7 +241,7 @@
                                                     Grid.Row="0" 
                                                     HorizontalAlignment="Right" VerticalAlignment="Top" 
                                                     ContextMenuOpening="cmb_ports_ContextMenuOpening" 
-                                                    Width="78" Height="22" UseLayoutRounding="True"/>
+                                                    Width="78" Height="22" UseLayoutRounding="True" SelectedItem="{Binding Port, Source={x:Static macrophotography:StepperManager.Instance}}"/>
                     </Border>
 
                     <Label Content="Ports" 
@@ -269,7 +270,7 @@
 
         <GroupBox Header="Rail Movement" 
                                       Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                      Height="200" MinWidth="300">
+                                      Height="200" MinWidth="300" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60"/>
@@ -303,7 +304,7 @@
                 <Label Content="Steps"  
                                            HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Height="26" Width="50" FontSize="12"/>
                 <Slider x:Name="SpeedStep_slider" Style="{DynamicResource FlatSlider}"
-                                            Height="8" Width="100" Margin="10,0,10,0" HorizontalAlignment="Left"
+                                            Height="8" Width="100" Margin="10,0,10,0" HorizontalAlignment="Left" Value="{Binding Speed, Source={x:Static macrophotography:StepperManager.Instance}}"
                                             Grid.Row="1" Grid.Column="1"
                                             Minimum="25" Maximum="1000" SmallChange="25" 
                                             AutoToolTipPlacement="BottomRight" TickFrequency="25" IsSnapToTickEnabled="True" Ticks="25,100,200,400,600,800,1000"/>

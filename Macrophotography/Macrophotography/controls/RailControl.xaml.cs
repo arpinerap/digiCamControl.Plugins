@@ -53,26 +53,26 @@ namespace Macrophotography.controls
         private void bt_atras_Click(object sender, RoutedEventArgs e)
         {
             // SendCommand(1, 0, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 0, Convert.ToInt32(Steps_slider.Value), Convert.ToInt32(SpeedStep_slider.Value));
+            StepperManager.Instance.SendCommand(1, 0, Convert.ToInt32(Steps_slider.Value));
         }
 
         private void bt_adelante_Click(object sender, RoutedEventArgs e)
         {
             //  SendCommand(1, 1, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value), Convert.ToInt32(SpeedStep_slider.Value));
+            StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value));
         }
 
 
         private void GoFar1(object sender, RoutedEventArgs e)
         {
             // SendCommand(1, 0, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 0, Convert.ToInt32(Steps_slider.Value), Convert.ToInt32(SpeedStep_slider.Value));
+            StepperManager.Instance.SendCommand(1, 0, Convert.ToInt32(Steps_slider.Value));
         }
 
         private void GoNear1(object sender, RoutedEventArgs e)
         {
             //  SendCommand(1, 1, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value), Convert.ToInt32(SpeedStep_slider.Value));
+            StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value));
         }
 
 

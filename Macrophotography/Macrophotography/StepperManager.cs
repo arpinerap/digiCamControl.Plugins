@@ -4,15 +4,55 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 
 namespace Macrophotography
 {
-    public class StepperManager
+    public class StepperManager : ViewModelBase
     {
         private SerialPort sp = new SerialPort();
         private object _locker = new object();
         private static StepperManager _instance;
-        private string _port = "";
+        private string _port;
+        private int _speed;
+        private bool _isBusy;
+
+        public string Port
+        {
+            get { return _port; }
+            set
+            {
+                _port = value;
+                RaisePropertyChanged(()=>Port);
+            }
+        }
+
+        public int Speed
+        {
+            get { return _speed; }
+            set
+            {
+                _speed = value;
+                RaisePropertyChanged(() => Speed);
+            }
+        }
+
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                RaisePropertyChanged(() => IsBusy);
+                RaisePropertyChanged(() => IsFree);
+            }
+        }
+
+        public bool IsFree
+        {
+            get { return !IsBusy; }
+        }
+
         public static StepperManager Instance
         {
             get
@@ -60,14 +100,10 @@ namespace Macrophotography
                 SerialPort spL = (SerialPort)sender;
                 string str = spL.ReadLine();
                 //lst_message.Items.Add(str);
-                //if (str.Contains("ok"))
-                //{
-                //    Dispatcher.Invoke(new Action(() =>
-                //    {
-                //        bt_adelante.IsEnabled = true;
-                //        bt_atras.IsEnabled = true;
-                //    }));
-                //}
+                if (str.Contains("ok"))
+                {
+                    IsBusy = false;
+                }
             }
             catch (Exception ex)
             {
@@ -75,6 +111,11 @@ namespace Macrophotography
             }
 
 
+        }
+
+        public void SendCommand(int motor, int dir, int steps)
+        {
+            SendCommand(motor, dir, steps, Speed);
         }
 
         public void SendCommand(int motor, int dir, int steps, int spd)
@@ -94,8 +135,7 @@ namespace Macrophotography
                     cmd += " ";
                     cmd += Convert.ToString(spd);
                     sp.WriteLine(cmd);
-                    //bt_adelante.IsEnabled = false;
-                    //bt_atras.IsEnabled = false;
+                    IsBusy = true;
                 }
                 catch (Exception exception)
                 {

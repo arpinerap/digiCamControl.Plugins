@@ -33,7 +33,7 @@ namespace Macrophotography.controls
 
         private void Step(int obj)
         {
-            StepperManager.Instance.SendCommand(1,0,obj,10);
+            StepperManager.Instance.SendCommand(1,0,obj);
         }
 
         public RelayCommand<int> StepCommand { get; set; }
