@@ -48,7 +48,7 @@ namespace Macrophotography.controls
                 cmb_ports.Items.Add(port);
             }
         }
-
+        /*
 
         private void bt_atras_Click(object sender, RoutedEventArgs e)
         {
@@ -75,7 +75,7 @@ namespace Macrophotography.controls
             StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value));
         }
 
-
+        */
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

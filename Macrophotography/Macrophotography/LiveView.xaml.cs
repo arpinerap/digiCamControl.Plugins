@@ -32,7 +32,7 @@ namespace Macrophotography
         public LiveView()
         {
             InitializeComponent();
-
+            ServiceProvider.Settings.ApplyTheme(this);
         }
 
         private void _image_MouseDown(object sender, MouseButtonEventArgs e)

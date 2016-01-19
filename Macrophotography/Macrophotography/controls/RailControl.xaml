@@ -15,8 +15,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
@@ -218,11 +216,12 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="500"/>
-            <ColumnDefinition Width="400*"/>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition Width="480"/>
+            <ColumnDefinition Width="350*"/>
+            <ColumnDefinition Width="300*"/>
             <ColumnDefinition Width="280"/>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
 
         <GroupBox Header="Serial Port" 
@@ -273,43 +272,26 @@
                                       Height="200" MinWidth="300" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition/>
-                    <RowDefinition Height="26"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="50"/>
-                </Grid.ColumnDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                   
+                </Grid.RowDefinitions>       
 
-                <local:Stepper Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" />
+                <local:Stepper Grid.Row="1" />
+                
+                <WrapPanel Grid.Row="2" HorizontalAlignment="Center" >
+                    <Label Content="Speed" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Height="26" Width="50" FontSize="12"/>
 
-                <Button x:Name="bt_atras" 
-                                            Content="Reward" 
-                                            VerticalAlignment="Center"
-                                            Grid.Row="2" Grid.Column="0"
-                                            Click="bt_atras_Click"/>
-                <Button x:Name="bt_adelante" 
-                                            Content="Forward" 
-                                            VerticalAlignment="Center" 
-                                            Grid.Row="2" Grid.Column="2"
-                                            Click="bt_adelante_Click"/>
-                <Slider x:Name="Steps_slider" 
-                                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Height="18" Margin="10,0,10,0"
-                                            Grid.Row="2" Grid.Column="1" 
-                                            Minimum="10" Maximum="10000" SmallChange="10" 
-                                            AutoToolTipPlacement="TopLeft"/>
-                <Label Content="Steps"  
-                                           HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Height="26" Width="50" FontSize="12"/>
-                <Slider x:Name="SpeedStep_slider" Style="{DynamicResource FlatSlider}"
-                                            Height="8" Width="100" Margin="10,0,10,0" HorizontalAlignment="Left" Value="{Binding Speed, Source={x:Static macrophotography:StepperManager.Instance}}"
-                                            Grid.Row="1" Grid.Column="1"
-                                            Minimum="25" Maximum="1000" SmallChange="25" 
-                                            AutoToolTipPlacement="BottomRight" TickFrequency="25" IsSnapToTickEnabled="True" Ticks="25,100,200,400,600,800,1000"/>
-                <Label Content="Speed" 
-                                           HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Height="26" Width="50" FontSize="12"/>
+                    <Slider x:Name="SpeedStep_slider" Style="{DynamicResource FlatSlider}"
+                        Height="8" Width="100" Margin="10,0,10,0" HorizontalAlignment="Left" Value="{Binding Speed, Source={x:Static macrophotography:StepperManager.Instance}}"                                        
+                        Minimum="25" Maximum="1000" SmallChange="25" 
+                        AutoToolTipPlacement="BottomRight" TickFrequency="25" IsSnapToTickEnabled="True" Ticks="25,100,200,400,600,800,1000"/>             
+                </WrapPanel>
+     
                 
             </Grid>
         </GroupBox>
@@ -319,10 +301,10 @@
                                       Height="200" MinWidth="300">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -334,7 +316,7 @@
 
                 <Button Style="{DynamicResource IconButtonStyle}" 
                                             Width="60" Height="60"
-                                            Grid.Row="0" Grid.Column="0"  
+                                            Grid.Row="1" Grid.Column="0"  
                                             HorizontalAlignment="Left"
                                             >
                     <Image Source="/macrophotography;component/resources/nearfocus.png"/>
@@ -343,25 +325,25 @@
                 <Button Style="{DynamicResource IconButtonStyle}"
                                         Width="60" Height="60"
                                         HorizontalAlignment="Right"
-                                        Grid.Column="2" Grid.Row="0">
+                                        Grid.Column="2" Grid.Row="1">
                     <Image Source="/macrophotography;component/resources/farfocus.png"/>
 
                 </Button>
 
                 <Slider
-                                        Minimum="0" Interval="10" Maximum="10000"
-                                        TickPlacement="BottomRight" TickFrequency="500"
-                                        Grid.Row="0" Grid.Column="1" Margin="0,0,0,0"
-                                        VerticalAlignment="Center"/>
+                    Minimum="0" Interval="10" Maximum="10000"
+                    TickPlacement="BottomRight" TickFrequency="500"
+                    Grid.Row="1" Grid.Column="1" Margin="0,0,0,0"
+                    VerticalAlignment="Center"/>
 
-                <Label Content="Total Range of Motion" 
-                                           Grid.Column="0" Grid.ColumnSpan="3"
+                <Label Content="Final Depth of Field" 
+                                           Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
                                            HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                 <controls:ToggleSwitch
                                         OnLabel="Lock" OffLabel="Free"
                                         FlowDirection="RightToLeft"
                                         
-                                        Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                        Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                         HorizontalAlignment="Left" Padding="-10">
                     
 
@@ -369,7 +351,7 @@
 
                 <controls:ToggleSwitch
                                         OnLabel="Lock" OffLabel="Free"
-                                        Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                                         HorizontalAlignment="Right" Padding="-10">
 
                 </controls:ToggleSwitch>
@@ -377,8 +359,50 @@
             </Grid>
         </GroupBox>
 
+        <GroupBox Header="Shotting Info" 
+                Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                Height="200" MinWidth="300">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+
+                <WrapPanel Grid.Row="0" HorizontalAlignment="Center">
+                    <Label Content="Shot DOF"/>
+                    <Label Content="binding shot DoF"/>
+                    <Label Content="mm"/>
+                </WrapPanel>
+
+                <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
+                    <Label Content="Total DOF"/>
+                    <Label Content="binding total DoF"/>
+                    <Label Content="mm"/>
+                </WrapPanel>
+
+                <WrapPanel Grid.Row="2" HorizontalAlignment="Center">
+                    <Label Content="Number Shots"/>
+                    <Label Content="binding n_shots"/>                    
+                </WrapPanel>
+
+                <WrapPanel Grid.Row="3" HorizontalAlignment="Center">
+                    <Label Content="Current Position"/>
+                    <Label Content="binding focus limits slider"/>
+                    <Label Content="mm"/>
+                </WrapPanel>
+
+
+            </Grid>
+            
+  
+            
+        </GroupBox>
+
         <GroupBox Header="Stacking Adds" 
-                                  Grid.Column="3" VerticalAlignment="Top" 
+                                  Grid.Column="4" VerticalAlignment="Top" 
                                       Height="200">
             <Grid>
                 <Grid.RowDefinitions>
@@ -398,15 +422,15 @@
 
                 
 
-                <controls:NumericUpDown
-                                        Minimum="0"
+                <controls:NumericUpDown Value="0"
+                                        Minimum="0"                                      
                                         Width="100"
                                         Grid.Row="1" Grid.Column="0"/>
                 <Label Content="Near Extra Shots" 
                                            Grid.Column="0" Grid.Row="0" Padding="-5"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <controls:NumericUpDown
+                <controls:NumericUpDown Value="0"
                                         Minimum="0"
                                         Width="100"
                                         Grid.Row="1" Grid.Column="1" />
@@ -414,7 +438,7 @@
                                            Grid.Column="1" Grid.Row="0" Padding="-5"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <controls:NumericUpDown Value="0" controls:TextBoxHelper.Watermark="Overlap Focus %"
+                <controls:NumericUpDown Value="20" controls:TextBoxHelper.Watermark="Overlap Focus %"
                                             Minimum="20" Maximum="100" Interval="10"  
                                             Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"
                                             Width="120"/>
@@ -436,57 +460,39 @@
             </Grid>
         </GroupBox>
 
-
         <GroupBox Header="Process" 
-                                      Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                      Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                       Height="200">
             <StackPanel>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>                       
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Mv/Cpt Delay" Grid.Column="0" Margin="3"/>
-                    <controls:NumericUpDown Value="0" Minimum="0" Grid.Column="1" Margin="3"/>
+                    <Label Content="Mv/Cpt Delay" Grid.Column="0" />
+                    <controls:NumericUpDown Value="0" 
+                                    Minimum="0" Grid.Column="1" Margin="3"/>
 
-                    <Label Content="Capture Delay" Grid.Column="0" Grid.Row="1" Margin="3"/>
+                    <Label Content="Capture Delay" Grid.Column="0" Grid.Row="1" />
                     <controls:NumericUpDown Value="{Binding CaptureDelay}"
-                                            Minimum="0" IsEnabled="{Binding IsFree}" 
-                                            Grid.Column="1" Grid.Row="1" Margin="3"/>
-
-
-
-
+                                    Minimum="0" IsEnabled="{Binding IsFree}" 
+                                    Grid.Column="1" Grid.Row="1" Margin="3"/>
 
                     <Button Style="{DynamicResource IconButtonStyle}" 
                                             Width="100" Height="100"
                                             Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                         <Image Source="/macrophotography;component/resources/start-button.png"/>
-
                     </Button>
-
-
-
-
                 </Grid>
-
-
-
-
-
-
-
-
             </StackPanel>
         </GroupBox>
-
+        
     </Grid>
 
 
