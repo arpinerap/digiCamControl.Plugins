@@ -17,11 +17,29 @@
                       
              mc:Ignorable="d" 
              d:DesignHeight="1050.544" d:DesignWidth="1150.718"
-             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow">
+             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing">
     
     <Window.DataContext>
         <macrophotography:LiveViewViewModel/>
     </Window.DataContext>
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <WrapPanel>
+                <Label Content="Put here LensComboBox and RailComboBox"/>
+                <ComboBox x:Name="NameLens_Combo_Commands"                        
+                          Height="38" VerticalAlignment="Center"/>
+                <ComboBox x:Name="RailLens_Combo_Commands"                           
+                          Height="38" VerticalAlignment="Center"/>
+                <ComboBox x:Name="Ports_Combo_Commands" SelectedItem="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                                  ItemsSource="{Binding portslist, Source={x:Static macrophotography:ArduinoPorts.Instance}}"                        
+                          Height="38" VerticalAlignment="Center"/>
+                <Button x:Name="Connect_btn_Commands" Content="Connect"  Command="{Binding DetectArduino, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                        Height="38" VerticalAlignment="Center"/>            
+            </WrapPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -484,7 +502,8 @@
 
         </Expander>
 
-        <local:Joystick Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
+        <local:Joystick  IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"
+            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
 
         <Expander Header="Stacking Control"
             IsExpanded="True"
@@ -492,14 +511,14 @@
             ExpandDirection="Up" Padding="0"
             BorderBrush="Transparent" Margin="0,0.4,-0.2,0">
 
-            <controls:MetroAnimatedTabControl Height="250">
+            <controls:MetroAnimatedTabControl x:Name="RailControlTab" Height="250" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
                 <TabItem Header="Settings">
-                    <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <local:Settings/>
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Rail Control">
-                    <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <local:RailControl/>
                     </ScrollViewer>
                 </TabItem>

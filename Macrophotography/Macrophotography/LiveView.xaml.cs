@@ -54,5 +54,10 @@ namespace Macrophotography
                 }
             }
         }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ArduinoPorts.Instance.ClosePort();
+        }
     }
 }

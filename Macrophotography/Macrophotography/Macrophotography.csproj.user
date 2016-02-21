@@ -13,7 +13,17 @@
     <StartAction>Program</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Duka|x86'">
-    <StartProgram>D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartProgram>C:\Users\SuperPi\Google Drive\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
     <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PublishUrlHistory />
+    <InstallUrlHistory />
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
 </Project>

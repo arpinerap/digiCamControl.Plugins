@@ -13,69 +13,45 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO.Ports;
+using Macrophotography.controls;
+using Macrophotography;
+using CameraControl.Core;
+using CameraControl.Core.Classes;
+
 
 namespace Macrophotography.controls
-{
+{   
     /// <summary>
     /// Interaction logic for RailControl.xaml
     /// </summary>
     public partial class RailControl : UserControl
     {
+        /*
+        public int Position = 0;
+        public int NearFocus;
+        public int FarFocus;
+
+        public int TotalDOF = 0;
+
+        public int dir;
+        public int steps;
+        public int spd;
+        */
+        public int LastPosition;
+        public CustomConfig SelectedConfig { get; set; }
 
         public RailControl()
         {
             InitializeComponent();
-            
-            // Choose Serial Port for Arduino Comunnication
-            string[] ports = SerialPort.GetPortNames();
-            foreach (string port in ports)
-            {
-                cmb_ports.Items.Add(port);
-            }
-
-            // Steps & Speed Motor TextBoxes Default Values
-            // txt_pasos.Clear();
-            // txt_pasos.Text = "100";
-            // txt_vel.Text = "100";
+            StepperManager.Instance.Position = 0;
+            StepperManager.Instance.NearFocus = 0;
+            StepperManager.Instance.FarFocus = 0;
+            StepperManager.Instance.NearFocus2 = 0;
+            StepperManager.Instance.FarFocus2 = 0;
+            StepperManager.Instance.TotalDOF = 0;
+            StepperManager.Instance.TotalDOFFull = 0;
         }
 
-        private void cmb_ports_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            string[] ports = SerialPort.GetPortNames();
-            cmb_ports.Items.Clear();
-            foreach (string port in ports)
-            {
-                cmb_ports.Items.Add(port);
-            }
-        }
-        /*
-
-        private void bt_atras_Click(object sender, RoutedEventArgs e)
-        {
-            // SendCommand(1, 0, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 0, Convert.ToInt32(Steps_slider.Value));
-        }
-
-        private void bt_adelante_Click(object sender, RoutedEventArgs e)
-        {
-            //  SendCommand(1, 1, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value));
-        }
-
-
-        private void GoFar1(object sender, RoutedEventArgs e)
-        {
-            // SendCommand(1, 0, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 0, Convert.ToInt32(Steps_slider.Value));
-        }
-
-        private void GoNear1(object sender, RoutedEventArgs e)
-        {
-            //  SendCommand(1, 1, Convert.ToInt32(txt_pasos.Text), Convert.ToInt32(txt_vel.Text));
-            StepperManager.Instance.SendCommand(1, 1, Convert.ToInt32(Steps_slider.Value));
-        }
-
-        */
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -83,16 +59,89 @@ namespace Macrophotography.controls
             // Close Serial Port when Plugin is closed
             try
             {
-                StepperManager.Instance.ClosePort();
+                ArduinoPorts.Instance.ClosePort();
             }
             catch (Exception)
             {
             }
         }
 
-        private void CountSteps()
+        private void NearFocus_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            StepperManager.Instance.SetNearFocus();
+            NearPulsing.IsPulsing = false;
+            NearFocusLock.IsChecked = true;
         }
+
+        private void FarFocus_btn_Click(object sender, RoutedEventArgs e)
+        {
+            StepperManager.Instance.SetFarFocus();
+            FarPulsing.IsPulsing = false;
+            FarFocusLock.IsChecked = true;
+        }
+        
+        private void GetLastPosition()
+        {
+            LastPosition = (int)Position_sld.Value;
+            LastPosition_txt.Text = LastPosition.ToString();
+        }
+        private void MoveToNewPosition()
+        {
+            int ScrollSteps;
+            if (Convert.ToInt32(Position_sld.Value) < LastPosition)
+            {
+                ScrollSteps = LastPosition - Convert.ToInt32(Position_sld.Value);
+                ArduinoPorts.Instance.SendCommand(1, ScrollSteps * -1);
+                ScrollSteps = 0;
+            }
+            if (Convert.ToInt32(Position_sld.Value) > LastPosition)
+            {
+                ScrollSteps = Convert.ToInt32(Position_sld.Value) - LastPosition;
+                ArduinoPorts.Instance.SendCommand(1, ScrollSteps);
+                ScrollSteps = 0;
+            }
+        }
+
+
+        private void Position_sld_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            GetLastPosition();
+        }
+
+        private void Position_sld_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MoveToNewPosition();
+        }
+
+        private void PulseButton_Click(object sender, RoutedEventArgs e)
+        {
+            StepperManager.Instance.IsBusy = true;
+
+            for (int i = 0 ; i < StepperManager.Instance.ShotsNumber ; i++) 
+            {
+                ServiceProvider.ExternalDeviceManager.Capture(SelectedConfig);
+            }
+
+
+            StepperManager.Instance.IsBusy = false;
+        }
+
+        private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (StepperManager.Instance.ShotStep != 0) 
+            {
+                StepperManager.Instance.UpdateShotStep();
+                StepperManager.Instance.UpDateTotalDOFFull();              
+            }
+            
+        }
+
+        private void UpDataTotalDOF(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            StepperManager.Instance.UpDateTotalDOF();
+        }
+
+
+
     }
 }

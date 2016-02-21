@@ -5,21 +5,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:T="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:macrophotography="clr-namespace:Macrophotography"
+             xmlns:my="clr-namespace:NMT.Wpf.Controls;assembly=PulseButton"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="1800">
+             d:DesignHeight="200" d:DesignWidth="2000">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-                <ResourceDictionary Source="../Styles/CustomControls.xaml"/>                
+                <ResourceDictionary Source="../Styles/CustomControls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <macrophotography:MilimetersConverter x:Key="MilimetersConverter"/>
 
             <!-- The IconButtonStyle -->
             <Style x:Key="IconButtonStyle"
@@ -209,6 +214,8 @@
                 </Setter>
             </Style>
 
+            <QuadraticEase x:Key="EasingIn" EasingMode="EaseIn" />
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -216,71 +223,53 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="170"/>
-            <ColumnDefinition Width="480"/>
-            <ColumnDefinition Width="350*"/>
-            <ColumnDefinition Width="300*"/>
-            <ColumnDefinition Width="280"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="700*"/>
+            <ColumnDefinition Width="400*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
-        <GroupBox Header="Serial Port" 
-                                  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                  Height="auto" MinWidth="150">
-
-            <StackPanel >
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Border BorderThickness="1" CornerRadius="10">
-                        <ComboBox x:Name="cmb_ports"
-                                                    Grid.Row="0" 
-                                                    HorizontalAlignment="Right" VerticalAlignment="Top" 
-                                                    ContextMenuOpening="cmb_ports_ContextMenuOpening" 
-                                                    Width="78" Height="22" UseLayoutRounding="True" SelectedItem="{Binding Port, Source={x:Static macrophotography:StepperManager.Instance}}"/>
-                    </Border>
-
-                    <Label Content="Ports" 
-                                               HorizontalAlignment="Left" Grid.Row="0" VerticalAlignment="Top" Height="26" Width="50"/>
-                    <Button x:Name="SearchPort_btn" Content="Seach COM"
-                                            Grid.Row="1" Width="100" Margin="0,10,0,10">
-                    </Button>
-                   
-                </Grid>
-            </StackPanel>
-        </GroupBox>
 
         <GroupBox Header="Magnification" 
                                       Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" 
                                       Height="auto">
-            <StackPanel Orientation="Horizontal" >
-                <controls:NumericUpDown x:Name="NumUD_Magni"
-                                        HasDecimals="True" Interval="0.5"
-                                        Width="100"/>
-                <Slider x:Name="Sld_Magni" VerticalAlignment="Center" Width="70" Margin="5,0,5,0" AutoToolTipPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Value="{Binding Path=Value, ElementName=NumUD_Magni}"/>
+    
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <controls:NumericUpDown x:Name="NumUD_Magni" Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Grid.Column="0"
+                                        TextAlignment="Center" BorderThickness="0"
+                                        HasDecimals="True" HideUpDownButtons="True" Interval="0.5" Width="100"/>
+            
+                <Slider x:Name="Sld_Magni" 
+                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,10,0" 
+                        AutoToolTipPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Grid.Column="1"
+                        Value="{Binding Path=Value, ElementName=NumUD_Magni}"/>
 
 
 
-            </StackPanel>
+            </Grid>
         </GroupBox>
 
         <GroupBox Header="Rail Movement" 
-                                      Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                      Height="200" MinWidth="300" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
+                                      Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                      Height="130" MinWidth="300" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="70"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="*"/>
-                   
-                </Grid.RowDefinitions>       
+
+                </Grid.RowDefinitions>
 
                 <local:Stepper Grid.Row="1" />
-                
+
                 <WrapPanel Grid.Row="2" HorizontalAlignment="Center" >
                     <Label Content="Speed" 
                         HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -288,18 +277,18 @@
 
                     <Slider x:Name="SpeedStep_slider" Style="{DynamicResource FlatSlider}"
                         Height="8" Width="100" Margin="10,0,10,0" HorizontalAlignment="Left" Value="{Binding Speed, Source={x:Static macrophotography:StepperManager.Instance}}"                                        
-                        Minimum="25" Maximum="1000" SmallChange="25" 
-                        AutoToolTipPlacement="BottomRight" TickFrequency="25" IsSnapToTickEnabled="True" Ticks="25,100,200,400,600,800,1000"/>             
+                        Minimum="10" Maximum="400" SmallChange="10" 
+                        AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True" Ticks="10,20,50,100,200,400"/>
                 </WrapPanel>
-     
-                
+
+
             </Grid>
         </GroupBox>
 
         <GroupBox Header="Focus Limits" 
-                                  Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                      Height="200" MinWidth="300">
-            <Grid>
+                                  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                      Height="200" MinWidth="500">
+            <Grid IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="80"/>
@@ -308,59 +297,118 @@
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="180*"/>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
 
 
-                <Button Style="{DynamicResource IconButtonStyle}" 
-                                            Width="60" Height="60"
+                <Button x:Name="NearFocus_btn" Style="{DynamicResource IconButtonStyle}" 
+                                            Width="70" Height="70"
                                             Grid.Row="1" Grid.Column="0"  
-                                            HorizontalAlignment="Left"
-                                            >
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Click="NearFocus_btn_Click">
                     <Image Source="/macrophotography;component/resources/nearfocus.png"/>
 
                 </Button>
-                <Button Style="{DynamicResource IconButtonStyle}"
-                                        Width="60" Height="60"
-                                        HorizontalAlignment="Right"
-                                        Grid.Column="2" Grid.Row="1">
+                <my:PulseButton x:Name="NearPulsing" Width="60" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Grid.Row="1" Grid.Column="0" ButtonBrush="{x:Null}" ButtonDisabledBrush="{x:Null}" Foreground="{x:Null}" 
+                                PulseColor="GhostWhite" ButtonPressedBrush="{x:Null}" ButtonHighlightBrush="{x:Null}" Background="{x:Null}" 
+                                IsReflective="False" 
+                                IsPulsing="True" 
+                                Pulses="3" RadiusX="2" RadiusY="2" IsEllipsis="True" PulseWidth="1">
+                    <my:PulseButton.BorderBrush>
+                        <ImageBrush/>
+                    </my:PulseButton.BorderBrush>
+                </my:PulseButton>
+
+                <Button x:Name="FarFocus_btn" Style="{DynamicResource IconButtonStyle}" BorderThickness="0" 
+                                        Width="70" Height="70" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Grid.Column="2" Grid.Row="1" Click="FarFocus_btn_Click">
                     <Image Source="/macrophotography;component/resources/farfocus.png"/>
-
                 </Button>
+                <my:PulseButton x:Name="FarPulsing" Width="60" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Grid.Row="1" Grid.Column="2" ButtonBrush="{x:Null}" ButtonDisabledBrush="{x:Null}" Foreground="{x:Null}" 
+                                PulseColor="GhostWhite" ButtonPressedBrush="{x:Null}" ButtonHighlightBrush="{x:Null}" Background="{x:Null}" 
+                                IsReflective="False" IsPulsing="True" Pulses="3" RadiusX="2" RadiusY="2" IsEllipsis="True" PulseWidth="1"/>
 
-                <Slider
-                    Minimum="0" Interval="10" Maximum="10000"
-                    TickPlacement="BottomRight" TickFrequency="500"
-                    Grid.Row="1" Grid.Column="1" Margin="0,0,0,0"
-                    VerticalAlignment="Center"/>
 
+                <Slider x:Name="Position_sld"
+                    Minimum="{Binding NearFocus, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                    Maximum="{Binding FarFocus, Source={x:Static macrophotography:StepperManager.Instance}}"
+                    Value="{Binding Position, Source={x:Static macrophotography:StepperManager.Instance}}"  
+                    IsMoveToPointEnabled="False"
+                    TickPlacement="BottomRight" TickFrequency="{Binding ShotStepFull, Source={x:Static macrophotography:StepperManager.Instance}}"  IsSnapToTickEnabled="True"
+                    Interval="{Binding ShotStepFull, Source={x:Static macrophotography:StepperManager.Instance}, Mode=TwoWay}"
+                    Grid.Row="1" Grid.Column="1" Margin="20,0,20,0"
+                    VerticalAlignment="Center" PreviewMouseLeftButtonDown="Position_sld_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="Position_sld_PreviewMouseLeftButtonUp"/>
+
+                <WrapPanel Grid.Row="1" Grid.RowSpan="1" Grid.Column="1" Margin="20,0,0,0"
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <Label Content="Total DOF"/>
+                    <TextBox  x:Name="TotalDoF_txt" Text="{Binding TotalDOF, Source={x:Static macrophotography:StepperManager.Instance}}" IsReadOnly="True"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom" TextAlignment="Right"
+                         Width="60" BorderThickness="0"/>
+                    <Label Content="steps"/>
+                </WrapPanel>    
+                    <Label Content="|"
+                           Grid.Row="1" Grid.RowSpan="1" Grid.Column="1" 
+                           HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50,0,0,0"/>
+                <WrapPanel Grid.Row="1" Grid.RowSpan="1" Grid.Column="1" Margin="0,0,20,0"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <TextBox  x:Name="mmTotalDOF_txt" Text="{Binding TotalDOFFull, Converter={StaticResource MilimetersConverter}, Source={x:Static macrophotography:StepperManager.Instance}, Mode=OneWay}" IsReadOnly="True"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom" TextAlignment="Right" Foreground="#FFA50000" FontSize="14" FontWeight="Bold"
+                         Width="60" BorderThickness="0"/>
+                    <Label Content="mm"/>
+                </WrapPanel>
+
+
+                
                 <Label Content="Final Depth of Field" 
                                            Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
-                                           HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-                <controls:ToggleSwitch
+                                           HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <TextBox  x:Name="LastPosition_txt" Text="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" IsReadOnly="True"
+                         HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right"  
+                         Width="60" BorderThickness="0"/>
+
+
+                <controls:ToggleSwitch x:Name="NearFocusLock"
                                         OnLabel="Lock" OffLabel="Free"
                                         FlowDirection="RightToLeft"
                                         
                                         Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                         HorizontalAlignment="Left" Padding="-10">
-                    
+
 
                 </controls:ToggleSwitch>
 
-                <controls:ToggleSwitch
+                <controls:ToggleSwitch x:Name="FarFocusLock"
                                         OnLabel="Lock" OffLabel="Free"
                                         Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                                         HorizontalAlignment="Right" Padding="-10">
 
                 </controls:ToggleSwitch>
 
+                <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0">
+                    <Label Content="Position"/>
+                    <TextBox x:Name="Position_txt" Text="{Binding Position, Source={x:Static macrophotography:StepperManager.Instance}}" IsReadOnly="True"
+                             HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextAlignment="Right"
+                             Width="60" BorderThickness="0"/>
+                    <Label Content="steps"/>
+                </WrapPanel>
+                 <Label Content="|" 
+                        Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Margin="50,10,0,0"/>
+                <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Margin="0,10,20,0">
+
+                    <TextBox x:Name="mmPosition_txt" Text="{Binding Position, Converter={StaticResource MilimetersConverter}, Source={x:Static macrophotography:StepperManager.Instance}, Mode=OneWay}" IsReadOnly="True"
+                             HorizontalAlignment="Center" VerticalAlignment="Bottom" TextAlignment="Right" Foreground="#FFA50000" FontSize="14" FontWeight="Bold"
+                             Width="60" BorderThickness="0"/>
+                    <Label Content="mm"/>
+                </WrapPanel>
             </Grid>
         </GroupBox>
 
         <GroupBox Header="Shotting Info" 
-                Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                 Height="200" MinWidth="300">
             <Grid>
                 <Grid.RowDefinitions>
@@ -373,36 +421,49 @@
 
                 <WrapPanel Grid.Row="0" HorizontalAlignment="Center">
                     <Label Content="Shot DOF"/>
-                    <Label Content="binding shot DoF"/>
+                    <TextBox  x:Name="ShotStep_txt" Text="{Binding ShotStepFull, Source={x:Static macrophotography:StepperManager.Instance}}"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom"  TextAlignment="Right"  
+                         Width="60" BorderThickness="0" IsReadOnly="True"/>
+                    <Label Content="steps"/>
+                    <Label Content="|"/>
+                    <TextBox  x:Name="ShotDoF_txt" Text="{Binding ShotStepFull, Converter={StaticResource MilimetersConverter}, Source={x:Static macrophotography:StepperManager.Instance}, Mode=OneWay}"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom"  TextAlignment="Right" 
+                         Width="60" BorderThickness="0" IsReadOnly="True" Foreground="#FFA50000" FontSize="14" FontWeight="Bold"/>                 
                     <Label Content="mm"/>
                 </WrapPanel>
 
+
                 <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
-                    <Label Content="Total DOF"/>
-                    <Label Content="binding total DoF"/>
-                    <Label Content="mm"/>
+                    <Label Content="Number Shots"/>
+                    <TextBox  x:Name="NumberShots_txt" Text="{Binding ShotsNumber, Source={x:Static macrophotography:StepperManager.Instance}}"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom"   
+                         Width="30" BorderThickness="0"/>
+                    <Label Content="|"/>
+                    <TextBox  x:Name="NumberShotsFull_txt" Text="{Binding ShotsNumberFull, Source={x:Static macrophotography:StepperManager.Instance}}"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom"   
+                         Width="30" BorderThickness="0"/>
+
                 </WrapPanel>
 
                 <WrapPanel Grid.Row="2" HorizontalAlignment="Center">
-                    <Label Content="Number Shots"/>
-                    <Label Content="binding n_shots"/>                    
+                    <Label Content="Full DOF"/>
+                    <TextBox  x:Name="ExtraTotalDoF_txt" Text="{Binding TotalDOFFull, Source={x:Static macrophotography:StepperManager.Instance}}"
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom"  TextAlignment="Right" 
+                         Width="50" BorderThickness="0"/>
+                    <Label Content="steps"/>
                 </WrapPanel>
 
-                <WrapPanel Grid.Row="3" HorizontalAlignment="Center">
-                    <Label Content="Current Position"/>
-                    <Label Content="binding focus limits slider"/>
-                    <Label Content="mm"/>
-                </WrapPanel>
+
 
 
             </Grid>
-            
-  
-            
+
+
+
         </GroupBox>
 
         <GroupBox Header="Stacking Adds" 
-                                  Grid.Column="4" VerticalAlignment="Top" 
+                                  Grid.Column="3" VerticalAlignment="Top" 
                                       Height="200">
             <Grid>
                 <Grid.RowDefinitions>
@@ -416,32 +477,33 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120*"/>
                     <ColumnDefinition Width="120*"/>
-                   
+
                 </Grid.ColumnDefinitions>
 
 
-                
 
-                <controls:NumericUpDown Value="0"
+
+                <controls:NumericUpDown Value="{Binding PlusNearShots, Source={x:Static macrophotography:StepperManager.Instance}}"
                                         Minimum="0"                                      
                                         Width="100"
-                                        Grid.Row="1" Grid.Column="0"/>
+                                        Grid.Row="1" Grid.Column="0" ValueChanged="UpDataTotalDOF"/>
                 <Label Content="Near Extra Shots" 
                                            Grid.Column="0" Grid.Row="0" Padding="-5"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <controls:NumericUpDown Value="0"
+                <controls:NumericUpDown Value="{Binding PlusFarShots, Source={x:Static macrophotography:StepperManager.Instance}}"
                                         Minimum="0"
                                         Width="100"
-                                        Grid.Row="1" Grid.Column="1" />
+                                        Grid.Row="1" Grid.Column="1" ValueChanged="UpDataTotalDOF" />
                 <Label Content="Far Extra Shots" 
                                            Grid.Column="1" Grid.Row="0" Padding="-5"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <controls:NumericUpDown Value="20" controls:TextBoxHelper.Watermark="Overlap Focus %"
+                <controls:NumericUpDown controls:TextBoxHelper.Watermark="Overlap Focus %"
+                                        Value="{Binding Overlap, Source={x:Static macrophotography:StepperManager.Instance}}" 
                                             Minimum="20" Maximum="100" Interval="10"  
                                             Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"
-                                            Width="120"/>
+                                            Width="120" ValueChanged="NumericUpDown_ValueChanged"/>
                 <Label Content="Overlap Focus" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
@@ -466,9 +528,9 @@
             <StackPanel>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>                       
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -484,16 +546,45 @@
                                     Minimum="0" IsEnabled="{Binding IsFree}" 
                                     Grid.Column="1" Grid.Row="1" Margin="3"/>
 
-                    <Button Style="{DynamicResource IconButtonStyle}" 
-                                            Width="100" Height="100"
-                                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-                        <Image Source="/macrophotography;component/resources/start-button.png"/>
-                    </Button>
+                    <my:PulseButton Content="Start"
+                        Grid.Row="2" Grid.ColumnSpan="3" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    Height="80" Width="90"
+                                    IsPulsing="False"
+                                    FontSize="26" FontWeight="Bold"
+                                    BorderBrush="Black"
+                        RadiusX="30" 
+                        RadiusY="30"
+                        IsEllipsis="False" 
+                        PulseScale="1.7" 
+                        PulseWidth="1" 
+                        PulseSpeed="0:0:5" 
+                        PulseColor="GhostWhite"
+                        Pulses="5"                         
+                        IsReflective="True"
+                        ButtonBrush="Black"
+                        ButtonHighlightBrush="#FFDA2222" 
+                        ButtonPressedBrush="#FFB02213"
+                        Foreground="White"
+                        PulseEasing="{StaticResource EasingIn}" FontFamily="Malgun Gothic" Click="PulseButton_Click">
+
+                    </my:PulseButton>
+
+                    <my:PulseButton Content="Capture" Command="{Binding CaptureCommand}" 
+                        Grid.Row="2" Grid.ColumnSpan="3" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    Height="70" Width="70"
+                                    FontWeight="SemiBold"
+                                    IsPulsing="False"
+                        RadiusX="5" 
+                        RadiusY="5"
+                        IsEllipsis="True"                        
+                        IsReflective="True"
+                        ButtonBrush="Black"
+                        ButtonHighlightBrush="#FFDA2222" 
+                        ButtonPressedBrush="#FFB02213"
+                        Foreground="White" BorderThickness="0" FontFamily="Malgun Gothic"/>
                 </Grid>
             </StackPanel>
         </GroupBox>
-        
+
     </Grid>
-
-
 </UserControl>

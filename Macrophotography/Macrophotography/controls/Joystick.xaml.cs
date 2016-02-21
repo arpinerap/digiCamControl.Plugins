@@ -11,5 +11,79 @@ namespace Macrophotography.controls
         {
             InitializeComponent();
         }
+
+        public int DCsteps;
+
+        private void rot1_button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(6, 4 * DCsteps * -1);
+        }
+
+        private void rot2_button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(6, 4 * DCsteps);
+        }
+
+        private void Up_button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(4, DCsteps);
+        }
+
+        private void Down_button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(4, DCsteps * -1);            
+        }
+
+        private void Right_button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(5, DCsteps);
+        }
+
+        private void Left_button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1);
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(2, DCsteps * -1);
+        }
+
+        private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(2, DCsteps * 1);
+        }
+
+
+        private void OpenJoystick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LiveViewOn_btn.IsOpen = false;
+            rot1_button.Visibility = System.Windows.Visibility.Visible;
+            rot2_button.Visibility = System.Windows.Visibility.Visible;
+            DCsteps_sld.Visibility = System.Windows.Visibility.Visible;
+            FlipDown_btn.Visibility = System.Windows.Visibility.Visible;
+            FlipUp_btn.Visibility = System.Windows.Visibility.Visible;
+            LiveViewOff_btn.IsOpen = true;
+        }
+
+        private void CloseJoystick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LiveViewOff_btn.IsOpen = false;
+            rot1_button.Visibility = System.Windows.Visibility.Hidden;
+            rot2_button.Visibility = System.Windows.Visibility.Hidden;
+            DCsteps_sld.Visibility = System.Windows.Visibility.Hidden;
+            FlipDown_btn.Visibility = System.Windows.Visibility.Hidden;
+            FlipUp_btn.Visibility = System.Windows.Visibility.Hidden;
+            LiveViewOn_btn.IsOpen = true;
+        }
+
     }
 }

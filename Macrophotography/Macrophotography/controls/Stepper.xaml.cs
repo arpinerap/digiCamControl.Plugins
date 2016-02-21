@@ -23,20 +23,30 @@ namespace Macrophotography.controls
     /// </summary>
     public partial class Stepper : UserControl
     {
+        //public int Step;
+        
         public Stepper()
         {
-            StepCommand = new RelayCommand<int>(Step);
+            StepCommand = new RelayCommand<int>(StepCom);
             InitializeComponent();
             /// DataContext = new RailControl();
             
         }
 
-        private void Step(int obj)
+        private void StepCom(int shots)
         {
-            StepperManager.Instance.SendCommand(1,0,obj);
+            int shotStepfull = StepperManager.Instance.ShotStepFull;
+            int step = shotStepfull * shots;
+            //StepperManager.Instance.SendCommand(1,step);          
+            ArduinoPorts.Instance.SendCommand(1, step);
+            StepperManager.Instance.Step = step;
+            StepperManager.Instance.UpDatePosition();
         }
 
         public RelayCommand<int> StepCommand { get; set; }
+
+
+      
 
     }
 }

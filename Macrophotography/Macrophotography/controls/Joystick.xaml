@@ -219,13 +219,13 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <RadialMenu:RadialMenu IsOpen="True" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-20,-40,-50,-40">
+        <RadialMenu:RadialMenu x:Name="LiveViewOff_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-20,-40,-50,-40">
 
             <RadialMenu:RadialMenu.CentralItem>
                 <RadialMenu:RadialMenuCentralItem 
                         Width="70" Height="70" 
                         BorderBrush="Transparent" BorderThickness="0"
-                        Command="{Binding StartLiveViewCommand}">
+                        Command="{Binding StopLiveViewCommand}" Click="CloseJoystick">
 
                     <TextBlock FontSize="60" FontWeight="Bold" VerticalAlignment="Center">
                         <TextBlock.Foreground>
@@ -238,10 +238,10 @@
                 </RadialMenu:RadialMenuCentralItem>                                              
             </RadialMenu:RadialMenu.CentralItem>
 
-            <RadialMenu:RadialMenuItem 
+            <RadialMenu:RadialMenuItem x:Name="Up_button"  
                     EdgePadding="-10" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
                     ContentRadius="70"
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow">
+                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Up_button_Click">
 
             </RadialMenu:RadialMenuItem>
 
@@ -253,10 +253,10 @@
             </RadialMenu:RadialMenuItem>
 
 
-            <RadialMenu:RadialMenuItem 
+            <RadialMenu:RadialMenuItem x:Name="Right_button" 
                     EdgePadding="-50" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
                     ContentRadius="38"
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow">
+                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Right_button_Click">
 
             </RadialMenu:RadialMenuItem>
 
@@ -268,10 +268,10 @@
             </RadialMenu:RadialMenuItem>
 
 
-            <RadialMenu:RadialMenuItem 
+            <RadialMenu:RadialMenuItem x:Name="Down_button" 
                     EdgePadding="-50" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
                     ContentRadius="40" 
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow">
+                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Down_button_Click">
 
             </RadialMenu:RadialMenuItem>
 
@@ -283,10 +283,10 @@
             </RadialMenu:RadialMenuItem>
 
 
-            <RadialMenu:RadialMenuItem 
+            <RadialMenu:RadialMenuItem x:Name="Left_button" 
                     EdgePadding="-50" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
                     ContentRadius="65"
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow">
+                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Left_button_Click">
 
             </RadialMenu:RadialMenuItem>
 
@@ -300,41 +300,68 @@
 
         </RadialMenu:RadialMenu>
 
-        <Slider Style="{DynamicResource FlatSlider}"
+
+
+        <Slider x:Name="DCsteps_sld" Style="{DynamicResource FlatSlider}" Visibility="Hidden"
                     Grid.Column="1" Height="70"
                     Orientation="Vertical" VerticalAlignment="Center"
-                    AutoToolTipPlacement="BottomRight">
+                    AutoToolTipPlacement="BottomRight"
+                Minimum="1" Maximum="50">
         </Slider>
 
-        <Button Style="{DynamicResource IconButtonStyle}"
+        <Button x:Name="rot1_button" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
                         Height="50" Width="50" Margin="-40,0,-40,-40" Padding="-30"
                         Grid.Column="1" 
-                        HorizontalAlignment="Center" VerticalAlignment="Top">
+                        HorizontalAlignment="Center" VerticalAlignment="Top" Click="rot1_button_Click">
             <Image Source="/macrophotography;component/resources/appbar.refresh.clockwise.up.png"/>  
         </Button>
 
 
 
-        <Button Style="{DynamicResource IconButtonStyle}"
+        <Button Style="{DynamicResource IconButtonStyle}" x:Name="rot2_button" Visibility="Hidden"
                         Height="50" Width="50" Margin="-40,-40,-40,0" Padding="-30"
                         Grid.Column="1" 
-                        HorizontalAlignment="Center" VerticalAlignment="Bottom">
-            <Image Source="/macrophotography;component/resources/appbar.refresh.counterclockwise.down.png"/>
+                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="rot2_button_Click">
+            <Image  Source="/macrophotography;component/resources/appbar.refresh.counterclockwise.down.png"/>
         </Button>
 
-        <Button Style="{DynamicResource IconButtonStyle}"
+        <Button x:Name="FlipDown_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
                         Height="50" Width="50" Padding="-30"
                         Grid.Column="0" 
-                        HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_Click_1">
             <Image Source="/macrophotography;component/resources/appbar.flip.down.png" />
         </Button>
 
-        <Button Style="{DynamicResource IconButtonStyle}"
+        <Button x:Name="FlipUp_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
                         Height="50" Width="50" Padding="-30"
                         Grid.Column="0" 
-                        HorizontalAlignment="Left" VerticalAlignment="Top">
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.up.png"/>
         </Button>
+
+        <RadialMenu:RadialMenu  x:Name="LiveViewOn_btn" IsOpen="True" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-20,-40,-50,-40">
+
+            <RadialMenu:RadialMenu.CentralItem>
+                <RadialMenu:RadialMenuCentralItem 
+                        Width="90" Height="70" 
+                        BorderBrush="Transparent" BorderThickness="0"
+                        Command="{Binding StartLiveViewCommand}" Click="OpenJoystick">
+
+                    <TextBlock FontSize="80" FontWeight="Bold" VerticalAlignment="Center">
+                        <TextBlock.Foreground>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="Black" Offset="0"/>
+                                <GradientStop Color="#FFDA2222" Offset="1"/>
+                            </LinearGradientBrush>
+                        </TextBlock.Foreground>Lv</TextBlock>
+
+                </RadialMenu:RadialMenuCentralItem>
+            </RadialMenu:RadialMenu.CentralItem>
+
+
+
+        </RadialMenu:RadialMenu>
+
 
     </Grid>
 
