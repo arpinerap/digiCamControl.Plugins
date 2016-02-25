@@ -5,15 +5,19 @@
     <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartProgram>C:\Users\SuperPi\Google Drive\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartProgram>C:\Users\SuperPi\Documents\GitHub\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
     <StartAction>Program</StartAction>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <EnableSQLServerDebugging>true</EnableSQLServerDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Duka|AnyCPU'">
     <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
     <StartAction>Program</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Duka|x86'">
-    <StartProgram>C:\Users\SuperPi\Google Drive\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartProgram>C:\Users\SuperPi\Documents\GitHub\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
     <StartAction>Program</StartAction>
   </PropertyGroup>
   <PropertyGroup>

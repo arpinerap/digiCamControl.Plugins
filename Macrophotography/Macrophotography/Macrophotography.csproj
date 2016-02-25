@@ -50,7 +50,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\..\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\</OutputPath>
+    <OutputPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -77,7 +77,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Duka|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\..\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\</OutputPath>
+    <OutputPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -98,10 +98,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="CameraControl.Core">
-      <HintPath>..\..\..\..\..\Google Drive\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
+      <HintPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
     </Reference>
     <Reference Include="CameraControl.Devices">
-      <HintPath>..\..\..\..\..\Google Drive\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
+      <HintPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -123,9 +123,8 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="PulseButton, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Google Drive\Advanced Focus Stacking System\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\PulseButton.dll</HintPath>
+    <Reference Include="PulseButton">
+      <HintPath>..\packages\PulseButton.1.0.3\lib\net45\PulseButton.dll</HintPath>
     </Reference>
     <Reference Include="RadialMenu, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
