@@ -13,10 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO.Ports;
+using System.Threading;
 using Macrophotography.controls;
 using Macrophotography;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
+using CameraControl.Devices;
 
 
 namespace Macrophotography.controls
@@ -116,13 +118,28 @@ namespace Macrophotography.controls
         private void PulseButton_Click(object sender, RoutedEventArgs e)
         {
             StepperManager.Instance.IsBusy = true;
+            Task.Factory.StartNew(StackTask);
+        }
 
-            for (int i = 0 ; i < StepperManager.Instance.ShotsNumber ; i++) 
+        private void StackTask()
+        {
+            try
             {
-                ServiceProvider.ExternalDeviceManager.Capture(SelectedConfig);
+                for (int i = 0; i < StepperManager.Instance.ShotsNumber; i++)
+                {
+                    ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
+                    Thread.Sleep(100);
+                    // wait for file transfer to be finished
+                    ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                    //======================
+                    // here come the focus moving logic
+                    //======================
+                }
             }
-
-
+            catch (Exception ex)
+            {
+                Log.Error("Error execute stacking", ex);
+            }
             StepperManager.Instance.IsBusy = false;
         }
 

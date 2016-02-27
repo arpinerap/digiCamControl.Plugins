@@ -132,7 +132,7 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="PulseButton">
       <HintPath>..\packages\PulseButton.1.0.3\lib\net45\PulseButton.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="RadialMenu, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
