@@ -125,16 +125,27 @@ namespace Macrophotography.controls
         {
             try
             {
-                for (int i = 0; i < StepperManager.Instance.ShotsNumber; i++)
+                if (Direction_swch.IsChecked == true)
                 {
-                    ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                    Thread.Sleep(100);
-                    // wait for file transfer to be finished
-                    ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
-                    //======================
-                    // here come the focus moving logic
-                    //======================
+                    GetLastPosition();
+                    StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Minimum);
+                    MoveToNewPosition();
+
+                    for (int i = 0; i < StepperManager.Instance.ShotsNumber; i++)
+                    {
+                        ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
+                        Thread.Sleep(100);
+                        // wait for file transfer to be finished
+                        ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                        //======================
+                        // here come the focus moving logic
+                        ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStep);
+                        //======================
+                    }
                 }
+                
+                
+                
             }
             catch (Exception ex)
             {

@@ -510,7 +510,7 @@
                 <Label Content="Stack Direction to" 
                        Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,5,0,0" VerticalAlignment="Center" 
                        FontWeight="SemiBold" FontSize="16"/>
-                <controls:ToggleSwitch
+                <controls:ToggleSwitch x:Name="Direction_swch"
                                         OnLabel="Near" OffLabel="Far"
                                         IsChecked="True"
                                         Grid.Row="2" Grid.Column="1"
