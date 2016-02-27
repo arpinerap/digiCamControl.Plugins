@@ -17,7 +17,7 @@
     <StartAction>Program</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Duka|x86'">
-    <StartProgram>C:\Users\SuperPi\Documents\GitHub\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartProgram>D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
     <StartAction>Program</StartAction>
   </PropertyGroup>
   <PropertyGroup>
@@ -29,5 +29,8 @@
     <ErrorReportUrlHistory />
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ReferencePath>D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\</ReferencePath>
   </PropertyGroup>
 </Project>

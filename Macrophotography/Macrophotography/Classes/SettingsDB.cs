@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using CameraControl.Core.Classes;
 
 namespace Macrophotography.Classes
 {
@@ -11,7 +12,7 @@ namespace Macrophotography.Classes
     {
         public static SqlConnection GetConnection()
         {
-            string SettingsCS = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\SuperPi\Google Drive\DiCamControl Macro Plugin GibHub\digiCamControl.Plugins 20_02_2016\Macrophotography\Macrophotography\DataBase\Settings.mdf";
+            string SettingsCS =string.Format(@"Data Source=(LocalDB)\v11.0;AttachDbFilename={0}\plugins\Macrophotography\DataBase\Settings.mdf",Settings.ApplicationFolder);
             SqlConnection conn = new SqlConnection(SettingsCS);
             return conn;
         }
