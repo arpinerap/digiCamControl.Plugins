@@ -86,13 +86,11 @@
 
                 <controls:NumericUpDown x:Name="aperture_nud" controls:TextBoxHelper.Watermark="Aperture"
                         IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" 
-                        
+                        Value="{Binding Path=SelectedCameraDevice.FNumber.Value}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                        
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="0"
                         Margin="5,3,5,3"/>
-
-                <!--Value="{Binding Path=SelectedCameraDevice.FNumber.Value}"-->
                 <controls:NumericUpDown x:Name="NA_nud" controls:TextBoxHelper.Watermark="NA" controls:TextBoxHelper.ButtonsAlignment="Left"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
