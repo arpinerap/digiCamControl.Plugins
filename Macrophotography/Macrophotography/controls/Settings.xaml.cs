@@ -290,6 +290,7 @@ namespace Macrophotography.controls
                     BallScrew_nud.Value = ball_screw;
                     GearBox_nud.Value = gear_box;
                     Rail_txt.Text = sname;
+                    NameRail_Combo.SelectedItem = sname;
 
                     RailCalc();
                     sDoFCalc();
@@ -301,6 +302,7 @@ namespace Macrophotography.controls
         private void Deleterail_button_Click(object sender, RoutedEventArgs e)
         {
             SettingsDB.DeleteRail(NameRail_Combo.SelectedItem.ToString());
+            Rail_txt.Text = "";
             MessageBox.Show("Rail Deleted");
             Fill_ComboNameRail();
         }

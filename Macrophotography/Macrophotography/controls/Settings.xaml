@@ -16,6 +16,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
@@ -287,8 +289,7 @@
                 <ComboBox x:Name="NameRail_Combo" 
                           Grid.Row="1" Grid.ColumnSpan="2"
                           HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,10,0" 
-                          DropDownClosed="NameRail_Combo_DropDownClosed"
-                          SelectedIndex="0"/>
+                          DropDownClosed="NameRail_Combo_DropDownClosed" />
 
                 <Button x:Name="SaveRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
                         Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right"
