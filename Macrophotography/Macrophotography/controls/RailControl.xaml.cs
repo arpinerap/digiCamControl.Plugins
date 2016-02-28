@@ -130,8 +130,9 @@ namespace Macrophotography.controls
                     GetLastPosition();
                     StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Minimum);
                     MoveToNewPosition();
+                    ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusNearShots * StepperManager.Instance.ShotStepFull * -1);
 
-                    for (int i = 0; i < StepperManager.Instance.ShotsNumber; i++)
+                    for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
                     {
                         ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
                         Thread.Sleep(100);
@@ -139,11 +140,30 @@ namespace Macrophotography.controls
                         ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
                         //======================
                         // here come the focus moving logic
-                        ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStep);
+                        ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
                         //======================
                     }
                 }
-                
+
+                if (Direction_swch.IsChecked == false)
+                {
+                    GetLastPosition();
+                    StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Maximum);
+                    MoveToNewPosition();
+                    ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusFarShots * StepperManager.Instance.ShotStepFull);
+
+                    for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
+                    {
+                        ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
+                        Thread.Sleep(100);
+                        // wait for file transfer to be finished
+                        ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                        //======================
+                        // here come the focus moving logic
+                        ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);
+                        //======================
+                    }
+                }
                 
                 
             }

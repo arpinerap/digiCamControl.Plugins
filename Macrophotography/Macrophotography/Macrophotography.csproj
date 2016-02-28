@@ -50,7 +50,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\Plugins\Macrophotography\</OutputPath>
+    <OutputPath>..\..\..\digiCamControl\CameraControl\bin\Debug\Plugins\Macro\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -98,11 +98,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="CameraControl.Core">
-      <HintPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
+      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CameraControl.Devices">
-      <HintPath>..\..\..\digiCamControl-master\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
+      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight">
