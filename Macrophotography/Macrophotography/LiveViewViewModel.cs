@@ -45,6 +45,7 @@ namespace Macrophotography
         private PointCollection _redColorHistogramPoints;
         private PointCollection _greenColorHistogramPoints;
         private PointCollection _blueColorHistogramPoints;
+        private PropertyValue<long> _exposureDelay;
 
         public ICameraDevice SelectedCameraDevice
         {
@@ -176,6 +177,16 @@ namespace Macrophotography
             }
         }
 
+        public PropertyValue<long> ExposureDelay
+        {
+            get { return _exposureDelay; }
+            set
+            {
+                _exposureDelay = value;
+                RaisePropertyChanged(() => ExposureDelay);
+            }
+        }
+
         public int VerticalMax
         {
             get { return CameraProperty.LiveviewSettings.VerticalMax; }
@@ -250,6 +261,7 @@ namespace Macrophotography
             {
                 SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
                 CameraProperty = SelectedCameraDevice.LoadProperties();
+                ExposureDelay = SelectedCameraDevice.GetProperty(0xD06A);
                 InitCommands();
                 ShowHistogram = true;
                 Init();

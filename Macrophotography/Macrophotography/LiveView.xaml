@@ -464,7 +464,12 @@
                                     <ComboBox Name="cmb_meter"  IsEnabled="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Value}" ToolTip="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Value}" />
                                 </Border>
                             </StackPanel>
-
+                            <StackPanel Margin="1" Visibility="{Binding ExposureDelay.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Label Content="Exposure Delay" />
+                                <Border BorderThickness="1" BorderBrush="{Binding Path=ExposureDelay.ErrorColor}" >
+                                    <ComboBox  IsEnabled="{Binding Path=ExposureDelay.IsEnabled}" ItemsSource="{Binding Path=ExposureDelay.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Value}" ToolTip="{Binding Path=ExposureDelay.Value}" />
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
                     </Expander>
                     <Expander Header="Display" IsExpanded="True">
