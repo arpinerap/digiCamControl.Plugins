@@ -292,7 +292,7 @@ namespace Macrophotography
             //CameraDevice.CameraDisconnected += CameraDeviceCameraDisconnected;
             //_photoCapturedTime = DateTime.MinValue;
            // CameraDevice.PhotoCaptured += CameraDevicePhotoCaptured;
-            StartLiveView();
+            //StartLiveView();
             //_freezeTimer.Interval = ServiceProvider.Settings.LiveViewFreezeTimeOut * 1000;
             //_freezeTimer.Elapsed += _freezeTimer_Elapsed;
             _timer.Elapsed += _timer_Elapsed;

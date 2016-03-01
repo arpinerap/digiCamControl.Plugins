@@ -21,7 +21,8 @@ namespace Macrophotography
         private int _speed = 100;
         private bool _isBusy;
         private bool _IsNearFocusLocked; 
-        private bool _IsFarFocusLocked; 
+        private bool _IsFarFocusLocked;
+        private bool _GoNearToFar = true;
         private int _position = 0;
         private int _nearFocus = 0;
         private int _farFocus = 0;
@@ -40,8 +41,11 @@ namespace Macrophotography
         
         private double _magni = 10;
         private double _railAccuracy = 0;
-        private int _ShotsNumber = 0;
-        private int _ShotsNumberFull = 0;
+        private int _InitStackDelay = 0;
+        private int _StabilizationDelay = 0;
+
+        private int _ShotsNumber = 1;
+        private int _ShotsNumberFull = 1;
         private int _PlusNearShots = 0;
         private int _PlusFarShots = 0;
 
@@ -168,6 +172,22 @@ namespace Macrophotography
             get { return !IsFarFocusLocked; }
         }
 
+        public bool GoNearToFar
+        {
+            get { return _GoNearToFar; }
+            set
+            {
+                _GoNearToFar = value;
+                RaisePropertyChanged(() => GoNearToFar);
+                RaisePropertyChanged(() => GoFarToNear);
+            }
+        }
+
+        public bool GoFarToNear
+        {
+            get { return !GoNearToFar; }
+        }
+
         public int Speed
         {
             get { return _speed; }
@@ -208,6 +228,25 @@ namespace Macrophotography
             }
         }
 
+        public int InitStackDelay
+        {
+            get { return _InitStackDelay; }
+            set
+            {
+                _InitStackDelay = value;
+                RaisePropertyChanged(() => InitStackDelay);
+            }
+        }
+
+        public int StabilizationDelay
+        {
+            get { return _StabilizationDelay; }
+            set
+            {
+                _StabilizationDelay = value;
+                RaisePropertyChanged(() => StabilizationDelay);
+            }
+        }
 
         public double ShotDOF
         {
@@ -336,8 +375,8 @@ namespace Macrophotography
         {
             if (ShotStep != 0)
             {
-                ShotsNumber = TotalDOF / ShotStepFull;
-                ShotsNumberFull = TotalDOFFull / ShotStepFull;
+                ShotsNumber = 1 + (TotalDOF / ShotStepFull);
+                ShotsNumberFull = 1 + (TotalDOFFull / ShotStepFull);
             }
         }
 

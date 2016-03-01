@@ -512,7 +512,7 @@
                        FontWeight="SemiBold" FontSize="16"/>
                 <controls:ToggleSwitch x:Name="Direction_swch"
                                         OnLabel="Near" OffLabel="Far"
-                                        IsChecked="True"
+                                        IsChecked="{Binding GoNearToFar, Source={x:Static macrophotography:StepperManager.Instance}}"                                                                            
                                         Grid.Row="2" Grid.Column="1"
                                         HorizontalAlignment="Center"
                                         Margin="0,5,0,0">
@@ -538,12 +538,13 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Content="Mv/Cpt Delay" Grid.Column="0" />
-                    <controls:NumericUpDown Value="0" 
-                                    Minimum="0" Grid.Column="1" Margin="3"/>
+                    <controls:NumericUpDown Value="{Binding StabilizationDelay, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                                    Minimum="0" Interval="1000" IsEnabled="{Binding IsFree}"
+                                    Grid.Column="1" Margin="3"/>
 
-                    <Label Content="Capture Delay" Grid.Column="0" Grid.Row="1" />
-                    <controls:NumericUpDown Value="{Binding CaptureDelay}"
-                                    Minimum="0" IsEnabled="{Binding IsFree}" 
+                    <Label Content="Start Delay" Grid.Column="0" Grid.Row="1" />
+                    <controls:NumericUpDown Value="{Binding InitStackDelay, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                    Minimum="0" Interval="1000" IsEnabled="{Binding IsFree}" 
                                     Grid.Column="1" Grid.Row="1" Margin="3"/>
 
                     <my:PulseButton Content="Start"

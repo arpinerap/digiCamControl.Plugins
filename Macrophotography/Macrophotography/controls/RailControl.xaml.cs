@@ -84,21 +84,22 @@ namespace Macrophotography.controls
         
         private void GetLastPosition()
         {
-            LastPosition = (int)Position_sld.Value;
-            LastPosition_txt.Text = LastPosition.ToString();
+            //LastPosition = (int)Position_sld.Value;
+            LastPosition = StepperManager.Instance.Position;
+            LastPosition_txt.Text = LastPosition.ToString();            
         }
         private void MoveToNewPosition()
         {
             int ScrollSteps;
-            if (Convert.ToInt32(Position_sld.Value) < LastPosition)
+            if (StepperManager.Instance.Position < LastPosition)
             {
-                ScrollSteps = LastPosition - Convert.ToInt32(Position_sld.Value);
+                ScrollSteps = LastPosition - StepperManager.Instance.Position;
                 ArduinoPorts.Instance.SendCommand(1, ScrollSteps * -1);
                 ScrollSteps = 0;
             }
-            if (Convert.ToInt32(Position_sld.Value) > LastPosition)
+            if (StepperManager.Instance.Position > LastPosition)
             {
-                ScrollSteps = Convert.ToInt32(Position_sld.Value) - LastPosition;
+                ScrollSteps = StepperManager.Instance.Position - LastPosition;
                 ArduinoPorts.Instance.SendCommand(1, ScrollSteps);
                 ScrollSteps = 0;
             }
@@ -118,19 +119,23 @@ namespace Macrophotography.controls
         private void PulseButton_Click(object sender, RoutedEventArgs e)
         {
             StepperManager.Instance.IsBusy = true;
-            Task.Factory.StartNew(StackTask);
+            GetLastPosition();
+            Thread.Sleep(StepperManager.Instance.InitStackDelay);
+            Task.Factory.StartNew(StackTask);            
         }
 
         private void StackTask()
         {
             try
             {
-                if (Direction_swch.IsChecked == true)
+                // if (Direction_swch.IsChecked == true)
+                if (StepperManager.Instance.GoNearToFar == true)
                 {
-                    GetLastPosition();
-                    StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Minimum);
+                    //GetLastPosition();
+                    //StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Minimum);
+                    StepperManager.Instance.Position = StepperManager.Instance.NearFocus2;
                     MoveToNewPosition();
-                    ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusNearShots * StepperManager.Instance.ShotStepFull * -1);
+                    //ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusNearShots * StepperManager.Instance.ShotStepFull * -1);
 
                     for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
                     {
@@ -141,16 +146,23 @@ namespace Macrophotography.controls
                         //======================
                         // here come the focus moving logic
                         ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
+                        StepperManager.Instance.Position += StepperManager.Instance.ShotStepFull;
                         //======================
+                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
                     }
+                    GetLastPosition();
+                    StepperManager.Instance.Position = StepperManager.Instance.NearFocus;
+                    MoveToNewPosition();
                 }
 
-                if (Direction_swch.IsChecked == false)
+                // if (Direction_swch.IsChecked == false)
+                if (StepperManager.Instance.GoFarToNear == true)
                 {
-                    GetLastPosition();
-                    StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Maximum);
+                    //GetLastPosition();
+                    //StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Maximum);
+                    StepperManager.Instance.Position = StepperManager.Instance.FarFocus2;
                     MoveToNewPosition();
-                    ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusFarShots * StepperManager.Instance.ShotStepFull);
+                    //ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusFarShots * StepperManager.Instance.ShotStepFull);
 
                     for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
                     {
@@ -161,11 +173,14 @@ namespace Macrophotography.controls
                         //======================
                         // here come the focus moving logic
                         ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);
+                        StepperManager.Instance.Position -= StepperManager.Instance.ShotStepFull;
                         //======================
+                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
                     }
-                }
-                
-                
+                    GetLastPosition();
+                    StepperManager.Instance.Position = StepperManager.Instance.FarFocus;
+                    MoveToNewPosition();
+                }                              
             }
             catch (Exception ex)
             {
