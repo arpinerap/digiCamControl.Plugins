@@ -90,7 +90,7 @@ namespace Macrophotography.controls
         }
         private void MoveToNewPosition()
         {
-            int ScrollSteps;
+            int ScrollSteps = 0;
             if (StepperManager.Instance.Position < LastPosition)
             {
                 ScrollSteps = LastPosition - StepperManager.Instance.Position;
@@ -119,8 +119,7 @@ namespace Macrophotography.controls
         private void PulseButton_Click(object sender, RoutedEventArgs e)
         {
             StepperManager.Instance.IsBusy = true;
-            GetLastPosition();
-            Thread.Sleep(StepperManager.Instance.InitStackDelay);
+            GetLastPosition();           
             Task.Factory.StartNew(StackTask);            
         }
 
@@ -135,20 +134,24 @@ namespace Macrophotography.controls
                     //StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Minimum);
                     StepperManager.Instance.Position = StepperManager.Instance.NearFocus2;
                     MoveToNewPosition();
+                    Thread.Sleep(2000);
+                    Thread.Sleep(StepperManager.Instance.InitStackDelay);
                     //ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusNearShots * StepperManager.Instance.ShotStepFull * -1);
 
                     for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
                     {
+                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+                        Thread.Sleep(2000);
                         ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                        Thread.Sleep(100);
+                        Thread.Sleep(5000);
                         // wait for file transfer to be finished
-                        ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                        //ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
                         //======================
                         // here come the focus moving logic
                         ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
                         StepperManager.Instance.Position += StepperManager.Instance.ShotStepFull;
                         //======================
-                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+                        
                     }
                     GetLastPosition();
                     StepperManager.Instance.Position = StepperManager.Instance.NearFocus;
@@ -162,20 +165,24 @@ namespace Macrophotography.controls
                     //StepperManager.Instance.Position = Convert.ToInt32(Position_sld.Maximum);
                     StepperManager.Instance.Position = StepperManager.Instance.FarFocus2;
                     MoveToNewPosition();
+                    Thread.Sleep(2000);
+                    Thread.Sleep(StepperManager.Instance.InitStackDelay);
                     //ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.PlusFarShots * StepperManager.Instance.ShotStepFull);
 
                     for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
                     {
+                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+                        Thread.Sleep(2000);
                         ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                        Thread.Sleep(100);
+                        Thread.Sleep(5000);
                         // wait for file transfer to be finished
-                        ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                        //ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
                         //======================
                         // here come the focus moving logic
                         ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);
                         StepperManager.Instance.Position -= StepperManager.Instance.ShotStepFull;
                         //======================
-                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+                        
                     }
                     GetLastPosition();
                     StepperManager.Instance.Position = StepperManager.Instance.FarFocus;
