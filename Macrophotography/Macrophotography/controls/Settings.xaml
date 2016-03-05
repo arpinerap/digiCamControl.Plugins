@@ -8,6 +8,7 @@
              xmlns:RadialMenu="clr-namespace:RadialMenu.Controls;assembly=RadialMenu"
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              d:DesignHeight="200" d:DesignWidth="1800" Loaded="Window_Loaded">
 
     <UserControl.Resources>
@@ -105,6 +106,7 @@
                 <controls:NumericUpDown  x:Name="ShotStep_nud"  Value="{Binding ShotStep, Source={x:Static macrophotography:StepperManager.Instance}}"  
                         Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="3" Margin="5,3,5,3"
+                        Foreground="#FFA50000" FontSize="16" FontWeight="Bold"
                         HideUpDownButtons="True" HasDecimals="False" StringFormat="{}{0:N0}" ValueChanged="sDoFCalcUpdate"/>
 
 
@@ -184,7 +186,7 @@
                                              Grid.Column="1" Grid.Row="0"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="e_nud" controls:TextBoxHelper.Watermark="e" Value="2" HasDecimals="True"
+                <controls:NumericUpDown x:Name="E_nud" controls:TextBoxHelper.Watermark="e" Value="2" HasDecimals="True"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="1"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
@@ -194,7 +196,7 @@
                                              Grid.Column="1" Grid.Row="2"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="n_nud" controls:TextBoxHelper.Watermark="λ" Value="1" HasDecimals="False"
+                <controls:NumericUpDown x:Name="N_nud" controls:TextBoxHelper.Watermark="λ" Value="1" HasDecimals="False"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="3"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
@@ -212,6 +214,30 @@
                 <Label Content="n" 
                        HorizontalAlignment="Right"
                         Grid.Row="3" Margin="0,0,10,0"/>
+
+                <TextBox x:Name="Sensor_txt" Text="{Binding Source={x:Static Member=Core:ServiceProvider.DeviceManager}, Path=SelectedCameraDevice.DeviceName}"
+                         Grid.Row="2"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="30" Margin="0,0,30,0"
+                         TextAlignment="Left" BorderThickness="0"/>
+
+                <ComboBox x:Name="NameSensor_Combo" SelectedItem="{Binding Source={x:Static Member=Core:ServiceProvider.DeviceManager}, Path=SelectedCameraDevice.DeviceName}"
+                          Grid.Row="1" 
+                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="0,0,30,0"                         
+                          DropDownClosed="NameSensor_Combo_DropDownClosed"/>
+
+                <Button x:Name="savesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Margin="35,0,0,0"
+                    	 Width="35" Height="35"
+                    	Click="savesensor_button_Click">
+                    <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
+                </Button>
+
+                <Button x:Name="deletesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"
+                    	 Width="35" Height="35" Click="Deletesensor_button_Click"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
+                </Button>
             </Grid>
 
         </GroupBox>
@@ -314,7 +340,7 @@
                     <Label Content="Rail Accuracy"/>
                     <controls:NumericUpDown  x:Name="RailAccuracy_nud" 
                          VerticalAlignment="Bottom"   
-                         Width="90" BorderThickness="0"
+                         Width="100" BorderThickness="0" Foreground="#FFA50000" FontSize="16" FontWeight="Bold"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N8}"/>
                     <Label Content="mm/step"/>
                 </WrapPanel>

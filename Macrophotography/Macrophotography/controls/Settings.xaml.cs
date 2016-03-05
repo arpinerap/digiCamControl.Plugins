@@ -17,6 +17,7 @@ using Macrophotography.Classes;
 using System.IO.Ports;
 using System.Management;
 using CameraControl.Core;
+using CameraControl.Core.Classes;
 
 namespace Macrophotography.controls
 {
@@ -330,25 +331,107 @@ namespace Macrophotography.controls
 
         # endregion
 
+        #region Sensor DataBase
+        
+        private void savesensor_button_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsDB.AddSensor(Sensor_txt.Text, (double)Pitch_nud.Value, (double)E_nud.Value, (int)Lambda_nud.Value, (double)N_nud.Value);
+            MessageBox.Show("Sensor Added");
+            Sensor_txt.Text = "";
+            Pitch_nud.Value = 0;
+            E_nud.Value = 0;
+            Lambda_nud.Value = 0;
+            N_nud.Value = 0;
+            Fill_ComboNameSensor();
+            NameSensor_Update();
+        }
+        void Fill_ComboNameSensor()
+        {
+            string QueryName = "select * from SensorTable";
+
+            try
+            {
+                SqlConnection conn = SettingsDB.GetConnection();
+                conn.Open();
+                SqlCommand NameComm = new SqlCommand(QueryName, conn);
+                SqlDataReader dr = NameComm.ExecuteReader();
+                NameSensor_Combo.Items.Clear();
+                while (dr.Read())
+                {
+                    string name = dr.GetString(1);
+                    NameSensor_Combo.Items.Add(name);
+                }
+                conn.Close();
+            }
+            catch (SqlException ex) { throw ex; }
+        }
+        private void NameSensor_Update()
+        {
+            string QueryNameFill = "select * from SensorTable where name_sensor = '" + NameSensor_Combo.Text + "'";
+
+            try
+            {
+                SqlConnection conn = SettingsDB.GetConnection();
+                conn.Open();
+                SqlCommand NameFillComm = new SqlCommand(QueryNameFill, conn);
+                SqlDataReader drfill = NameFillComm.ExecuteReader();
+                while (drfill.Read())
+                {
+                    string sname = drfill.GetString(1);
+                    double pitch = (double)drfill.GetDecimal(2);
+                    double ee = (double)drfill.GetDecimal(3);
+                    int lambda = drfill.GetInt16(4);
+                    double n = (double)drfill.GetDecimal(5);
+
+                    Pitch_nud.Value = pitch;
+                    E_nud.Value = ee;
+                    Lambda_nud.Value = lambda;
+                    N_nud.Value = n;
+                    Sensor_txt.Text = sname;
+                    NameSensor_Combo.SelectedItem = sname;
+
+                    RailCalc();
+                    sDoFCalc();
+                }
+                conn.Close();
+            }
+            catch (SqlException ex) { throw ex; }
+        }
+        private void NameSensor_Combo_DropDownClosed(object sender, EventArgs e)
+        {
+            NameSensor_Update();
+        }
+        private void Deletesensor_button_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsDB.DeleteSensor(NameSensor_Combo.SelectedItem.ToString());
+            Rail_txt.Text = "";
+            MessageBox.Show("Sensor Deleted");
+            Fill_ComboNameSensor();
+        }
+
+
+
+
+        #endregion
 
         # region DOF Calcs
 
         public void sDoFCalcAperture()
         {
-            if (aperture_nud.Value != null && e_nud.Value != null && Pitch_nud.Value != null && Sld_Magni.Value != 0)
+            if (aperture_nud.Value != null && E_nud.Value != null && Pitch_nud.Value != null && Sld_Magni.Value != 0)
             {
                 double mShotDOF;
-                mShotDOF = Convert.ToDouble(2 * e_nud.Value * Pitch_nud.Value * aperture_nud.Value * (Sld_Magni.Value + 1) / (Sld_Magni.Value * Sld_Magni.Value));
+                mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * aperture_nud.Value * (Sld_Magni.Value + 1) / (Sld_Magni.Value * Sld_Magni.Value));
                 ShotDOF_nud.Value = mShotDOF * 0.001;
             }
         }
 
         public void sDoFCalcNA()
         {
-            if (NA_nud.Value != null && Lambda_nud.Value != null && e_nud.Value != null && Pitch_nud.Value != null && Sld_Magni.Value != 0)
+            if (NA_nud.Value != null && Lambda_nud.Value != null && E_nud.Value != null && Pitch_nud.Value != null && Sld_Magni.Value != 0)
             {
                 double mShotDOF;
-                mShotDOF = Convert.ToDouble(10000000/1*((Lambda_nud.Value* n_nud.Value*0.0000000001/(NA_nud.Value * NA_nud.Value)+(e_nud.Value*Pitch_nud.Value*0.0000001/(NA_nud.Value * Sld_Magni.Value)))));
+                mShotDOF = Convert.ToDouble(10000000/1*((Lambda_nud.Value* N_nud.Value*0.0000000001/(NA_nud.Value * NA_nud.Value)+(E_nud.Value*Pitch_nud.Value*0.0000001/(NA_nud.Value * Sld_Magni.Value)))));
                 ShotDOF_nud.Value = mShotDOF * 0.001;
 
             }
@@ -390,6 +473,8 @@ namespace Macrophotography.controls
         {
             ArduinoPorts.Instance.DetectArduino();
         }
+
+
 
 
     }

@@ -99,7 +99,6 @@
     </Reference>
     <Reference Include="CameraControl.Core">
       <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="CameraControl.Devices">
       <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
@@ -170,6 +169,7 @@
     <Compile Include="Classes\MilimetersConverter.cs" />
     <Compile Include="Classes\Rail.cs" />
     <Compile Include="Classes\RoundPolyline.cs" />
+    <Compile Include="Classes\Sensor.cs" />
     <Compile Include="Classes\SettingsDB.cs" />
     <Compile Include="controls\ExposureStatusControl.xaml.cs">
       <DependentUpon>ExposureStatusControl.xaml</DependentUpon>
@@ -305,6 +305,7 @@
     </Content>
     <Content Include="DataBase\Settings_log.ldf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>Settings.mdf</DependentUpon>
     </Content>
     <Resource Include="Resources\Entypo-license.txt" />
     <Resource Include="Resources\WindowsIcons-license.txt" />

@@ -109,7 +109,6 @@ namespace Macrophotography.Classes
             finally { conn.Close(); }
             return RailList;
         }
-
         public static void DeleteRail(string nameRail)
         {
             string QueryDel = "delete from RailTable where name_rail = @nameRail";
@@ -121,5 +120,57 @@ namespace Macrophotography.Classes
             finally { conn.Close(); }
         }
 
+
+        public static void AddSensor(string NameSensor, double Pitch, double E, int Lambda, double N)
+        {
+            string QueryIns = "insert into SensorTable (name_sensor, pitch, e, lambda, n) values (@nameSensor, @pitch, @e, @lambda, @n)";
+            SqlConnection conn = GetConnection();
+            SqlCommand InsComm = new SqlCommand(QueryIns, conn);
+            InsComm.Parameters.AddWithValue("@nameSensor", NameSensor);
+            InsComm.Parameters.AddWithValue("@pitch", Pitch);
+            InsComm.Parameters.AddWithValue("@e", E);
+            InsComm.Parameters.AddWithValue("@lambda", Lambda);
+            InsComm.Parameters.AddWithValue("n", N);
+            try { conn.Open(); InsComm.ExecuteNonQuery(); }
+            catch (SqlException ex) { throw ex; }
+            finally { conn.Close(); }
+        }
+        public static List<Sensor> GetSensor()
+        {
+            List<Sensor> SensorList = new List<Sensor>();
+            SqlConnection conn = GetConnection();
+            string QuerySel = "Select * from SensorTable Order by Name_Sensor";
+            SqlCommand SelComm = new SqlCommand(QuerySel, conn);
+            try
+            {
+                conn.Open();
+                SqlDataReader reader = SelComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    Sensor sensor = new Sensor();
+                    sensor.IdSensor = (int)reader["IdRail"];
+                    sensor.NameSensor = reader["NameRail"].ToString();
+                    sensor.Pitch = (double)reader["Pitch"];
+                    sensor.E = (double)reader["E"];
+                    sensor.Lambda = (int)reader["Lambda"];
+                    sensor.N = (double)reader["N"];
+                    SensorList.Add(sensor);
+                }
+                reader.Close();
+            }
+            catch (SqlException ex) { throw ex; }
+            finally { conn.Close(); }
+            return SensorList;
+        }
+        public static void DeleteSensor(string nameSensor)
+        {
+            string QueryDel = "delete from SensorTable where name_sensor = @nameSensor";
+            SqlConnection conn = GetConnection();
+            SqlCommand DelComm = new SqlCommand(QueryDel, conn);
+            DelComm.Parameters.AddWithValue("@nameSensor", nameSensor);
+            try { conn.Open(); DelComm.ExecuteNonQuery(); }
+            catch (SqlException ex) { throw ex; }
+            finally { conn.Close(); }
+        }
     }
 }
