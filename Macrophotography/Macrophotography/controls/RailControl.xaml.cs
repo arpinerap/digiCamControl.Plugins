@@ -211,6 +211,24 @@ namespace Macrophotography.controls
             StepperManager.Instance.UpDateTotalDOF();
         }
 
+        private void PulseButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (ServiceProvider.DeviceManager.SelectedCameraDevice == null)
+                return;
+            Log.Debug("Macrophotography test capture started");
+            try
+            {
+                if (ServiceProvider.DeviceManager.SelectedCameraDevice.ShutterSpeed != null)
+                { ServiceProvider.WindowsManager.ExecuteCommand(CmdConsts.CaptureNoAf); }
+            }
+            catch (Exception exception)
+            {
+                StaticHelper.Instance.SystemMessage = exception.Message;
+                Log.Error("Take test photo", exception);
+            }
+            
+        }
+
 
 
     }

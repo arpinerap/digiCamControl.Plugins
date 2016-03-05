@@ -57,6 +57,45 @@ namespace Macrophotography
             }
         }
 
+        private int _levelAngle;
+        private string _levelAngleColor;
+        private int _rotation;
+
+
+        public int LevelAngle
+        {
+            get { return _levelAngle; }
+            set
+            {
+                _levelAngle = value;
+                RaisePropertyChanged(() => LevelAngle);
+                LevelAngleColor = _levelAngle % 90 <= 1 || _levelAngle % 90 >= 89 ? "Green" : "Red";
+            }
+        }
+
+        public string LevelAngleColor
+        {
+            get { return _levelAngleColor; }
+            set
+            {
+                _levelAngleColor = value;
+                RaisePropertyChanged(() => LevelAngleColor);
+            }
+        }
+
+        public bool ShowFocusRect
+        {
+            get { return CameraProperty.LiveviewSettings.ShowFocusRect; }
+            set
+            {
+                CameraProperty.LiveviewSettings.ShowFocusRect = value;
+                RaisePropertyChanged(() => ShowFocusRect);
+            }
+        }
+
+
+
+
         #region Commands
 
         public RelayCommand AutoFocusCommand { get; set; }
@@ -236,7 +275,26 @@ namespace Macrophotography
                 RaisePropertyChanged(() => Bitmap);
             }
         }
-        
+
+        public int RotationIndex
+        {
+            get { return CameraProperty.LiveviewSettings.RotationIndex; }
+            set
+            {
+                CameraProperty.LiveviewSettings.RotationIndex = value;
+                RaisePropertyChanged(() => RotationIndex);
+            }
+        }
+
+        public int Rotation
+        {
+            get { return _rotation; }
+            set
+            {
+                _rotation = value;
+                RaisePropertyChanged(() => Rotation);
+            }
+        }
 
 
         public bool IsActive { get; set; }

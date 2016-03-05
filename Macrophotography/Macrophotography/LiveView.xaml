@@ -13,6 +13,7 @@
              xmlns:my="clr-namespace:CameraControl.Controls;assembly=CameraControl.Core"             
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
                       
              mc:Ignorable="d" 
@@ -418,8 +419,6 @@
                         </Expander.Content>
                     </Expander>
 
-
-
                     <Expander Header="Control" IsExpanded="True" >
                         <StackPanel>
                             <local:ExposureStatusControl ExposureStatus="{Binding Path=SelectedCameraDevice.ExposureStatus, Mode=TwoWay}"/>
@@ -473,6 +472,7 @@
                             </StackPanel>
                         </StackPanel>
                     </Expander>
+                    
                     <Expander Header="Display" IsExpanded="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -488,6 +488,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+                            <CheckBox Content="{T:TranslateExtension LabelShowFocusRect}" IsChecked="{Binding Path=ShowFocusRect}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="2"/>
                             <CheckBox Content="{translation:TranslateExtension LabelShowActiveArea}" IsChecked="{Binding Path=ShowRuler}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2"/>
                             <Button Content="{translation:TranslateExtension LabelSetArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding SetAreaCommand}" Visibility="{Binding NoSettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
                             <Button Content="{translation:TranslateExtension LabelDoneArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding DoneSetAreaCommand}" Visibility="{Binding SettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
@@ -500,7 +501,19 @@
                                     </ContextMenu>
                                 </Slider.ContextMenu>
                             </Slider>
+                            
                         </Grid>
+                    </Expander>
+
+                    <Expander Header="Camera" IsExpanded="True">
+                        <StackPanel Margin="1" Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowBattery, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="{T:TranslateExtension Battery}"  Padding="1"/>
+                            <ProgressBar Minimum="0" Maximum="100" Height="20" Value="{Binding Path=SelectedCameraDevice.Battery}" ToolTip="{Binding Path=SelectedCameraDevice.Battery}" Style="{x:Null}" Margin="2" />                      
+                            <Label Content="{T:TranslateExtension LabelTransfer}" Padding="1" Margin="2"/>
+                            <ComboBox Name="cmb_transfer" ToolTip="{Binding ElementName=cmb_transfer, Path=SelectedItem}" Margin="2" SelectionChanged="cmb_transfer_SelectionChanged"/>
+                            <Controls:ToggleSwitch Header="{T:TranslateExtension LabelHostMode}" Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=SelectedCameraDevice.HostMode}" Margin="3" FontSize="12" />
+
+                        </StackPanel>
                     </Expander>
 
                 </StackPanel>
