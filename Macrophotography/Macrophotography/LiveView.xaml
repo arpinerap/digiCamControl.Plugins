@@ -467,7 +467,7 @@
                             <StackPanel Margin="1" Visibility="{Binding ExposureDelay.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Label Content="Exposure Delay" />
                                 <Border BorderThickness="1" BorderBrush="{Binding Path=ExposureDelay.ErrorColor}" >
-                                    <ComboBox  IsEnabled="{Binding Path=ExposureDelay.IsEnabled}" ItemsSource="{Binding Path=ExposureDelay.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.ExposureDelay.Value}" ToolTip="{Binding Path=ExposureDelay.Value}" />
+                                    <ComboBox  IsEnabled="{Binding Path=ExposureDelay.IsEnabled}" ItemsSource="{Binding Path=ExposureDelay.Values}" SelectedValue="{Binding Path=ExposureDelay.Value}" ToolTip="{Binding Path=ExposureDelay.Value}" />
                                 </Border>
                             </StackPanel>
                         </StackPanel>

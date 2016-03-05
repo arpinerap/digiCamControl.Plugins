@@ -39,6 +39,7 @@ namespace Macrophotography
             if (ServiceProvider.DeviceManager != null)
                 ServiceProvider.DeviceManager.PropertyChanged += DeviceManager_PropertyChanged;
             RefreshItems();
+            
         }
 
         private void _image_MouseDown(object sender, MouseButtonEventArgs e)
@@ -68,6 +69,7 @@ namespace Macrophotography
             {
                 ArduinoPorts.Instance.ClosePort();
                 ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
+                ServiceProvider.DeviceManager.SelectedCameraDevice.HostMode = false;
             }
             catch (Exception)
             {

@@ -103,7 +103,6 @@
     </Reference>
     <Reference Include="CameraControl.Devices">
       <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>

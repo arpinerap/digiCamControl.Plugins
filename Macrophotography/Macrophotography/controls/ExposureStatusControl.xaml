@@ -72,8 +72,8 @@
 
         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="21" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFD1D1D1" Margin="2,0,0,0">0</TextBlock>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="20" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFD1D1D1" TextAlignment="Right">+</TextBlock>
-        <TextBlock Grid.Row="1" Grid.ColumnSpan="1" Grid.Column="20" FontSize="16" FontWeight="Black" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFD1D1D1" TextAlignment="Left">-</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="20" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFD1D1D1" TextAlignment="Right">-</TextBlock>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="1" Grid.Column="20" FontSize="16" FontWeight="Black" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFD1D1D1" TextAlignment="Left">+</TextBlock>
 
 
 
