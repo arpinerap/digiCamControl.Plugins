@@ -409,9 +409,6 @@ namespace Macrophotography.controls
             Fill_ComboNameSensor();
         }
 
-
-
-
         #endregion
 
         # region DOF Calcs

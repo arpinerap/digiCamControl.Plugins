@@ -47,6 +47,8 @@ namespace Macrophotography
         private PointCollection _blueColorHistogramPoints;
         private PropertyValue<long> _exposureDelay;
 
+
+
         public ICameraDevice SelectedCameraDevice
         {
             get { return _cameraDevice; }
@@ -57,18 +59,21 @@ namespace Macrophotography
             }
         }
 
-        private int _levelAngle;
+        private decimal _levelAngle;
         private string _levelAngleColor;
         private int _rotation;
 
+        
 
-        public int LevelAngle
+
+        public decimal LevelAngle
         {
             get { return _levelAngle; }
             set
             {
                 _levelAngle = value;
                 RaisePropertyChanged(() => LevelAngle);
+                LevelAngle = LiveViewData.LevelAngleRolling;
                 LevelAngleColor = _levelAngle % 90 <= 1 || _levelAngle % 90 >= 89 ? "Green" : "Red";
             }
         }

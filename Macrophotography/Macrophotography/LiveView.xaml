@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
+             xmlns:Devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:translation="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
              xmlns:T="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
@@ -329,9 +330,10 @@
 
         <GroupBox Header="3d Position" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
             <StackPanel Orientation="Vertical">
-                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
+                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngle}"/>
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
+                <TextBox  x:Name="LevelAngle_txt" Text="{Binding LevelAngle}" Width="50" BorderThickness="0"/>
             </StackPanel>
         </GroupBox>
 
@@ -524,13 +526,13 @@
         <local:Joystick  IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"
             Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
 
-        <Expander Header="Stacking Control" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"
+        <Expander Header="Stacking Control" 
             IsExpanded="True"
             Grid.Row="1" Grid.ColumnSpan="3" Height="auto" MinHeight="30"        
             ExpandDirection="Up" Padding="0"
             BorderBrush="Transparent" Margin="0,0.4,-0.2,0">
 
-            <controls:MetroAnimatedTabControl x:Name="RailControlTab" Height="250" >
+            <controls:MetroAnimatedTabControl x:Name="RailControlTab" Height="250" IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
                 <TabItem Header="Settings">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <local:Settings/>
@@ -543,6 +545,10 @@
                 </TabItem>
                 <TabItem Header="Session">
                    
+
+                </TabItem>
+                <TabItem Header="CombineZP">
+
 
                 </TabItem>
             </controls:MetroAnimatedTabControl>
