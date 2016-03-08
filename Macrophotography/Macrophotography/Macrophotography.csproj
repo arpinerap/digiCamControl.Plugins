@@ -171,6 +171,9 @@
     <Compile Include="Classes\RoundPolyline.cs" />
     <Compile Include="Classes\Sensor.cs" />
     <Compile Include="Classes\SettingsDB.cs" />
+    <Compile Include="controls\CombineZP.xaml.cs">
+      <DependentUpon>CombineZP.xaml</DependentUpon>
+    </Compile>
     <Compile Include="controls\ExposureStatusControl.xaml.cs">
       <DependentUpon>ExposureStatusControl.xaml</DependentUpon>
     </Compile>
@@ -204,6 +207,10 @@
     <Compile Include="StepperManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="controls\CombineZP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="controls\ExposureStatusControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -257,6 +264,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ClassDiagram1.cd" />
     <None Include="dcc.plugin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

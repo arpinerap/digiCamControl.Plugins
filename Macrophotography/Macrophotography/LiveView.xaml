@@ -333,7 +333,7 @@
                 <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngle}"/>
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
-                <TextBox  x:Name="LevelAngle_txt" Text="{Binding LevelAngle}" Width="50" BorderThickness="0"/>
+                <TextBox  x:Name="LevelAngle_txt" Text="{Binding LevelAngleRolling}" Width="50" BorderThickness="0"/>
             </StackPanel>
         </GroupBox>
 
@@ -547,9 +547,8 @@
                    
 
                 </TabItem>
-                <TabItem Header="CombineZP">
-
-
+                <TabItem Header="CombineZP">                   
+                    <local:CombineZP/>
                 </TabItem>
             </controls:MetroAnimatedTabControl>
 
