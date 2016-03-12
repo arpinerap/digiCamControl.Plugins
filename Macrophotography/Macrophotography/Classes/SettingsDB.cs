@@ -16,9 +16,9 @@ namespace Macrophotography.Classes
             SqlConnection conn = new SqlConnection(SettingsCS);
             return conn;
         }
-        public static void AddLens(string NameLens, double Aperture, double NA, int iManualLens, int iMicrolens)
+        public static void AddLens(string NameLens, double Aperture, double NA, int iManualLens, int iMicrolens, double Augmentation)
         {
-            string QueryIns = "insert into LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens) values (@nameLens, @aperture, @na, @manualLens, @microLens)";
+            string QueryIns = "insert into LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens, augmentation) values (@nameLens, @aperture, @na, @manualLens, @microLens, @augmentation)";
             SqlConnection conn = GetConnection();
             SqlCommand InsComm = new SqlCommand(QueryIns, conn);
             InsComm.Parameters.AddWithValue("@nameLens", NameLens);
@@ -26,6 +26,7 @@ namespace Macrophotography.Classes
             InsComm.Parameters.AddWithValue("@na", NA);
             InsComm.Parameters.AddWithValue("@manualLens", iManualLens);
             InsComm.Parameters.AddWithValue("@microLens", iMicrolens);
+            InsComm.Parameters.AddWithValue("@augmentation", Augmentation);
             try { conn.Open(); InsComm.ExecuteNonQuery(); }
             catch (SqlException ex) { throw ex; }
             finally { conn.Close(); }

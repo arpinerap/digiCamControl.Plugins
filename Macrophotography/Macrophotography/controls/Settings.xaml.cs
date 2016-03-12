@@ -234,13 +234,14 @@ namespace Macrophotography.controls
                 aperture_nud.Value = 0;
             }
 
-            SettingsDB.AddLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt);
+            SettingsDB.AddLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value);
             MessageBox.Show("Lens Added");
             Lens_txt.Text = "";
             aperture_nud.Value = 0;
             NA_nud.Value = 0;
             ManuLensInt = 0;
             MicroLensInt = 0;
+            StepperManager.Instance.Magni = 0;
             Fill_ComboName();
         }
         void Fill_ComboName()
@@ -280,10 +281,12 @@ namespace Macrophotography.controls
                     double NA = (double)drfill.GetDecimal(3);
                     bool bManuLens = drfill.GetBoolean(4);
                     bool bMicroLens = drfill.GetBoolean(5);
+                    double augmentation = (double)drfill.GetDecimal(6);
 
                     Lens_txt.Text = sname;
                     aperture_nud.Value = aperture;
                     NA_nud.Value = NA;
+                    NumUD_Magni.Value = augmentation;
 
 
                     if (bManuLens == true)

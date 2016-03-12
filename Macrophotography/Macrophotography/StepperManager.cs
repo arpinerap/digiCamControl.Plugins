@@ -39,7 +39,7 @@ namespace Macrophotography
         private int _shotStep2 = 0;
         private int _Overlap = 20;
         
-        private double _magni = 10;
+        private double _magni = 2;
         private double _railAccuracy = 0;
         private int _InitStackDelay = 0;
         private int _StabilizationDelay = 0;
