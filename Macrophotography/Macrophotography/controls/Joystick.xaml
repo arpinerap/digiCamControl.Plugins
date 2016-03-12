@@ -221,7 +221,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <RadialMenu:RadialMenu x:Name="LiveViewOff_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-20,-40,-50,-40">
+        <RadialMenu:RadialMenu x:Name="LiveViewOff_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-25,-40,-50,-40">
 
             <RadialMenu:RadialMenu.CentralItem>
                 <RadialMenu:RadialMenuCentralItem 
@@ -305,14 +305,14 @@
 
 
         <Slider x:Name="DCsteps_sld" Style="{DynamicResource FlatSlider}" Visibility="Hidden"
-                    Grid.Column="1" Height="70"
+                    Grid.Column="0" Height="70" HorizontalAlignment="Left" Margin="5,0,0,0"
                     Orientation="Vertical" VerticalAlignment="Center"
                     AutoToolTipPlacement="BottomRight"
                 Minimum="1" Maximum="50">
         </Slider>
 
         <Button x:Name="rot1_button" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
-                        Height="50" Width="50" Margin="-40,0,-40,-40" Padding="-30"
+                        Height="40" Width="40" Margin="-30,60,-40,-40" Padding="-30"
                         Grid.Column="1" 
                         HorizontalAlignment="Center" VerticalAlignment="Top" Click="rot1_button_Click">
             <Image Source="/macrophotography;component/resources/appbar.refresh.clockwise.up.png"/>  
@@ -321,7 +321,7 @@
 
 
         <Button Style="{DynamicResource IconButtonStyle}" x:Name="rot2_button" Visibility="Hidden"
-                        Height="50" Width="50" Margin="-40,-40,-40,0" Padding="-30"
+                        Height="40" Width="40" Margin="-30,-40,-40,60" Padding="-30"
                         Grid.Column="1" 
                         HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="rot2_button_Click">
             <Image  Source="/macrophotography;component/resources/appbar.refresh.counterclockwise.down.png"/>
@@ -329,19 +329,33 @@
 
         <Button x:Name="FlipDown_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
                         Height="50" Width="50" Padding="-30"
-                        Grid.Column="0" 
-                        HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_Click_1">
+                        Grid.Column="1" 
+                        HorizontalAlignment="Center" VerticalAlignment="Top" Click="FlipDown_Button_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.down.png" />
         </Button>
 
         <Button x:Name="FlipUp_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
                         Height="50" Width="50" Padding="-30"
                         Grid.Column="0" 
-                        HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click">
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Click="FlipUp_Button_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.up.png"/>
         </Button>
 
-        <RadialMenu:RadialMenu  x:Name="LiveViewOn_btn" IsOpen="True" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-20,-40,-50,-40">
+        <Button x:Name="FlipLeft_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Padding="-30"
+                        Grid.Column="0" 
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="FlipLeft_btn_Click">
+            <Image Source="/macrophotography;component/resources/appbar.flip.left.png" />
+        </Button>
+
+        <Button x:Name="FlipRight_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Padding="-30"
+                        Grid.Column="1" 
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="FlipRight_btn_Click">
+            <Image Source="/macrophotography;component/resources/appbar.flip.right.png" />
+        </Button>
+
+        <RadialMenu:RadialMenu  x:Name="LiveViewOn_btn" IsOpen="True" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-25,-40,-50,-40">
 
             <RadialMenu:RadialMenu.CentralItem>
                 <RadialMenu:RadialMenuCentralItem 

@@ -6,11 +6,16 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:T="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
+             xmlns:toolPlugins="clr-namespace:CameraControl.Plugins.ToolPlugins;assembly=CameraControl.Plugins"
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:my="clr-namespace:NMT.Wpf.Controls;assembly=PulseButton"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="2000">
+
+    <UserControl.DataContext>
+        <toolPlugins:StackViewModel/>
+    </UserControl.DataContext>
 
 
     <UserControl.Resources>
@@ -236,7 +241,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
-                <ListBox ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFileItem}">
+                <ListBox ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFileItem}" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="classes:FileItem">
                             <Grid Margin="-5,0,0,0" >
@@ -257,7 +262,7 @@
                 </ListBox>
 
 
-                <Button x:Name="Reload_photo_btn" Style="{DynamicResource IconButtonStyle}" 
+                <Button x:Name="Reload_photo_btn" Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
                         Height="30" Width="30" Padding="-20"
                         Grid.Column="0" Grid.Row="0" Margin="10" 
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
@@ -342,7 +347,7 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Orientation="Horizontal" 
-                            Grid.Row="0" Margin="0,5,0,0">
+                            Grid.Row="0" Margin="0,5,0,0" IsEnabled="{Binding IsFree}">
                     <Button Content="Preview" Margin="3" Command="{Binding PreviewCommand}" 
                             Width="100"/>
                     <Button Content="Create final image" Margin="3"  Command="{Binding GenerateCommand}"
@@ -352,8 +357,6 @@
                             Margin="0,5,0,0" HorizontalAlignment="Stretch" Grid.Row="1" >
                     <Button Width="60" Grid.Row="1" Content="Stop"  Margin="3" Command="{Binding StopCommand}" IsEnabled="{Binding IsBusy}"/>
                     <ProgressBar Height="20" Width="160" Margin="10,0,0,0" HorizontalAlignment="Right"/>
-
-
                 </StackPanel>
 
                 <CheckBox Grid.Row="2" Content="Auto preview when new image captured" Margin="3"  Width="250" IsChecked="{Binding AutoPreview}"/>

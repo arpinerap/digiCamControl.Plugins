@@ -19,6 +19,7 @@ using Macrophotography;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Devices;
+using CameraControl.Plugins.ToolPlugins;
 
 namespace Macrophotography.controls
 {

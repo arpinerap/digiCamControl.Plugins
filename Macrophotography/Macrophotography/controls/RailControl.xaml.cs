@@ -62,6 +62,8 @@ namespace Macrophotography.controls
             try
             {
                 ArduinoPorts.Instance.ClosePort();
+                ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
+                ServiceProvider.DeviceManager.SelectedCameraDevice.HostMode = false;
             }
             catch (Exception)
             {
@@ -202,8 +204,7 @@ namespace Macrophotography.controls
             {
                 StepperManager.Instance.UpdateShotStep();
                 StepperManager.Instance.UpDateTotalDOFFull();              
-            }
-            
+            }           
         }
 
         private void UpDataTotalDOF(object sender, RoutedPropertyChangedEventArgs<double?> e)

@@ -18,6 +18,7 @@ using System.IO.Ports;
 using System.Management;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
+using CameraControl.Devices;
 
 namespace Macrophotography.controls
 {
@@ -36,6 +37,10 @@ namespace Macrophotography.controls
             Fill_ComboName();
             Fill_ComboNameRail();
             ArduinoPorts.Instance.DetectArduino();
+            NameRail_Combo.SelectedIndex = 0;
+            NameLens_Combo.SelectedIndex = 0;
+            Fill_LensData();
+            Fill_RailData();
         }
 
 
@@ -54,6 +59,7 @@ namespace Macrophotography.controls
             ShotDOF_nud.IsEnabled = false;
             ShotDOF_nud.BorderThickness = new Thickness(0);
             aperture_nud.BorderThickness = new Thickness(0);
+            apertureAF_nud.BorderThickness = new Thickness(0);
 
             AFLensRdb.IsChecked = true;
             MicroLensRdb.IsChecked = false;
@@ -61,7 +67,8 @@ namespace Macrophotography.controls
             ManuPropRdb.IsChecked = false;
 
             aperture_nud.IsEnabled = false;
-            aperture_nud.Visibility = System.Windows.Visibility.Visible;
+            apertureAF_nud.Visibility = System.Windows.Visibility.Visible;
+            aperture_nud.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Visible;
             NA_nud.Visibility = System.Windows.Visibility.Hidden;
             NA_label.Visibility = System.Windows.Visibility.Hidden;
@@ -86,6 +93,7 @@ namespace Macrophotography.controls
 
             aperture_nud.IsEnabled = true;
             aperture_nud.Visibility = System.Windows.Visibility.Visible;
+            apertureAF_nud.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Visible;
             NA_nud.IsEnabled = false;
             NA_nud.Visibility = System.Windows.Visibility.Hidden;
@@ -108,6 +116,7 @@ namespace Macrophotography.controls
 
             aperture_nud.IsEnabled = false;
             aperture_nud.Visibility = System.Windows.Visibility.Hidden;
+            apertureAF_nud.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Hidden;
             NA_nud.IsEnabled = true;
             NA_nud.Visibility = System.Windows.Visibility.Visible;
@@ -127,6 +136,7 @@ namespace Macrophotography.controls
 
             aperture_nud.IsEnabled = false;
             aperture_nud.Visibility = System.Windows.Visibility.Hidden;
+            apertureAF_nud.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Hidden;
             NA_nud.IsEnabled = false;
             NA_nud.Visibility = System.Windows.Visibility.Hidden;
@@ -135,19 +145,80 @@ namespace Macrophotography.controls
 
         private void AFLensRdb_Checked(object sender, RoutedEventArgs e)
         {
-            ChkAFLens();
+            try 
+            {
+                ChkAFLens();
+                sDoFCalc();
+            }
+            catch (Exception)
+            {
+            }
+            
         }
         public void ManuLensRdb_Checked(object sender, RoutedEventArgs e)
         {
-            ChkManualLens();
+            try
+            {
+                ChkManualLens();
+                sDoFCalc();
+            }
+            catch (Exception)
+            {
+            }
         }
         public void MicroLensRdb_Checked(object sender, RoutedEventArgs e)
         {
-            ChkMicroLens();
+            try
+            {
+                ChkMicroLens();
+                sDoFCalc();
+            }
+            catch (Exception)
+            {
+            }
         }
         private void ManuPropRdb_Checked(object sender, RoutedEventArgs e)
         {
-            ChkManuProp();
+            try 
+            { 
+                ChkManuProp();
+                sDoFCalc();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            RadioButtonClick();
+        }
+        public void RadioButtonClick()
+        {
+            if (AFLensRdb.IsChecked == true)
+            {
+                ChkAFLens();
+                Clear_LensData();
+                //aperture_nud.IsEnabled =    SelectedCameraDevice.FNumber.IsEnabled;
+            }
+            if (ManuLensRdb.IsChecked == true)
+            {
+                ChkManualLens();
+                Clear_LensData();
+                aperture_nud.Value = 0;
+            }
+            if (MicroLensRdb.IsChecked == true)
+            {
+                ChkMicroLens();
+                Clear_LensData();
+                NA_nud.Value = 0;
+            }
+            if (ManuPropRdb.IsChecked == true)
+            {
+                ChkManuProp();
+                Clear_LensData();
+                
+            }
         }
         # endregion
 
@@ -192,7 +263,7 @@ namespace Macrophotography.controls
             }
             catch (SqlException ex) { throw ex; }
         }
-        private void NameLens_Combo_DropDownClosed(object sender, EventArgs e)
+        void Fill_LensData()
         {
             string QueryNameFill = "select * from LensTable where name_lens = '" + NameLens_Combo.Text + "'";
 
@@ -213,7 +284,7 @@ namespace Macrophotography.controls
                     Lens_txt.Text = sname;
                     aperture_nud.Value = aperture;
                     NA_nud.Value = NA;
-                    
+
 
                     if (bManuLens == true)
                     { ChkManualLens(); }
@@ -227,6 +298,17 @@ namespace Macrophotography.controls
                 conn.Close();
             }
             catch (SqlException ex) { throw ex; }
+        }
+        void Clear_LensData() 
+        {
+            NameLens_Combo.SelectedIndex = -1;
+            Lens_txt.Text = "";
+            ShotDOF_nud.Value = 0;
+            ShotStep_nud.Value = 0;
+        }
+        private void NameLens_Combo_DropDownClosed(object sender, EventArgs e)
+        {
+            Fill_LensData();
         }
         private void Deletelens_button_Click(object sender, RoutedEventArgs e)
         {
@@ -268,7 +350,7 @@ namespace Macrophotography.controls
             }
             catch (SqlException ex) { throw ex; }
         }
-        private void NameRail_Combo_DropDownClosed(object sender, EventArgs e)
+        void Fill_RailData()
         {
             string QueryNameFill = "select * from RailTable where name_rail = '" + NameRail_Combo.Text + "'";
 
@@ -296,9 +378,13 @@ namespace Macrophotography.controls
                     RailCalc();
                     sDoFCalc();
                 }
-                conn.Close();                            
+                conn.Close();
             }
             catch (SqlException ex) { throw ex; }
+        }
+        private void NameRail_Combo_DropDownClosed(object sender, EventArgs e)
+        {
+            Fill_RailData();
         }
         private void Deleterail_button_Click(object sender, RoutedEventArgs e)
         {
@@ -421,6 +507,24 @@ namespace Macrophotography.controls
                 mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * aperture_nud.Value * (Sld_Magni.Value + 1) / (Sld_Magni.Value * Sld_Magni.Value));
                 ShotDOF_nud.Value = mShotDOF * 0.001;
             }
+            else
+            {
+                ShotDOF_nud.Value = 0;
+            }
+        }
+
+        public void sDoFCalcApertureAF()
+        {
+            if (apertureAF_nud.Value != null && E_nud.Value != null && Pitch_nud.Value != null && Sld_Magni.Value != 0)
+            {
+                double mShotDOF;
+                mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * apertureAF_nud.Value * (Sld_Magni.Value + 1) / (Sld_Magni.Value * Sld_Magni.Value));
+                ShotDOF_nud.Value = mShotDOF * 0.001;
+            }
+            else
+            {
+                ShotDOF_nud.Value = 0;
+            }
         }
 
         public void sDoFCalcNA()
@@ -430,14 +534,17 @@ namespace Macrophotography.controls
                 double mShotDOF;
                 mShotDOF = Convert.ToDouble(10000000/1*((Lambda_nud.Value* N_nud.Value*0.0000000001/(NA_nud.Value * NA_nud.Value)+(E_nud.Value*Pitch_nud.Value*0.0000001/(NA_nud.Value * Sld_Magni.Value)))));
                 ShotDOF_nud.Value = mShotDOF * 0.001;
-
+            }
+            else
+            {
+                ShotDOF_nud.Value = 0;
             }
         }
 
         public void sDoFCalc()
         {
             if (AFLensRdb.IsChecked == true)
-            { sDoFCalcAperture(); }
+            { sDoFCalcApertureAF(); }
             if (ManuLensRdb.IsChecked == true)
             { sDoFCalcAperture(); }
             if (MicroLensRdb.IsChecked == true)
@@ -470,6 +577,8 @@ namespace Macrophotography.controls
         {
             ArduinoPorts.Instance.DetectArduino();
         }
+
+     
 
 
 

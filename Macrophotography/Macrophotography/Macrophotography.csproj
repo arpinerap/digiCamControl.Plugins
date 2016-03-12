@@ -103,6 +103,10 @@
     <Reference Include="CameraControl.Devices">
       <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
     </Reference>
+    <Reference Include="CameraControl.Plugins, Version=2.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\digiCamControl-fa2b3a1b1955fdf355d85187cfdc011460e25de9\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\CameraControl.Plugins.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
       <Private>False</Private>
@@ -309,12 +313,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataBase\Settings.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="DataBase\Settings_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>Settings.mdf</DependentUpon>
     </Content>
+    <Resource Include="Resources\appbar.flip.left.png" />
+    <Resource Include="Resources\appbar.flip.right.png" />
     <Resource Include="Resources\Entypo-license.txt" />
     <Resource Include="Resources\WindowsIcons-license.txt" />
     <Resource Include="Resources\appbar.edit.png" />

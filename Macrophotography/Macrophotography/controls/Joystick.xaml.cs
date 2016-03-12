@@ -17,13 +17,13 @@ namespace Macrophotography.controls
         private void rot1_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(6, 4 * DCsteps * -1);
+            ArduinoPorts.Instance.SendCommand(6, 4 * DCsteps);
         }
 
         private void rot2_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(6, 4 * DCsteps);
+            ArduinoPorts.Instance.SendCommand(6, 4 * DCsteps * -1);
         }
 
         private void Up_button_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -41,25 +41,37 @@ namespace Macrophotography.controls
         private void Right_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(5, DCsteps);
+            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1);
         }
 
         private void Left_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1);
+            ArduinoPorts.Instance.SendCommand(5, DCsteps);
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void FlipUp_Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(2, DCsteps * -1);
+            ArduinoPorts.Instance.SendCommand(3, DCsteps * -1);
         }
 
-        private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        private void FlipDown_Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(3, DCsteps * 1);
+        }
+
+        private void FlipLeft_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
             ArduinoPorts.Instance.SendCommand(2, DCsteps * 1);
+        }
+
+        private void FlipRight_btn_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DCsteps = (int)DCsteps_sld.Value;
+            ArduinoPorts.Instance.SendCommand(2, DCsteps * -1);
         }
 
 
@@ -84,6 +96,5 @@ namespace Macrophotography.controls
             FlipUp_btn.Visibility = System.Windows.Visibility.Hidden;
             LiveViewOn_btn.IsOpen = true;
         }
-
     }
 }

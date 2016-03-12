@@ -51,22 +51,22 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb"
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                Grid.Row="0" Checked="AFLensRdb_Checked"/>
+                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="RadioButton_Click"/>
                 <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                 Grid.Row="1" Checked="ManuLensRdb_Checked"/>
+                                                 Grid.Row="1" Checked="ManuLensRdb_Checked" Click="RadioButton_Click"/>
                 <RadioButton Content="Microscopy Lens" x:Name="MicroLensRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                 Grid.Row="2" Checked="MicroLensRdb_Checked"/>
+                                                 Grid.Row="2" Checked="MicroLensRdb_Checked" Click="RadioButton_Click"/>
                 <RadioButton Content="Manual Properties" x:Name="ManuPropRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"                                                
-                                                Grid.Row="3" Checked="ManuPropRdb_Checked"/>
+                                                Grid.Row="3" Checked="ManuPropRdb_Checked" Click="RadioButton_Click"/>
 
             </Grid>
         </GroupBox>
@@ -88,17 +88,23 @@
 
 
                 <controls:NumericUpDown x:Name="aperture_nud" controls:TextBoxHelper.Watermark="Aperture"
-                        IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" 
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                        
+                        Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                        Grid.Column="1" Grid.Row="0"
+                        Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
+                <controls:NumericUpDown x:Name="apertureAF_nud" controls:TextBoxHelper.Watermark="Aperture"
+                        IsEnabled="False" 
                         Value="{Binding Path=SelectedCameraDevice.FNumber.Value}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                        
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="0"
-                        Margin="5,3,5,3"/>
+                        Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
+
                 <controls:NumericUpDown x:Name="NA_nud" controls:TextBoxHelper.Watermark="NA" controls:TextBoxHelper.ButtonsAlignment="Left"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="1"
-                        Margin="5,3,5,3"/>
+                        Margin="5,3,5,3" ValueChanged="ValueChanged" LostFocus="sDoFCalcUpdate" GotFocus="sDoFCalcUpdate"/>
                 <controls:NumericUpDown  x:Name="ShotDOF_nud"  Value="{Binding ShotDOF, Source={x:Static macrophotography:StepperManager.Instance}}" 
                         Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="2" Margin="5,3,5,3"
