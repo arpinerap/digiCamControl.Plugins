@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macrophotography", "Macroph
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug NewCameraControl|Any CPU = Debug NewCameraControl|Any CPU
+		Debug NewCameraControl|x86 = Debug NewCameraControl|x86
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
 		Duka|Any CPU = Duka|Any CPU
@@ -15,6 +17,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug NewCameraControl|Any CPU.ActiveCfg = Debug NewCameraControl|Any CPU
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug NewCameraControl|Any CPU.Build.0 = Debug NewCameraControl|Any CPU
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug NewCameraControl|x86.ActiveCfg = Debug NewCameraControl|x86
+		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug NewCameraControl|x86.Build.0 = Debug NewCameraControl|x86
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66F5161F-7038-4270-A1F5-E306EEF33FBF}.Debug|x86.ActiveCfg = Debug|x86

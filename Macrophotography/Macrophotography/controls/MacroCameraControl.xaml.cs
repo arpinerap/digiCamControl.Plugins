@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,91 +15,50 @@ using System.Windows.Shapes;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Core.Translation;
-using System.IO.Ports;
-using System.Timers;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 
-namespace Macrophotography
+namespace Macrophotography.controls
 {
     /// <summary>
-    /// Interaction logic for LiveView.xaml
+    /// Interaction logic for MacroCameraControl.xaml
     /// </summary>
-    public partial class LiveView
+    public partial class MacroCameraControl : UserControl
     {
-        private Timer _timer = new Timer();
-
-        //private bool _loading = false;
-
-        public LiveView()
+        private bool _loading = false;
+        
+        public MacroCameraControl()
         {
             InitializeComponent();
-            ServiceProvider.Settings.ApplyTheme(this);
-            //if (ServiceProvider.DeviceManager != null)
-            //    ServiceProvider.DeviceManager.PropertyChanged += DeviceManager_PropertyChanged;
-            //RefreshItems();
-            
+            if (ServiceProvider.DeviceManager != null)
+                ServiceProvider.DeviceManager.PropertyChanged += DeviceManager_PropertyChanged;
+            RefreshItems();
         }
 
-        private void _image_MouseDown(object sender, MouseButtonEventArgs e)
+        private void cmb_transfer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-            if (e.ButtonState == MouseButtonState.Pressed && e.ChangedButton == MouseButton.Left &&
-                ((LiveViewViewModel) DataContext).SelectedCameraDevice.LiveViewImageZoomRatio.Value == "All")
-            {
-                try
-                {
-                    ((LiveViewViewModel) DataContext).SetFocusPos(e.MouseDevice.GetPosition(_image), _image.ActualWidth,
-                        _image.ActualHeight);
-
-                }
-                catch (Exception exception)
-                {
-                    Log.Error("Focus Error", exception);
-                    StaticHelper.Instance.SystemMessage = "Focus error: " + exception.Message;
-                }
-            }
-        }
-
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Close Serial Port when Plugin is closed
-            try
-            {
-                ArduinoPorts.Instance.ClosePort();
-                ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
-                ServiceProvider.DeviceManager.SelectedCameraDevice.HostMode = false;
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        /*private void cmb_transfer_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {       
             if (_loading)
                 return;
             if (ServiceProvider.DeviceManager.SelectedCameraDevice.IsBusy)
                 return;
             CameraProperty property = ServiceProvider.DeviceManager.SelectedCameraDevice.LoadProperties();
 
-            if ((string) cmb_transfer.SelectedItem == TranslationStrings.LabelTransferItem1 &&
+            if ((string)cmb_transfer.SelectedItem == TranslationStrings.LabelTransferItem1 &&
                 ServiceProvider.DeviceManager.SelectedCameraDevice.CaptureInSdRam != true)
                 ServiceProvider.DeviceManager.SelectedCameraDevice.CaptureInSdRam = true;
 
-            if ((string) cmb_transfer.SelectedItem == TranslationStrings.LabelTransferItem2)
+            if ((string)cmb_transfer.SelectedItem == TranslationStrings.LabelTransferItem2)
             {
                 property.NoDownload = true;
                 ServiceProvider.DeviceManager.SelectedCameraDevice.CaptureInSdRam = false;
             }
-            if ((string) cmb_transfer.SelectedItem == TranslationStrings.LabelTransferItem3)
+            if ((string)cmb_transfer.SelectedItem == TranslationStrings.LabelTransferItem3)
             {
                 property.NoDownload = false;
                 ServiceProvider.DeviceManager.SelectedCameraDevice.CaptureInSdRam = false;
             }
             property.CaptureInSdRam = ServiceProvider.DeviceManager.SelectedCameraDevice.CaptureInSdRam;
         }
-
         private void RefreshItems()
         {
             _loading = true;
@@ -161,8 +119,6 @@ namespace Macrophotography
             {
                 Dispatcher.BeginInvoke(new Action(RefreshItems));
             }
-        }*/
-
-
+        }
     }
 }

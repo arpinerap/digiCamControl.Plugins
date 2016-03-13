@@ -19,6 +19,9 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- The IconButtonStyle -->

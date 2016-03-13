@@ -54,9 +54,9 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-                <ResourceDictionary Source="Styles/CustomControls.xaml"/>
-                <ResourceDictionary Source="Resources/Icons.xaml" />
-                <ResourceDictionary Source="Resources/Moreicons.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
                 
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
@@ -391,136 +391,7 @@
                     </TextBlock.LayoutTransform>
                 </TextBlock>
             </Expander.Header>
-            <ScrollViewer>
-                <StackPanel Orientation="Vertical">                  
-                    <Expander Header="{T:TranslateExtension LabelLuminosity}" IsExpanded="{Binding ShowHistogram}"
-                              Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowLuminosityLiveView, Converter={StaticResource BooleanToVisibilityConverter1}}">
-                        <Expander.Content>
-                            <Grid Height="75" >
-                                <Polygon Points="{Binding Path=LuminanceHistogramPoints}" Stretch="Fill" Fill="LightGray" Opacity="1" Visibility="{Binding ElementName=TgGray, Path=IsChecked,  Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-                                <Polygon Points="{Binding Path=RedColorHistogramPoints}" Stretch="Fill" Fill="Red" Opacity="0.9" Visibility="{Binding ElementName=TgRed, Path=IsChecked,  Converter={StaticResource BooleanToVisibilityConverter1}}" />
-                                <Polygon Points="{Binding Path=GreenColorHistogramPoints}" Stretch="Fill" Fill="Green" Opacity="0.7" Visibility="{Binding ElementName=TgGreen, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-                                <Polygon Points="{Binding Path=BlueColorHistogramPoints}" Stretch="Fill" Fill="Blue" Opacity="0.5" Visibility="{Binding ElementName=TgBlue, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-                                <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Horizontal">
-                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="True" Name="TgRed">
-                                        <Ellipse Height="10" Width="10" Fill="Red"/>
-                                    </ToggleButton>
-                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="True" Name="TgGreen">
-                                        <Ellipse Height="10" Width="10" Fill="Green"/>
-                                    </ToggleButton>
-                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="True" Name="TgBlue">
-                                        <Ellipse Height="10" Width="10" Fill="Blue"/>
-                                    </ToggleButton>
-                                    <ToggleButton  Height="26" Width="26" Margin="0" Style="{DynamicResource MetroCircleToggleButtonStyle}" IsChecked="False" Name="TgGray">
-                                        <Ellipse Height="10" Width="10" Fill="Gray"/>
-                                    </ToggleButton>
-                                </StackPanel>
-                                <CheckBox IsChecked="{Binding HighlightUnderExp}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18"/>
-                                <CheckBox VerticalAlignment="Top" HorizontalAlignment="Right" Width="18" IsChecked="{Binding HighlightOverExp}"/>
-                            </Grid>
-                        </Expander.Content>
-                    </Expander>
-
-                    <Expander Header="Control" IsExpanded="True" >
-                        <StackPanel>
-                            <local:ExposureStatusControl ExposureStatus="{Binding Path=SelectedCameraDevice.ExposureStatus, Mode=TwoWay}"/>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension Aperture}" Target="{Binding ElementName=cmb_aperture}"/>
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.FNumber.ErrorColor}" >
-                                    <ComboBox IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"/>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.IsoNumber.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension Iso}" Target="{Binding ElementName=cmb_iso}" />
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.IsoNumber.ErrorColor}" >
-                                    <ComboBox Name="cmb_iso" IsEnabled="{Binding Path=SelectedCameraDevice.IsoNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.IsoNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.IsoNumber.Value}"/>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.ShutterSpeed.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension ShutterSpeed}" Target="{Binding ElementName=cmb_shutter}"/>
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.ShutterSpeed.ErrorColor}" >
-                                    <ComboBox Name="cmb_shutter" IsEnabled="{Binding Path=SelectedCameraDevice.ShutterSpeed.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.ShutterSpeed.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.ShutterSpeed.Value}" />
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.WhiteBalance.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension WhiteBalance}" Target="{Binding ElementName=cmb_WB}"/>
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.WhiteBalance.ErrorColor}" >
-                                    <ComboBox Name="cmb_WB" IsEnabled="{Binding Path=SelectedCameraDevice.WhiteBalance.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.WhiteBalance.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.WhiteBalance.Value}" ToolTip="{Binding Path=SelectedCameraDevice.WhiteBalance.Value}" />
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.ExposureCompensation.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension ExposureComp}" Target="{Binding ElementName=cmb_EComp}"/>
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.ExposureCompensation.ErrorColor}" >
-                                    <ComboBox Name="cmb_EComp" IsEnabled="{Binding Path=SelectedCameraDevice.ExposureCompensation.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.ExposureCompensation.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.ExposureCompensation.Value}"/>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.CompressionSetting.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension Compression}" Target="{Binding ElementName=cmb_com}"/>
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.CompressionSetting.ErrorColor}" >
-                                    <ComboBox Name="cmb_com" IsEnabled="{Binding Path=SelectedCameraDevice.CompressionSetting.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.CompressionSetting.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.CompressionSetting.Value}" ToolTip="{Binding Path=SelectedCameraDevice.CompressionSetting.Value}"/>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.ExposureMeteringMode.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="{translation:TranslateExtension MeteringMode}" Target="{Binding ElementName=cmb_meter}"/>
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.ErrorColor}" >
-                                    <ComboBox Name="cmb_meter"  IsEnabled="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Value}" ToolTip="{Binding Path=SelectedCameraDevice.ExposureMeteringMode.Value}" />
-                                </Border>
-                            </StackPanel>
-                            <StackPanel Margin="1" Visibility="{Binding ExposureDelay.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="Exposure Delay" />
-                                <Border BorderThickness="1" BorderBrush="{Binding Path=ExposureDelay.ErrorColor}" >
-                                    <ComboBox  IsEnabled="{Binding Path=ExposureDelay.IsEnabled}" ItemsSource="{Binding Path=ExposureDelay.Values}" SelectedValue="{Binding Path=ExposureDelay.Value}" ToolTip="{Binding Path=ExposureDelay.Value}" />
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
-                    </Expander>
-                    
-                    <Expander Header="Display" IsExpanded="True">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="88*" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="90*" />
-                                <ColumnDefinition Width="5"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <CheckBox Content="{T:TranslateExtension LabelShowFocusRect}" IsChecked="{Binding Path=ShowFocusRect}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="2"/>
-                            <CheckBox Content="{translation:TranslateExtension LabelShowActiveArea}" IsChecked="{Binding Path=ShowRuler}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2"/>
-                            <Button Content="{translation:TranslateExtension LabelSetArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding SetAreaCommand}" Visibility="{Binding NoSettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-                            <Button Content="{translation:TranslateExtension LabelDoneArea}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="2" HorizontalAlignment="Right" Command="{Binding DoneSetAreaCommand}" Visibility="{Binding SettingArea, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-
-                            <Label Content="{T:TranslateExtension LabelBrightness}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" />
-                            <Slider Maximum="255" Minimum="-255" Value="{Binding Brightness}" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="1" TickFrequency="255" TickPlacement="BottomRight">
-                                <Slider.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="{T:TranslateExtension LabelReset}" Command="{Binding Path=ResetBrigthnessCommand}" />
-                                    </ContextMenu>
-                                </Slider.ContextMenu>
-                            </Slider>
-                            
-                        </Grid>
-                    </Expander>
-
-                    <Expander Header="Camera" IsExpanded="True">
-                        <StackPanel Margin="1" Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowBattery, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Label Content="{T:TranslateExtension Battery}"  Padding="1"/>
-                            <ProgressBar Minimum="0" Maximum="100" Height="20" Value="{Binding Path=SelectedCameraDevice.Battery}" ToolTip="{Binding Path=SelectedCameraDevice.Battery}" Style="{x:Null}" Margin="2" />                      
-                            <Label Content="{T:TranslateExtension LabelTransfer}" Padding="1" Margin="2"/>
-                            <ComboBox Name="cmb_transfer" ToolTip="{Binding ElementName=cmb_transfer, Path=SelectedItem}" Margin="2" SelectionChanged="cmb_transfer_SelectionChanged"/>
-                            <Controls:ToggleSwitch Header="{T:TranslateExtension LabelHostMode}" Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=SelectedCameraDevice.HostMode}" Margin="3" FontSize="12" />
-
-                        </StackPanel>
-                    </Expander>
-
-                </StackPanel>
-            </ScrollViewer>
-
+            <local:MacroCameraControl/>
         </Expander>
 
         <local:Joystick  IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"

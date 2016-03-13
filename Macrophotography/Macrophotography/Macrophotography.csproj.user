@@ -33,4 +33,14 @@
   <PropertyGroup>
     <ReferencePath>D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\</ReferencePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug NewCameraControl|AnyCPU'">
+    <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug NewCameraControl|x86'">
+    <StartProgram>D:\GitHub\digiCamControl-d8f3df6aa6cdb637043d7c5a81a61cfce713a8a0\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <StartAction>Program</StartAction>
+    <EnableSQLServerDebugging>true</EnableSQLServerDebugging>
+  </PropertyGroup>
 </Project>

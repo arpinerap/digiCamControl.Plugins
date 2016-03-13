@@ -29,7 +29,9 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-                <ResourceDictionary Source="../Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- The IconButtonStyle -->
@@ -266,7 +268,11 @@
                         Height="30" Width="30" Padding="-20"
                         Grid.Column="0" Grid.Row="0" Margin="10" 
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                    <Image Source="/macrophotography;component/resources/appbar.refresh.clockwise.up.png"/>
+                    <Rectangle Width="20" Height="20">
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>                  
                 </Button>
 
             </Grid>
