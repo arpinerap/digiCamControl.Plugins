@@ -46,9 +46,18 @@ namespace Macrophotography
         private PointCollection _greenColorHistogramPoints;
         private PointCollection _blueColorHistogramPoints;
         private PropertyValue<long> _exposureDelay;
+        private PropertyValue<long> _compressionSetting;
+        private PropertyValue<long> _rawCompressionType;
+        private PropertyValue<long> _imageSize;
+        private PropertyValue<long> _activePicCtrlItem;
+        private PropertyValue<long> _noiseReduction;
+        private PropertyValue<long> _flashCompensation;
+        private PropertyValue<long> _wbColorTemp;
+        private PropertyValue<long> _applicationMode;
+        private PropertyValue<long> _initFlash;
+        
 
-
-
+        
         public ICameraDevice SelectedCameraDevice
         {
             get { return _cameraDevice; }
@@ -211,6 +220,14 @@ namespace Macrophotography
             }
         }
 
+
+
+        
+
+        #region Camera Properties
+
+
+
         public CameraProperty CameraProperty
         {
             get { return _cameraProperty; }
@@ -230,6 +247,101 @@ namespace Macrophotography
                 RaisePropertyChanged(() => ExposureDelay);
             }
         }
+
+        public PropertyValue<long> CompressionSetting
+        {
+            get { return _compressionSetting; }
+            set
+            {
+                _compressionSetting = value;
+                RaisePropertyChanged(() => CompressionSetting);
+            }
+        }
+
+        public PropertyValue<long> RawCompressionType
+        {
+            get { return _rawCompressionType; }
+            set
+            {
+                _rawCompressionType = value;
+                RaisePropertyChanged(() => RawCompressionType);
+            }
+        }
+
+        public PropertyValue<long> ImageSize
+        {
+            get { return _imageSize; }
+            set
+            {
+                _imageSize = value;
+                RaisePropertyChanged(() => ImageSize);
+            }
+        }
+
+        public PropertyValue<long> ActivePicCtrlItem
+        {
+            get { return _activePicCtrlItem; }
+            set
+            {
+                _activePicCtrlItem = value;
+                RaisePropertyChanged(() => ActivePicCtrlItem);
+            }
+        }
+
+        public PropertyValue<long> NoiseReduction
+        {
+            get { return _noiseReduction; }
+            set
+            {
+                _noiseReduction = value;
+                RaisePropertyChanged(() => NoiseReduction);
+            }
+        }
+
+        public PropertyValue<long> FlashCompensation
+        {
+            get { return _flashCompensation; }
+            set
+            {
+                _flashCompensation = value;
+                RaisePropertyChanged(() => FlashCompensation);
+            }
+        }
+
+        public PropertyValue<long> WbColorTemp
+        {
+            get { return _wbColorTemp; }
+            set
+            {
+                _wbColorTemp = value;
+                RaisePropertyChanged(() => WbColorTemp);
+            }
+        }
+
+        public PropertyValue<long> ApplicationMode
+        {
+            get { return _applicationMode; }
+            set
+            {
+                _applicationMode = value;
+                RaisePropertyChanged(() => ApplicationMode);
+            }
+        }
+
+        public PropertyValue<long> InitFlash
+        {
+            get { return _initFlash; }
+            set
+            {
+                _initFlash = value;
+                RaisePropertyChanged(() => InitFlash);
+            }
+        }
+
+        
+        
+        
+        #endregion
 
         public int VerticalMax
         {
@@ -325,6 +437,15 @@ namespace Macrophotography
                 SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
                 CameraProperty = SelectedCameraDevice.LoadProperties();
                 ExposureDelay = SelectedCameraDevice.GetProperty(0xD06A);
+                InitFlash = SelectedCameraDevice.GetProperty(0x500C);
+                ApplicationMode = SelectedCameraDevice.GetProperty(0xD1F0);
+                WbColorTemp = SelectedCameraDevice.GetProperty(0xD01E);
+                FlashCompensation = SelectedCameraDevice.GetProperty(0xD124);
+                NoiseReduction = SelectedCameraDevice.GetProperty(0xD06B);
+                ActivePicCtrlItem = SelectedCameraDevice.GetProperty(0xD200);
+                ImageSize = SelectedCameraDevice.GetProperty(0x5003);
+                RawCompressionType = SelectedCameraDevice.GetProperty(0xD016);
+                CompressionSetting = SelectedCameraDevice.GetProperty(0x5004);
                 InitCommands();
                 ShowHistogram = true;
                 Init();
