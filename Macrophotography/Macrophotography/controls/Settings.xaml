@@ -10,6 +10,7 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              d:DesignHeight="200" d:DesignWidth="1800" Loaded="Window_Loaded">
+   
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -27,7 +28,9 @@
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-        </ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+
+        </ResourceDictionary>     
     </UserControl.Resources>
 
     <Grid>
@@ -56,19 +59,19 @@
                 <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="RadioButton_Click"/>
+                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
                 <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                 Grid.Row="1" Checked="ManuLensRdb_Checked" Click="RadioButton_Click"/>
+                                                 Grid.Row="1" Checked="ManuLensRdb_Checked" Click="ManuLensRdb_Click"/>
                 <RadioButton Content="Microscopy Lens" x:Name="MicroLensRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                 Grid.Row="2" Checked="MicroLensRdb_Checked" Click="RadioButton_Click"/>
+                                                 Grid.Row="2" Checked="MicroLensRdb_Checked" Click="MicroLensRdb_Click"/>
                 <RadioButton Content="Manual Properties" x:Name="ManuPropRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"                                                
-                                                Grid.Row="3" Checked="ManuPropRdb_Checked" Click="RadioButton_Click"/>
+                                                Grid.Row="3" Checked="ManuPropRdb_Checked" Click="ManuPropRdb_Click"/>
 
             </Grid>
         </GroupBox>
@@ -89,20 +92,16 @@
                 </Grid.ColumnDefinitions>
 
 
-                <controls:NumericUpDown x:Name="aperture_nud" controls:TextBoxHelper.Watermark="Aperture"
-                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                        
+                <controls:NumericUpDown x:Name="aperture_nud" controls:TextBoxHelper.Watermark="Aperture" Value="{Binding Aperture, Source={x:Static macrophotography:StepperManager.Instance}}"
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="0"
                         Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
-                <controls:NumericUpDown x:Name="apertureAF_nud" controls:TextBoxHelper.Watermark="Aperture"
-                        IsEnabled="False" 
-                        Value="{Binding Path=SelectedCameraDevice.FNumber.Value}"
-                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                        
-                        Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
-                        Grid.Column="1" Grid.Row="0"
-                        Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
+                <ComboBox x:Name="ApertureAF_combo" 
+                    Grid.Column="1" Grid.Row="0" Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                    IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"/>
 
-                <controls:NumericUpDown x:Name="NA_nud" controls:TextBoxHelper.Watermark="NA" controls:TextBoxHelper.ButtonsAlignment="Left"
+                <controls:NumericUpDown x:Name="NA_nud" controls:TextBoxHelper.Watermark="NA" controls:TextBoxHelper.ButtonsAlignment="Left" Value="{Binding NA, Source={x:Static macrophotography:StepperManager.Instance}}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="1"
@@ -110,7 +109,7 @@
                 <controls:NumericUpDown  x:Name="ShotDOF_nud"  Value="{Binding ShotDOF, Source={x:Static macrophotography:StepperManager.Instance}}" 
                         Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="2" Margin="5,3,5,3"
-                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"/>
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}" ValueChanged="sDoFCalcUpdate" />
                 <controls:NumericUpDown  x:Name="ShotStep_nud"  Value="{Binding ShotStep, Source={x:Static macrophotography:StepperManager.Instance}}"  
                         Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="3" Margin="5,3,5,3"
@@ -167,7 +166,8 @@
                 <TextBox x:Name="Lens_txt" 
                          Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
                          HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
-                         TextAlignment="Center" TextWrapping="NoWrap"/>              
+                         TextAlignment="Center" TextWrapping="NoWrap"/>     
+               
 
             </Grid>
         </GroupBox>

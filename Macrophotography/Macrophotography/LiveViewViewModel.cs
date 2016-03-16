@@ -55,6 +55,10 @@ namespace Macrophotography
         private PropertyValue<long> _wbColorTemp;
         private PropertyValue<long> _applicationMode;
         private PropertyValue<long> _initFlash;
+        private PropertyValue<long> _fNumber;
+        private PropertyValue<long> _levelAngle;
+        private PropertyValue<long> _angleLevelPitching;
+        private PropertyValue<long> _angleLevelYawing;
         
 
         
@@ -68,34 +72,13 @@ namespace Macrophotography
             }
         }
 
-        private decimal _levelAngle;
-        private string _levelAngleColor;
+
+       
         private int _rotation;
 
-        
 
 
-        public decimal LevelAngle
-        {
-            get { return _levelAngle; }
-            set
-            {
-                _levelAngle = value;
-                RaisePropertyChanged(() => LevelAngle);
-                LevelAngle = LiveViewData.LevelAngleRolling;
-                LevelAngleColor = _levelAngle % 90 <= 1 || _levelAngle % 90 >= 89 ? "Green" : "Red";
-            }
-        }
 
-        public string LevelAngleColor
-        {
-            get { return _levelAngleColor; }
-            set
-            {
-                _levelAngleColor = value;
-                RaisePropertyChanged(() => LevelAngleColor);
-            }
-        }
 
         public bool ShowFocusRect
         {
@@ -338,6 +321,63 @@ namespace Macrophotography
             }
         }
 
+        public PropertyValue<long> FNumber
+        {
+            get { return _fNumber; }
+            set
+            {
+                _fNumber = value;
+                RaisePropertyChanged(() => FNumber);
+            }
+        }
+
+        public PropertyValue<long> LevelAngle
+        {
+            get { return _levelAngle; }
+            set
+            {
+                _levelAngle = value;
+                RaisePropertyChanged(() => LevelAngle);
+            }
+        }
+
+        public PropertyValue<long> AngleLevelPitching
+        {
+            get { return _angleLevelPitching; }
+            set
+            {
+                _angleLevelPitching = value;
+                RaisePropertyChanged(() => AngleLevelPitching);
+            }
+        }
+
+
+        public PropertyValue<long> AngleLevelYawing
+        {
+            get { return _angleLevelYawing; }
+            set
+            {
+                _angleLevelYawing = value;
+                RaisePropertyChanged(() => AngleLevelYawing);
+            }
+        }
+
+
+
+
+        private string _levelAngleColor;
+        public string LevelAngleColor
+        {
+            get { return _levelAngleColor; }
+            set
+            {
+                _levelAngleColor = value;
+                RaisePropertyChanged(() => LevelAngleColor);
+            }
+        }
+
+        
+
         
         
         
@@ -436,6 +476,7 @@ namespace Macrophotography
             {
                 SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
                 CameraProperty = SelectedCameraDevice.LoadProperties();
+                
                 ExposureDelay = SelectedCameraDevice.GetProperty(0xD06A);
                 InitFlash = SelectedCameraDevice.GetProperty(0x500C);
                 ApplicationMode = SelectedCameraDevice.GetProperty(0xD1F0);
@@ -446,6 +487,11 @@ namespace Macrophotography
                 ImageSize = SelectedCameraDevice.GetProperty(0x5003);
                 RawCompressionType = SelectedCameraDevice.GetProperty(0xD016);
                 CompressionSetting = SelectedCameraDevice.GetProperty(0x5004);
+                FNumber = SelectedCameraDevice.GetProperty(0x5007);
+                LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
+                AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
+                AngleLevelYawing = SelectedCameraDevice.GetProperty(0xD07E);
+                
                 InitCommands();
                 ShowHistogram = true;
                 Init();

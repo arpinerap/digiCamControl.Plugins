@@ -337,10 +337,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataBase\Settings.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DataBase\Settings_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Settings.mdf</DependentUpon>
     </Content>
     <Resource Include="Resources\appbar.flip.left.png" />

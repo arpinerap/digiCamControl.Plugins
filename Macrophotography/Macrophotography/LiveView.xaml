@@ -330,10 +330,10 @@
 
         <GroupBox Header="3d Position" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
             <StackPanel Orientation="Vertical">
-                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngle}"/>
-                <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
-                <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True"/>
-                <TextBox  x:Name="LevelAngle_txt" Text="{Binding LevelAngleRolling}" Width="50" BorderThickness="0"/>
+                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=LevelAngle.value}"/>
+                <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngleLevelPitching.value}"/>
+                <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngelLevelYawing.value}"/>
+                <TextBox  x:Name="LevelAngle_txt" Width="50" BorderThickness="0" Text="{Binding Path=AngelLevelYawing}" />
             </StackPanel>
         </GroupBox>
 
@@ -369,7 +369,8 @@
                     </Rectangle.Fill>
                 </Rectangle>
             </ToggleButton>
-            <Canvas Width="40" Height="40" Margin="5" RenderTransformOrigin="0.5,0.5" ToolTip="{Binding LevelAngle}">
+            <Canvas Width="40" Height="40" Margin="5" RenderTransformOrigin="0.5,0.5" ToolTip="{Binding LevelAngle}"
+                    Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowLevelLiveView, Converter={StaticResource BooleanToVisibilityConverter1}}">
                 <Path x:Name="Cutter" Width="30" Height="30" RenderTransformOrigin="0.5,0.5"  Canvas.Left="5" Canvas.Top="5" Stretch="Fill" Fill="{Binding LevelAngleColor}" Data="F1 M 56,36L 56,40L 40,40L 40,56L 36,56L 36,40L 20,40L 20,36L 36,36L 36,20L 40,20L 40,36L 56,36 Z M 8,37L 8,39L 3.01401,39L 3,38L 3.01401,37L 8,37 Z M 13,37L 13,39L 10,39L 10,37L 13,37 Z M 18,37L 18,39L 15,39L 15,37L 18,37 Z M 39,8.00005L 37,8.00005L 37,3.01403L 38,3.00002L 39,3.01403L 39,8.00005 Z M 39,18.0001L 37,18.0001L 37,15.0001L 39,15.0001L 39,18.0001 Z M 37,10.0001L 39,10.0001L 39,13.0001L 37,13.0001L 37,10.0001 Z M 68,39L 68,37L 72.986,37L 73,38L 72.986,39L 68,39 Z M 63,39L 63,37L 66,37L 66,39L 63,39 Z M 57.9999,39L 57.9999,37L 61,37L 61,39L 57.9999,39 Z M 37,68L 39,68L 39,72.986L 38,73L 37,72.986L 37,68 Z M 37,63L 39,63L 39,66L 37,66L 37,63 Z M 37,58L 39,58L 39,61L 37,61L 37,58 Z ">
                     <Path.RenderTransform>
                         <RotateTransform Angle="{Binding LevelAngle}"  />

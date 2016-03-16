@@ -49,6 +49,9 @@ namespace Macrophotography
         private int _PlusNearShots = 0;
         private int _PlusFarShots = 0;
 
+        private double _aperture = 0;
+        private double _nA = 0;
+
 
 
 
@@ -357,6 +360,27 @@ namespace Macrophotography
         public bool IsFree
         {
             get { return !IsBusy; }
+        }
+
+
+        public double Aperture
+        {
+            get { return _aperture; }
+            set
+            {
+                _aperture = value;
+                RaisePropertyChanged(() => Aperture);
+            }
+        }
+
+        public double NA
+        {
+            get { return _nA; }
+            set
+            {
+                _nA = value;
+                RaisePropertyChanged(() => NA);
+            }
         }
 
 
