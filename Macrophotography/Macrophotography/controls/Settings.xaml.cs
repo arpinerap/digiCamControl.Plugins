@@ -34,12 +34,6 @@ namespace Macrophotography.controls
         public Settings()
         {
             InitializeComponent();
-            
-        }
-
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
             LensParameters_grpbx.IsEnabled = false;
             //LensPresets_grpbx.IsEnabled = false;
             Fill_ComboName();
@@ -53,10 +47,17 @@ namespace Macrophotography.controls
                 ChkAFLens();
             }
             else
-            {               
+            {
                 NameLens_Combo.SelectedIndex = 0;
-                Fill_LensData();              
+                Fill_LensData();
             }
+            
+        }
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            
            
         }
 

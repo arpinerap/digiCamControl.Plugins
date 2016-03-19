@@ -11,7 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+//using System.Windows.Shapes;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using Macrophotography.controls;
@@ -19,6 +20,7 @@ using Macrophotography;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Devices;
+using Newtonsoft.Json;
 
 
 namespace Macrophotography.controls
@@ -70,6 +72,8 @@ namespace Macrophotography.controls
             }
         }
 
+
+        #region Slider Manager
         private void NearFocus_btn_Click(object sender, RoutedEventArgs e)
         {
             StepperManager.Instance.SetNearFocus();
@@ -117,6 +121,10 @@ namespace Macrophotography.controls
         {
             MoveToNewPosition();
         }
+
+        #endregion
+
+
 
         private void PulseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -197,6 +205,22 @@ namespace Macrophotography.controls
             }
             StepperManager.Instance.IsBusy = false;
         }
+
+
+        private void CombineZP()
+        {
+            string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName), Path.GetFileNameWithoutExtension(Files[0].FileName) + "_enfuse" + ".jpg");
+            newFile = PhotoUtils.GetNextFileName(newFile);
+            dynamic data = new System.Dynamic.ExpandoObject();
+            data.Files = Files.Select(x => x.FileName).ToList();
+            data.ResultFile = newFile;
+            data.ThumbOnly = true;
+            var s = JsonConvert.SerializeObject(data);
+            ServiceProvider.PluginManager.GetExecutePlugin("{F3155291-D688-49B8-B22D-E74A2D5E020E}").Execute(s);
+            //.... do something with data.ResultFile ..................
+        }
+
+
 
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
