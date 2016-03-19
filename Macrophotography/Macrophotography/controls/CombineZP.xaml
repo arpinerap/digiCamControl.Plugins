@@ -14,7 +14,7 @@
              d:DesignHeight="200" d:DesignWidth="2000">
 
     <UserControl.DataContext>
-        <toolPlugins:StackViewModel/>
+        <toolPlugins:CombineZpViewModel/>
     </UserControl.DataContext>
 
 

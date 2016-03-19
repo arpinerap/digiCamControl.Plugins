@@ -9,6 +9,7 @@
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
+             xmlns:devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
              d:DesignHeight="200" d:DesignWidth="1800" Loaded="Window_Loaded">
    
 
@@ -56,7 +57,8 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}"
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" 
+                             Visibility="{Binding SelectedCameraDevice.FNumber.Available}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                 Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
@@ -166,8 +168,14 @@
                 <TextBox x:Name="Lens_txt" 
                          Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
                          HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
-                         TextAlignment="Center" TextWrapping="NoWrap"/>     
-               
+                         TextAlignment="Center" TextWrapping="NoWrap"/>
+
+                <controls:NumericUpDown x:Name="apertureAF_nud" controls:TextBoxHelper.Watermark="Aperture" Value="{Binding Path=SelectedCameraDevice.FNumber.NumericValue}"
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
+                        Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                        Grid.Column="1" Grid.Row="3"
+                        Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
+
 
             </Grid>
         </GroupBox>

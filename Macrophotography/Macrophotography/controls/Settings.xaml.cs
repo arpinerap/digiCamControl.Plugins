@@ -198,8 +198,8 @@ namespace Macrophotography.controls
         private void AFLensRdb_Click(object sender, RoutedEventArgs e)
         {
             Clear_LensData();
-            ChkAFLens();
-            
+            ChkAFLens();           
+            ApertureAF_combo.SelectedItem = ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value;
 
         }
         private void ManuLensRdb_Click(object sender, RoutedEventArgs e)
