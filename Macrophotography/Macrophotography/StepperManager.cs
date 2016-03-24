@@ -18,7 +18,8 @@ namespace Macrophotography
 
         private SerialPort sp = new SerialPort();
         private static StepperManager _instance;
-        private int _speed = 100;
+        private int _speed = 50;
+        private int _speed3d = 200;
         private bool _isBusy;
         private bool _IsNearFocusLocked; 
         private bool _IsFarFocusLocked;
@@ -175,6 +176,30 @@ namespace Macrophotography
             get { return !IsFarFocusLocked; }
         }
 
+        private bool _IsStacking;
+        public bool IsStacking
+        {
+            get { return _IsStacking; }
+            set
+            {
+                _IsStacking = value;
+                RaisePropertyChanged(() => IsStacking);
+                RaisePropertyChanged(() => IsNotStacking);
+            }
+        }
+
+        public bool IsNotStacking
+        {
+            get { return !IsStacking; }
+            set
+            {
+                IsNotStacking = value;
+                RaisePropertyChanged(() => IsNotStacking);
+                RaisePropertyChanged(() => IsStacking);
+            }
+        }
+
+
         public bool GoNearToFar
         {
             get { return _GoNearToFar; }
@@ -198,6 +223,16 @@ namespace Macrophotography
             {
                 _speed = value;
                 RaisePropertyChanged(() => Speed);
+            }
+        }
+
+        public int Speed3d
+        {
+            get { return _speed3d; }
+            set
+            {
+                _speed3d = value;
+                RaisePropertyChanged(() => Speed3d);
             }
         }
 
@@ -451,6 +486,24 @@ namespace Macrophotography
                 ShotStepFull = ShotStep - (ShotStep * Overlap / 100);
             }
         }
+
+        #endregion
+
+        #region AF Lens
+
+        private bool _AFLensConnected;
+
+        public bool AFLensConnected
+        {
+            get { return _AFLensConnected; }
+            set
+            {
+                _AFLensConnected = value;
+                RaisePropertyChanged(() => AFLensConnected);
+            }
+        }
+
+
 
         #endregion
     }

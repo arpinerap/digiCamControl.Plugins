@@ -330,13 +330,13 @@
 
         <GroupBox Header="3d Position" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
             <StackPanel Orientation="Vertical">
-                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=LevelAngle.value}"/>
+                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=LevelAngleRolling.value}"/>
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngleLevelPitching.value}"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngelLevelYawing.value}"/>
                 <TextBox  x:Name="LevelAngle_txt" Width="50" BorderThickness="0" Text="{Binding Path=AngelLevelYawing}" />
                 <ComboBox x:Name="ApertureAF_combo" 
-                    Visibility="{Binding AngelLevelYawing.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
-                    IsEnabled="{Binding Path=AngelLevelYawing.IsEnabled}" ItemsSource="{Binding Path=AngelLevelYawing.Values}" SelectedValue="{Binding Path=AngelLevelYawing.Value}"/>
+                    Visibility="{Binding LevelAngleRolling.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                    IsEnabled="{Binding Path=LevelAngleRolling.IsEnabled}" ItemsSource="{Binding Path=LevelAngleRolling.Values}" SelectedValue="{Binding Path=LevelAngleRolling.Value}"/>
             </StackPanel>
         </GroupBox>
 

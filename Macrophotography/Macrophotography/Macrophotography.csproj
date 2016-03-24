@@ -194,6 +194,7 @@
     <Compile Include="ArduinoPorts.cs" />
     <Compile Include="Classes\Lens.cs" />
     <Compile Include="Classes\MilimetersConverter.cs" />
+    <Compile Include="Classes\ProgressReport.cs" />
     <Compile Include="Classes\Rail.cs" />
     <Compile Include="Classes\RoundPolyline.cs" />
     <Compile Include="Classes\Sensor.cs" />

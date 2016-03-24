@@ -311,11 +311,11 @@
                     Grid.Column="0" Height="70" HorizontalAlignment="Left" Margin="5,0,0,0"
                     Orientation="Vertical" VerticalAlignment="Center"
                     AutoToolTipPlacement="BottomRight"
-                Minimum="1" Maximum="50">
+                Minimum="1" Maximum="100">
         </Slider>
 
         <Button x:Name="rot1_button" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
-                        Height="40" Width="40" Margin="-30,60,-40,-40" Padding="-30"
+                        Height="40" Width="40" Margin="-30,60,-40,-40" Padding="-20"
                         Grid.Column="1" 
                         HorizontalAlignment="Center" VerticalAlignment="Top" Click="rot1_button_Click">
             <Image Source="/macrophotography;component/resources/appbar.refresh.clockwise.up.png"/>  
@@ -324,35 +324,35 @@
 
 
         <Button Style="{DynamicResource IconButtonStyle}" x:Name="rot2_button" Visibility="Hidden"
-                        Height="40" Width="40" Margin="-30,-40,-40,60" Padding="-30"
+                        Height="40" Width="40" Margin="-30,-40,-40,60" Padding="-20"
                         Grid.Column="1" 
                         HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="rot2_button_Click">
             <Image  Source="/macrophotography;component/resources/appbar.refresh.counterclockwise.down.png"/>
         </Button>
 
         <Button x:Name="FlipDown_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
-                        Height="50" Width="50" Padding="-30"
+                        Height="50" Width="50" Padding="-20"
                         Grid.Column="1" 
                         HorizontalAlignment="Center" VerticalAlignment="Top" Click="FlipDown_Button_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.down.png" />
         </Button>
 
         <Button x:Name="FlipUp_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
-                        Height="50" Width="50" Padding="-30"
+                        Height="50" Width="50" Padding="-20"
                         Grid.Column="0" 
                         HorizontalAlignment="Left" VerticalAlignment="Top" Click="FlipUp_Button_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.up.png"/>
         </Button>
 
         <Button x:Name="FlipLeft_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
-                        Height="50" Width="50" Padding="-30"
+                        Height="50" Width="50" Padding="-20"
                         Grid.Column="0" 
                         HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="FlipLeft_btn_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.left.png" />
         </Button>
 
         <Button x:Name="FlipRight_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
-                        Height="50" Width="50" Padding="-30"
+                        Height="50" Width="50" Padding="-20"
                         Grid.Column="1" 
                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="FlipRight_btn_Click">
             <Image Source="/macrophotography;component/resources/appbar.flip.right.png" />

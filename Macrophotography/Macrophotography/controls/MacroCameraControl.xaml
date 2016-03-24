@@ -345,13 +345,7 @@
                             <Border BorderThickness="1" BorderBrush="{Binding Path=ExposureDelay.ErrorColor}" >
                                 <ComboBox  IsEnabled="{Binding Path=ExposureDelay.IsEnabled}" ItemsSource="{Binding Path=ExposureDelay.Values}" SelectedValue="{Binding Path=ExposureDelay.Value}" ToolTip="{Binding Path=ExposureDelay.Value}" />
                             </Border>
-                        </StackPanel>
-                        <StackPanel Margin="1" Visibility="{Binding InitFlash.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Label Content="Flash Sync" />
-                            <Border BorderThickness="1" BorderBrush="{Binding Path=InitFlash.ErrorColor}" >
-                                <ComboBox  IsEnabled="{Binding Path=InitFlash.IsEnabled}" ItemsSource="{Binding Path=InitFlash.Values}" SelectedValue="{Binding Path=InitFlash.Value}" ToolTip="{Binding Path=InitFlash.Value}" />
-                            </Border>
-                        </StackPanel>
+                        </StackPanel>                        
                         <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.WhiteBalance.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Label Content="{translation:TranslateExtension WhiteBalance}" Target="{Binding ElementName=cmb_WB}"/>
                             <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.WhiteBalance.ErrorColor}" >
@@ -370,13 +364,63 @@
                                 <ComboBox  IsEnabled="{Binding Path=NoiseReduction.IsEnabled}" ItemsSource="{Binding Path=NoiseReduction.Values}" SelectedValue="{Binding Path=NoiseReduction.Value}" ToolTip="{Binding Path=NoiseReduction.Value}" />
                             </Border>
                         </StackPanel>
-                        <StackPanel Margin="1" Visibility="{Binding ApplicationMode.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Margin="1" Visibility="{Binding NoiseReductionHiIso.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Label Content="High ISO NR" />
-                            <Border BorderThickness="1" BorderBrush="{Binding Path=ApplicationMode.ErrorColor}" >
-                                <ComboBox  IsEnabled="{Binding Path=ApplicationMode.IsEnabled}" ItemsSource="{Binding Path=ApplicationMode.Values}" SelectedValue="{Binding Path=ApplicationMode.Value}" ToolTip="{Binding Path=ApplicationMode.Value}" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=NoiseReductionHiIso.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=NoiseReductionHiIso.IsEnabled}" ItemsSource="{Binding Path=NoiseReductionHiIso.Values}" SelectedValue="{Binding Path=NoiseReductionHiIso.Value}" ToolTip="{Binding Path=NoiseReductionHiIso.Value}" />
                             </Border>
                         </StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding DLighting.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="D-Lighting" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=DLighting.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=DLighting.IsEnabled}" ItemsSource="{Binding Path=DLighting.Values}" SelectedValue="{Binding Path=DLighting.Value}" ToolTip="{Binding Path=DLighting.Value}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding HDRMode.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="HDR Mode" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=HDRMode.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=HDRMode.IsEnabled}" ItemsSource="{Binding Path=HDRMode.Values}" SelectedValue="{Binding Path=HDRMode.Value}" ToolTip="{Binding Path=HDRMode.Value}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding HDREv.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="HDR Ev" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=HDREv.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=HDREv.IsEnabled}" ItemsSource="{Binding Path=HDREv.Values}" SelectedValue="{Binding Path=HDREv.Value}" ToolTip="{Binding Path=HDREv.Value}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding HDRSmoothing.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="HDR Smoothing" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=HDRSmoothing.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=HDRSmoothing.IsEnabled}" ItemsSource="{Binding Path=HDRSmoothing.Values}" SelectedValue="{Binding Path=HDRSmoothing.Value}" ToolTip="{Binding Path=HDRSmoothing.Value}" />
+                            </Border>
+                        </StackPanel>
+
                     </StackPanel>
+                </Expander>
+
+                <Expander Header="Flash" IsExpanded="False">
+                    <StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding InitFlash.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="Flash Sync" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=InitFlash.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=InitFlash.IsEnabled}" ItemsSource="{Binding Path=InitFlash.Values}" SelectedValue="{Binding Path=InitFlash.Value}" ToolTip="{Binding Path=InitFlash.Value}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding FlashSyncSpeed.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="Flash Sync Speed" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=FlashSyncSpeed.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=FlashSyncSpeed.IsEnabled}" ItemsSource="{Binding Path=FlashSyncSpeed.Values}" SelectedValue="{Binding Path=FlashSyncSpeed.Value}" ToolTip="{Binding Path=FlashSyncSpeed.Value}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding FlashCompensation.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="Flash Compensation" />
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=FlashCompensation.ErrorColor}" >
+                                <ComboBox  IsEnabled="{Binding Path=FlashCompensation.IsEnabled}" ItemsSource="{Binding Path=FlashCompensation.Values}" SelectedValue="{Binding Path=FlashCompensation.Value}" ToolTip="{Binding Path=FlashCompensation.Value}" />
+                            </Border>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                
                 </Expander>
 
                 <Expander Header="Display" IsExpanded="True">
@@ -411,14 +455,16 @@
                     </Grid>
                 </Expander>
                 
-                <Expander Header="Files" IsExpanded="True">
+                <Expander Header="Files" IsExpanded="False">
                     <StackPanel>
-                        <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.CompressionSetting.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Label Content="{translation:TranslateExtension Compression}" Target="{Binding ElementName=cmb_com}"/>
-                            <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.CompressionSetting.ErrorColor}" >
-                                <ComboBox Name="cmb_com" IsEnabled="{Binding Path=SelectedCameraDevice.CompressionSetting.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.CompressionSetting.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.CompressionSetting.Value}" ToolTip="{Binding Path=CompressionSetting.Value}"/>
+                        <StackPanel Margin="1" Visibility="{Binding ActiveSlot.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="Active Slot"/>
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=ActiveSlot.ErrorColor}" >
+                                <ComboBox IsEnabled="{Binding Path=ActiveSlot.IsEnabled}" ItemsSource="{Binding Path=ActiveSlot.Values}" SelectedValue="{Binding Path=ActiveSlot.Value}" ToolTip="{Binding Path=ActiveSlot.Value}"/>
                             </Border>
                         </StackPanel>
+
+                       
                         <StackPanel Margin="1" Visibility="{Binding RawCompressionType.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Label Content="Raw Compression"/>
                             <Border BorderThickness="1" BorderBrush="{Binding Path=RawCompressionType.ErrorColor}" >
@@ -431,22 +477,42 @@
                                 <ComboBox IsEnabled="{Binding Path=ImageSize.IsEnabled}" ItemsSource="{Binding Path=ImageSize.Values}" SelectedValue="{Binding Path=ImageSize.Value}" ToolTip="{Binding Path=ImageSize.Value}"/>
                             </Border>
                         </StackPanel>
-                        <StackPanel>
-                            <Label Content="{T:TranslateExtension LabelTransfer}" Padding="1" Margin="2"/>
-                            <ComboBox Name="cmb_transfer" ToolTip="{Binding ElementName=cmb_transfer, Path=SelectedItem}" Margin="2" SelectionChanged="cmb_transfer_SelectionChanged"/>
+                        <StackPanel Margin="1" Visibility="{Binding CaptureAreaCrop.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="Capt Area Crop"/>
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=CaptureAreaCrop.ErrorColor}" >
+                                <ComboBox IsEnabled="{Binding Path=CaptureAreaCrop.IsEnabled}" ItemsSource="{Binding Path=CaptureAreaCrop.Values}" SelectedValue="{Binding Path=CaptureAreaCrop.Value}" ToolTip="{Binding Path=CaptureAreaCrop.Value}"/>
+                            </Border>
                         </StackPanel>
+                       
                     </StackPanel>
                     
                 </Expander>
 
                 <Expander Header="Camera" IsExpanded="True">
-                    <StackPanel Margin="1" Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowBattery, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Label Content="{T:TranslateExtension Battery}"  Padding="1"/>
-                        <ProgressBar Minimum="0" Maximum="100" Height="20" Value="{Binding Path=SelectedCameraDevice.Battery}" ToolTip="{Binding Path=SelectedCameraDevice.Battery}" Style="{x:Null}" Margin="2" />
-                        
+                    <StackPanel>
+                        <StackPanel Margin="1" Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Branding}, Path=ShowBattery, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="{T:TranslateExtension Battery}"  Padding="1"/>
+                            <ProgressBar Minimum="0" Maximum="100" Height="20" Value="{Binding Path=SelectedCameraDevice.Battery}" ToolTip="{Binding Path=SelectedCameraDevice.Battery}" Style="{x:Null}" Margin="2" />                           
+                        </StackPanel>
+
+                        <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.CompressionSetting.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Label Content="{translation:TranslateExtension Compression}" Target="{Binding ElementName=cmb_com}"/>
+                            <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.CompressionSetting.ErrorColor}" >
+                                <ComboBox Name="cmb_com" IsEnabled="{Binding Path=SelectedCameraDevice.CompressionSetting.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.CompressionSetting.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.CompressionSetting.Value}" ToolTip="{Binding Path=CompressionSetting.Value}"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="{T:TranslateExtension LabelTransfer}" Padding="1" Margin="2"/>
+                            <ComboBox Name="cmb_transfer" ToolTip="{Binding ElementName=cmb_transfer, Path=SelectedItem}" Margin="2" SelectionChanged="cmb_transfer_SelectionChanged"/>
+                        </StackPanel>
+
                         <Controls:ToggleSwitch Header="{T:TranslateExtension LabelHostMode}" Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=SelectedCameraDevice.HostMode}" Margin="3" FontSize="12" />
 
+
+
                     </StackPanel>
+                    
                 </Expander>
 
             </StackPanel>

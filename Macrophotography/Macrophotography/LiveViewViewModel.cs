@@ -56,11 +56,21 @@ namespace Macrophotography
         private PropertyValue<long> _applicationMode;
         private PropertyValue<long> _initFlash;
         private PropertyValue<long> _fNumber;
-        private PropertyValue<long> _levelAngle;
+        private PropertyValue<long> _captureAreaCrop;
+        private PropertyValue<long> _LevelAngle;
         private PropertyValue<long> _angleLevelPitching;
         private PropertyValue<long> _angleLevelYawing;
+        private PropertyValue<long> _dLighting;
+        private PropertyValue<long> _HDRMode;
+        private PropertyValue<long> _HDREv;
+        private PropertyValue<long> _HDRSmoothing;
+        private PropertyValue<long> _FocalLength;
+        private PropertyValue<long> _NoiseReductionHiIso;
+        private PropertyValue<long> _FlashSyncSpeed;
+        private PropertyValue<long> _ActiveSlot;
+        private PropertyValue<long> _LensSort;
+        private PropertyValue<long> _LensType;
         
-
         
         public ICameraDevice SelectedCameraDevice
         {
@@ -71,14 +81,8 @@ namespace Macrophotography
                 RaisePropertyChanged(() => SelectedCameraDevice);
             }
         }
-
-
        
         private int _rotation;
-
-
-
-
 
         public bool ShowFocusRect
         {
@@ -89,8 +93,6 @@ namespace Macrophotography
                 RaisePropertyChanged(() => ShowFocusRect);
             }
         }
-
-
 
 
         #region Commands
@@ -140,8 +142,8 @@ namespace Macrophotography
 
         #endregion
 
+        #region Others
 
-        
         public bool ShowRuler
         {
             get { return CameraProperty.LiveviewSettings.ShowRuler; }
@@ -205,7 +207,90 @@ namespace Macrophotography
 
 
 
-        
+
+
+
+        public int VerticalMax
+        {
+            get { return CameraProperty.LiveviewSettings.VerticalMax; }
+            set
+            {
+                CameraProperty.LiveviewSettings.VerticalMax = value;
+                RaisePropertyChanged(() => RullerRect);
+            }
+        }
+
+        public int Brightness
+        {
+            get { return CameraProperty.LiveviewSettings.Brightness; }
+            set
+            {
+                CameraProperty.LiveviewSettings.Brightness = value;
+                RaisePropertyChanged(() => Brightness);
+            }
+        }
+
+        public bool BlackAndWhite
+        {
+            get { return CameraProperty.LiveviewSettings.BlackAndWhite; }
+            set
+            {
+                CameraProperty.LiveviewSettings.BlackAndWhite = value;
+                RaisePropertyChanged(() => BlackAndWhite);
+            }
+        }
+
+        public bool EdgeDetection
+        {
+            get { return CameraProperty.LiveviewSettings.EdgeDetection; }
+            set
+            {
+                CameraProperty.LiveviewSettings.EdgeDetection = value;
+                RaisePropertyChanged(() => EdgeDetection);
+            }
+        }
+
+        public BitmapSource Bitmap
+        {
+            get { return _bitmap; }
+            set
+            {
+                _bitmap = value;
+                RaisePropertyChanged(() => Bitmap);
+            }
+        }
+
+        public int RotationIndex
+        {
+            get { return CameraProperty.LiveviewSettings.RotationIndex; }
+            set
+            {
+                CameraProperty.LiveviewSettings.RotationIndex = value;
+                RaisePropertyChanged(() => RotationIndex);
+            }
+        }
+
+        public int Rotation
+        {
+            get { return _rotation; }
+            set
+            {
+                _rotation = value;
+                RaisePropertyChanged(() => Rotation);
+            }
+        }
+
+
+        public bool IsActive { get; set; }
+        public LiveViewData LiveViewData { get; set; }
+
+        public RelayCommand StartLiveViewCommand { get; set; }
+        public RelayCommand StopLiveViewCommand { get; set; }
+
+        public RelayCommand SetAreaCommand { get; set; }
+        public RelayCommand DoneSetAreaCommand { get; set; }
+
+        #endregion
 
         #region Camera Properties
 
@@ -333,10 +418,10 @@ namespace Macrophotography
 
         public PropertyValue<long> LevelAngle
         {
-            get { return _levelAngle; }
+            get { return _LevelAngle; }
             set
             {
-                _levelAngle = value;
+                _LevelAngle = value;
                 RaisePropertyChanged(() => LevelAngle);
             }
         }
@@ -351,7 +436,6 @@ namespace Macrophotography
             }
         }
 
-
         public PropertyValue<long> AngleLevelYawing
         {
             get { return _angleLevelYawing; }
@@ -362,8 +446,123 @@ namespace Macrophotography
             }
         }
 
+        public PropertyValue<long> CaptureAreaCrop
+        {
+            get { return _captureAreaCrop; }
+            set
+            {
+                _captureAreaCrop = value;
+                RaisePropertyChanged(() => CaptureAreaCrop);
+            }
+        }
+
+        public PropertyValue<long> DLighting
+        {
+            get { return _dLighting; }
+            set
+            {
+                _dLighting = value;
+                RaisePropertyChanged(() => DLighting);
+            }
+        }
+
+        public PropertyValue<long> HDRMode
+        {
+            get { return _HDRMode; }
+            set
+            {
+                _HDRMode = value;
+                RaisePropertyChanged(() => HDRMode);
+            }
+        }
+
+        public PropertyValue<long> HDREv
+        {
+            get { return _HDREv; }
+            set
+            {
+                _HDREv = value;
+                RaisePropertyChanged(() => HDREv);
+            }
+        }
+
+        public PropertyValue<long> HDRSmoothing
+        {
+            get { return _HDRSmoothing; }
+            set
+            {
+                _HDRSmoothing = value;
+                RaisePropertyChanged(() => HDRSmoothing);
+            }
+        }
+
+        public PropertyValue<long> FocalLength
+        {
+            get { return _FocalLength; }
+            set
+            {
+                _FocalLength = value;
+                RaisePropertyChanged(() => FocalLength);
+            }
+        }
+
+        public PropertyValue<long> NoiseReductionHiIso
+        {
+            get { return _NoiseReductionHiIso; }
+            set
+            {
+                _NoiseReductionHiIso = value;
+                RaisePropertyChanged(() => NoiseReductionHiIso);
+            }
+        }
+
+        public PropertyValue<long> FlashSyncSpeed
+        {
+            get { return _FlashSyncSpeed; }
+            set
+            {
+                _FlashSyncSpeed = value;
+                RaisePropertyChanged(() => FlashSyncSpeed);
+            }
+        }
+
+        public PropertyValue<long> ActiveSlot
+        {
+            get { return _ActiveSlot; }
+            set
+            {
+                _ActiveSlot = value;
+                RaisePropertyChanged(() => ActiveSlot);
+            }
+        }
+
+        public PropertyValue<long> LensSort
+        {
+            get { return _LensSort; }
+            set
+            {
+                _LensSort = value;
+                RaisePropertyChanged(() => LensSort);
+                //AFLensConnected = _LensSort % 90 <= 1 || _LensSort % 90 >= 89 ? "True" : "False";
+            }
+        }
+
+        public PropertyValue<long> LensType
+        {
+            get { return _LensType; }
+            set
+            {
+                _LensType = value;
+                RaisePropertyChanged(() => LensType);
+            }
+        }
 
 
+
+        
+
+
+        
 
         private string _levelAngleColor;
         public string LevelAngleColor
@@ -376,92 +575,16 @@ namespace Macrophotography
             }
         }
 
-        
 
-        
-        
-        
+
+
+
+
         #endregion
 
-        public int VerticalMax
-        {
-            get { return CameraProperty.LiveviewSettings.VerticalMax; }
-            set
-            {
-                CameraProperty.LiveviewSettings.VerticalMax = value;
-                RaisePropertyChanged(() => RullerRect);
-            }
-        }
-
-        public int Brightness
-        {
-            get { return CameraProperty.LiveviewSettings.Brightness; }
-            set
-            {
-                CameraProperty.LiveviewSettings.Brightness = value;
-                RaisePropertyChanged(() => Brightness);
-            }
-        }
-
-        public bool BlackAndWhite
-        {
-            get { return CameraProperty.LiveviewSettings.BlackAndWhite; }
-            set
-            {
-                CameraProperty.LiveviewSettings.BlackAndWhite = value;
-                RaisePropertyChanged(() => BlackAndWhite);
-            }
-        }
-
-        public bool EdgeDetection
-        {
-            get { return CameraProperty.LiveviewSettings.EdgeDetection; }
-            set
-            {
-                CameraProperty.LiveviewSettings.EdgeDetection = value;
-                RaisePropertyChanged(() => EdgeDetection);
-            }
-        }
-
-        public BitmapSource Bitmap
-        {
-            get { return _bitmap; }
-            set
-            {
-                _bitmap = value;
-                RaisePropertyChanged(() => Bitmap);
-            }
-        }
-
-        public int RotationIndex
-        {
-            get { return CameraProperty.LiveviewSettings.RotationIndex; }
-            set
-            {
-                CameraProperty.LiveviewSettings.RotationIndex = value;
-                RaisePropertyChanged(() => RotationIndex);
-            }
-        }
-
-        public int Rotation
-        {
-            get { return _rotation; }
-            set
-            {
-                _rotation = value;
-                RaisePropertyChanged(() => Rotation);
-            }
-        }
 
 
-        public bool IsActive { get; set; }
-        public LiveViewData LiveViewData { get; set; }
 
-        public RelayCommand StartLiveViewCommand { get; set; }
-        public RelayCommand StopLiveViewCommand { get; set; }
-
-        public RelayCommand SetAreaCommand { get; set; }
-        public RelayCommand DoneSetAreaCommand { get; set; }
 
         public LiveViewViewModel()
         {
@@ -491,6 +614,18 @@ namespace Macrophotography
                 LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
                 AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
                 AngleLevelYawing = SelectedCameraDevice.GetProperty(0xD07E);
+                CaptureAreaCrop = SelectedCameraDevice.GetProperty(0xD030);
+                DLighting = SelectedCameraDevice.GetProperty(0xD14E);
+                HDRMode = SelectedCameraDevice.GetProperty(0xD130);
+                HDREv = SelectedCameraDevice.GetProperty(0xD131);
+                HDRSmoothing = SelectedCameraDevice.GetProperty(0xD132);
+                FocalLength = SelectedCameraDevice.GetProperty(0x5008);
+                NoiseReductionHiIso = SelectedCameraDevice.GetProperty(0xD070);
+                FlashSyncSpeed = SelectedCameraDevice.GetProperty(0xD074);
+                ActiveSlot = SelectedCameraDevice.GetProperty(0xD1F2);
+                LensSort = SelectedCameraDevice.GetProperty(0xD0E1);
+                LensType = SelectedCameraDevice.GetProperty(0xD0E2);
+                
                 
                 InitCommands();
                 ShowHistogram = true;
