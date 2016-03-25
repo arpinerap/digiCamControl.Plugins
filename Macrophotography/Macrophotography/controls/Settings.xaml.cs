@@ -83,6 +83,9 @@ namespace Macrophotography.controls
             NA_nud.Visibility = System.Windows.Visibility.Hidden;
             NA_label.Visibility = System.Windows.Visibility.Hidden;
 
+            //Clear_LensData();
+            //Lens_txt.Text = ServiceProvider.DeviceManager.SelectedCameraDevice.LensSort.Value;
+
             
         }
         public void ChkManualLens()
@@ -173,25 +176,28 @@ namespace Macrophotography.controls
             {
                 ChkAFLens();
                 Clear_LensData();
-                //aperture_nud.IsEnabled =    SelectedCameraDevice.FNumber.IsEnabled;
+                StepperManager.Instance.Magni = 0.5;
             }
             else if (ManuLensRdb.IsChecked == true)
             {
                 ChkManualLens();
                 Clear_LensData();
                 aperture_nud.Value = 0;
+                StepperManager.Instance.Magni = 2;
             }
             if (MicroLensRdb.IsChecked == true)
             {
                 ChkMicroLens();
                 Clear_LensData();
                 NA_nud.Value = 0;
+                StepperManager.Instance.Magni = 5;
             }
             if (ManuPropRdb.IsChecked == true)
             {
                 ChkManuProp();
                 Clear_LensData();
                 StepperManager.Instance.ShotDOF = 0;
+                StepperManager.Instance.Magni = 1;
                 
             }
         }

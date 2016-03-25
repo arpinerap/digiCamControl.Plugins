@@ -30,7 +30,7 @@ namespace Macrophotography.controls
     /// </summary>
     public partial class RailControl : UserControl
     {
-        public int LastPosition;
+        //public int LastPosition;
         public CustomConfig SelectedConfig { get; set; }
 
         public RailControl()
@@ -44,7 +44,6 @@ namespace Macrophotography.controls
             StepperManager.Instance.TotalDOF = 0;
             StepperManager.Instance.TotalDOFFull = 0;
         }
-
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -63,6 +62,7 @@ namespace Macrophotography.controls
 
 
         #region Slider Manager
+
         private void NearFocus_btn_Click(object sender, RoutedEventArgs e)
         {
             StepperManager.Instance.SetNearFocus();
@@ -77,30 +77,7 @@ namespace Macrophotography.controls
             FarFocusLock.IsChecked = true;
         }
         
-        private void GetLastPosition()
-        {
-            //LastPosition = (int)Position_sld.Value;
-            LastPosition = StepperManager.Instance.Position;
-            LastPosition_txt.Text = LastPosition.ToString();            
-        }
-        private void MoveToNewPosition()
-        {
-            int ScrollSteps = 0;
-            if (StepperManager.Instance.Position < LastPosition)
-            {
-                ScrollSteps = LastPosition - StepperManager.Instance.Position;
-                ArduinoPorts.Instance.SendCommand(1, ScrollSteps * -1);
-                ScrollSteps = 0;
-            }
-            if (StepperManager.Instance.Position > LastPosition)
-            {
-                ScrollSteps = StepperManager.Instance.Position - LastPosition;
-                ArduinoPorts.Instance.SendCommand(1, ScrollSteps);
-                ScrollSteps = 0;
-            }
-        }
-
-
+       
         private void Position_sld_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             GetLastPosition();
@@ -110,18 +87,166 @@ namespace Macrophotography.controls
         {
             MoveToNewPosition();
         }
-
+       
         #endregion
 
+        #region Movements
 
-        #region Stacking Method
-
-        private async void Start_btn_Click(object sender, RoutedEventArgs e)
+        private void GetLastPosition()
         {
-            
+            //LastPosition = (int)Position_sld.Value;
+            StepperManager.Instance.LastPosition = StepperManager.Instance.Position;
+            //LastPosition_txt.Text = LastPosition.ToString();
+        }
+        private void MoveToNewPosition()
+        {
+            int ScrollSteps = 0;
+            if (StepperManager.Instance.Position < StepperManager.Instance.LastPosition)
+            {
+                ScrollSteps = StepperManager.Instance.LastPosition - StepperManager.Instance.Position;
+                ArduinoPorts.Instance.SendCommand(1, ScrollSteps * -1);
+                ScrollSteps = 0;
+            }
+            if (StepperManager.Instance.Position > StepperManager.Instance.LastPosition)
+            {
+                ScrollSteps = StepperManager.Instance.Position - StepperManager.Instance.LastPosition;
+                ArduinoPorts.Instance.SendCommand(1, ScrollSteps);
+                ScrollSteps = 0;
+            }
+        }
+
+        private void MoveToNearFocus()
+        {
             try
             {
                 GetLastPosition();
+                StepperManager.Instance.Position = StepperManager.Instance.NearFocus;
+                MoveToNewPosition();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute MoveToNearFocus", ex);
+            }
+        }
+        private void MoveToNearFocus2()
+        {
+            try
+            {
+                GetLastPosition();
+                StepperManager.Instance.Position = StepperManager.Instance.NearFocus2;
+                MoveToNewPosition();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute MoveToNearFocus2", ex);
+            }
+        }
+
+        private void MoveToFarFocus()
+        {
+            try
+            {
+                GetLastPosition();
+                StepperManager.Instance.Position = StepperManager.Instance.FarFocus;
+                MoveToNewPosition();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute MoveToFarFocus", ex);
+            }
+        }
+        private void MoveToFarFocus2()
+        {
+            try
+            {
+                GetLastPosition();
+                StepperManager.Instance.Position = StepperManager.Instance.FarFocus2;
+                MoveToNewPosition();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute MoveToFarFocus2", ex);
+            }
+        }
+
+        private void MoveTo(int position)
+        {
+            try
+            {
+                GetLastPosition();
+                StepperManager.Instance.Position = position;
+                MoveToNewPosition();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute position", ex);
+            }
+        }
+
+        #endregion
+
+        #region Stacking Method
+
+        private void Shot_MoveFar()
+        {
+            try
+            {
+                // Stabilization
+                Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(3000); }
+                //======================
+                // Shot
+                ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
+                //======================
+                // Wait for file transfer to be finished
+                ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                //======================
+                // Focus moving logic
+                ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
+                //======================
+                // Position Update
+                StepperManager.Instance.Position += StepperManager.Instance.ShotStepFull;
+                //======================
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute Shot_MoveFar", ex);
+            }
+        }
+
+        private void Shot_MoveNear()
+        {
+            try
+            {
+                // Stabilization
+                Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(3000); }
+                //======================
+                // Shot
+                ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
+                //======================
+                // Wait for file transfer to be finished
+                ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                //======================
+                // Focus moving logic
+                ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);
+                //======================
+                // Position Update
+                StepperManager.Instance.Position -= StepperManager.Instance.ShotStepFull;
+                //======================
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error execute Shot_MoveFar", ex);
+            }
+        }
+
+        private async void Start_btn_Click(object sender, RoutedEventArgs e)
+        {           
+            try
+            {
+                StepperManager.Instance.IsStacking = true;
+                //GetLastPosition();
                 //Task.Factory.StartNew(StackTask);
                 List<string> list = new List<string>();
                 for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
@@ -137,16 +262,13 @@ namespace Macrophotography.controls
                 await ProcessData(list, progress);
                 Progress_lbl.Content = "Shooting Done";
                 Thread.Sleep(2000);
-
+                StepperManager.Instance.IsStacking = false;
             }
 
             catch (Exception ex)
             {
                 Log.Error("Error execute stacking", ex);
-            }
-            
-
-     
+            }              
         }
 
         private Task ProcessData(List<string> list, IProgress<ProgressReport> progress)
@@ -155,12 +277,10 @@ namespace Macrophotography.controls
             int totalProcess = list.Count;
             var progressReport = new ProgressReport();
             return Task.Run(() =>
-            {
-                StepperManager.Instance.IsStacking = true;
+            {               
                 if (StepperManager.Instance.GoNearToFar == true)
                 {
-                    StepperManager.Instance.Position = StepperManager.Instance.NearFocus2;
-                    MoveToNewPosition();
+                    MoveToNearFocus2();
                     Thread.Sleep(2000);
                     Thread.Sleep(StepperManager.Instance.InitStackDelay);
 
@@ -168,53 +288,28 @@ namespace Macrophotography.controls
                     {
                         progressReport.PercentComplete = index++ * 100 / totalProcess;
                         progress.Report(progressReport);
-                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
-                        Thread.Sleep(2000);
-                        ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                        Thread.Sleep(5000);
-                        // wait for file transfer to be finished
-                        //ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
-                        //======================
-                        // here come the focus moving logic
-                        ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
-                        StepperManager.Instance.Position += StepperManager.Instance.ShotStepFull;
-                        //======================
-
+                        Shot_MoveFar();                      
                     }
-                    GetLastPosition();
-                    StepperManager.Instance.Position = StepperManager.Instance.NearFocus;
-                    MoveToNewPosition();
+                    MoveToNearFocus();
                     //StepperManager.Instance.IsNotStacking = true;
                 }
 
                 if (StepperManager.Instance.GoFarToNear == true)
                 {
-                    StepperManager.Instance.Position = StepperManager.Instance.FarFocus2;
-                    MoveToNewPosition();
+                    MoveToFarFocus2();
                     Thread.Sleep(2000);
                     Thread.Sleep(StepperManager.Instance.InitStackDelay);
 
                     for (int i = 0; i < totalProcess; i++)
                     {
-                        Thread.Sleep(StepperManager.Instance.StabilizationDelay);
-                        Thread.Sleep(2000);
-                        ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                        Thread.Sleep(5000);
-                        // wait for file transfer to be finished
-                        //ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
-                        //======================
-                        // here come the focus moving logic
-                        ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);
-                        StepperManager.Instance.Position -= StepperManager.Instance.ShotStepFull;
-                        //======================
-
+                        progressReport.PercentComplete = index++ * 100 / totalProcess;
+                        progress.Report(progressReport);
+                        Shot_MoveNear();
                     }
-                    GetLastPosition();
-                    StepperManager.Instance.Position = StepperManager.Instance.FarFocus;
-                    MoveToNewPosition();
+                    MoveToFarFocus();
                     //StepperManager.Instance.IsNotStacking = true;
                 }
-                StepperManager.Instance.IsStacking = false;
+                
             });
         }
 
@@ -334,12 +429,8 @@ namespace Macrophotography.controls
             {
                 StaticHelper.Instance.SystemMessage = exception.Message;
                 Log.Error("Take test photo", exception);
-            }
-            
+            }           
         }
-
-
-
 
     }
 }

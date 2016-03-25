@@ -25,6 +25,7 @@ namespace Macrophotography
         private bool _IsFarFocusLocked;
         private bool _GoNearToFar = true;
         private int _position = 0;
+        private int _lastPosition = 0;
         private int _nearFocus = 0;
         private int _farFocus = 0;
         private int _nearFocus2 = 0;
@@ -141,6 +142,16 @@ namespace Macrophotography
             {
                 _position = value;
                 RaisePropertyChanged(() => Position);
+            }
+        }
+
+        public int LastPosition
+        {
+            get { return _lastPosition; }
+            set
+            {
+                _lastPosition = value;
+                RaisePropertyChanged(() => LastPosition);
             }
         }
              

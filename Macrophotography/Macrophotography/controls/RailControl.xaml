@@ -595,7 +595,7 @@
                             <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
 
-                        <Label x:Name="Progress_lbl" Content="Shooting ..." FontSize="18" FontWeight="Bold" Foreground="#FFA50000" Margin="10,0,0,0"/>
+                        <Label x:Name="Progress_lbl" Content="Moving to Near Focus..." FontSize="18" FontWeight="Bold" Foreground="#FFA50000" Margin="10,0,0,0"/>
                         <ProgressBar x:Name="ProgressBarStack"
                                      Grid.Row="1" Width="180" Height="15" VerticalAlignment="Center"/>
                         <Button x:Name="CancelStack_btn" Content="Cancel"

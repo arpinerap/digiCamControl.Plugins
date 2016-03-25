@@ -43,4 +43,14 @@
     <StartAction>Program</StartAction>
     <EnableSQLServerDebugging>true</EnableSQLServerDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Vaio|AnyCPU'">
+    <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Vaio|x86'">
+    <StartProgram>C:\Users\Luis Alvarez\Documents\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <StartAction>Program</StartAction>
+    <EnableSQLServerDebugging>true</EnableSQLServerDebugging>
+  </PropertyGroup>
 </Project>

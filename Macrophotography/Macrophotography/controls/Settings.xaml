@@ -57,11 +57,7 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" 
-                             Visibility="{Binding SelectedCameraDevice.FNumber.Available}"
-                                                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                                Width="auto" Height="auto" Margin="15,5,0,5"
-                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
+                
                 <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
@@ -94,7 +90,7 @@
                 </Grid.ColumnDefinitions>
 
 
-                <controls:NumericUpDown x:Name="aperture_nud" controls:TextBoxHelper.Watermark="Aperture" Value="{Binding Aperture, Source={x:Static macrophotography:StepperManager.Instance}}"
+                <controls:NumericUpDown x:Name="aperture_nud" Value="{Binding Aperture, Source={x:Static macrophotography:StepperManager.Instance}}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="0"
@@ -103,7 +99,7 @@
                     Grid.Column="1" Grid.Row="0" Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
                     IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"/>
 
-                <controls:NumericUpDown x:Name="NA_nud" controls:TextBoxHelper.Watermark="NA" controls:TextBoxHelper.ButtonsAlignment="Left" Value="{Binding NA, Source={x:Static macrophotography:StepperManager.Instance}}"
+                <controls:NumericUpDown x:Name="NA_nud" Value="{Binding NA, Source={x:Static macrophotography:StepperManager.Instance}}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="1"
@@ -170,7 +166,7 @@
                          HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
                          TextAlignment="Center" TextWrapping="NoWrap"/>
 
-                <controls:NumericUpDown x:Name="apertureAF_nud" controls:TextBoxHelper.Watermark="Aperture" Value="{Binding Path=SelectedCameraDevice.FNumber.NumericValue}"
+                <controls:NumericUpDown x:Name="apertureAF_nud" Value="{Binding Path=SelectedCameraDevice.FNumber.NumericValue}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="3"
@@ -196,23 +192,23 @@
                 </Grid.ColumnDefinitions>
 
 
-                <controls:NumericUpDown x:Name="Pitch_nud" controls:TextBoxHelper.Watermark="Pitch" Value="4.7" HasDecimals="True"
+                <controls:NumericUpDown x:Name="Pitch_nud" Value="4.7" HasDecimals="True"
                                         Interval="0.1" Minimum="4" Maximum="8"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="0"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="E_nud" controls:TextBoxHelper.Watermark="e" Value="2" HasDecimals="True"
+                <controls:NumericUpDown x:Name="E_nud" Value="2" HasDecimals="True"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="1"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="Lambda_nud" controls:TextBoxHelper.Watermark="λ" Value="550" HasDecimals="False"
+                <controls:NumericUpDown x:Name="Lambda_nud" Value="550" HasDecimals="False"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="2"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="N_nud" controls:TextBoxHelper.Watermark="λ" Value="1" HasDecimals="False"
+                <controls:NumericUpDown x:Name="N_nud" Value="1" HasDecimals="False"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="3"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
