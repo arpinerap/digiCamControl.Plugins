@@ -281,7 +281,7 @@
                     <Slider x:Name="SpeedStep_slider" Style="{DynamicResource FlatSlider}"
                         Height="8" Width="100" Margin="10,0,10,0" HorizontalAlignment="Left" Value="{Binding Speed, Source={x:Static macrophotography:StepperManager.Instance}}"                                        
                         Minimum="5" Maximum="200"  
-                        AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True" Ticks="5,10,20,50,100,200"/>
+                        AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True" Ticks="5,10,20,50,100"/>
                 </WrapPanel>
 
 

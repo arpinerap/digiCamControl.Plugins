@@ -29,49 +29,49 @@ namespace Macrophotography.controls
         private void Up_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(4, DCsteps, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(3, DCsteps * -10, StepperManager.Instance.Speed);
         }
 
         private void Down_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(4, DCsteps * -1, StepperManager.Instance.Speed3d);            
+            ArduinoPorts.Instance.SendCommand(3, DCsteps * 10, StepperManager.Instance.Speed);            
         }
 
         private void Right_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(2, DCsteps * -20, StepperManager.Instance.Speed);
         }
 
         private void Left_button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(5, DCsteps, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(2, DCsteps * 20, StepperManager.Instance.Speed);
         }
 
         private void FlipUp_Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(3, DCsteps * -1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(4, DCsteps * -1, StepperManager.Instance.Speed3d);
         }
 
         private void FlipDown_Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(3, DCsteps * 1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(4, DCsteps * 1, StepperManager.Instance.Speed3d);
         }
 
         private void FlipLeft_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(2, DCsteps * 1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(5, DCsteps * 1, StepperManager.Instance.Speed3d);
         }
 
         private void FlipRight_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(2, DCsteps * -1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1, StepperManager.Instance.Speed3d);
         }
 
 

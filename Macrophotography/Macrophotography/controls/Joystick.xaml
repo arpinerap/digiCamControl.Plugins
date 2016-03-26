@@ -311,7 +311,7 @@
                     Grid.Column="0" Height="70" HorizontalAlignment="Left" Margin="5,0,0,0"
                     Orientation="Vertical" VerticalAlignment="Center"
                     AutoToolTipPlacement="BottomRight"
-                Minimum="1" Maximum="100">
+                Minimum="10" Maximum="1000" Ticks="1,5,10,20,50,100,500,2000">
         </Slider>
 
         <Button x:Name="rot1_button" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"

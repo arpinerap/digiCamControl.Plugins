@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Macrophotography</RootNamespace>
     <AssemblyName>Macrophotography</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <ProjectGuid>{66F5161F-7038-4270-A1F5-E306EEF33FBF}</ProjectGuid>
@@ -114,6 +114,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Vaio|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\Plugins\Macrophotography\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Juan|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Juan\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Juan|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Debug\Plugins\Macrophotography\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>

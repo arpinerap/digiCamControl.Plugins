@@ -19,7 +19,7 @@ namespace Macrophotography
         private SerialPort sp = new SerialPort();
         private static StepperManager _instance;
         private int _speed = 50;
-        private int _speed3d = 200;
+        private int _speed3d = 400;
         private bool _isBusy;
         private bool _IsNearFocusLocked; 
         private bool _IsFarFocusLocked;

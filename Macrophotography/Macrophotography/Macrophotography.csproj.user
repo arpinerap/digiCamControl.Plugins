@@ -53,4 +53,14 @@
     <StartAction>Program</StartAction>
     <EnableSQLServerDebugging>true</EnableSQLServerDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Juan|AnyCPU'">
+    <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Juan|x86'">
+    <StartProgram>D:\GitHub\digiCamControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <StartAction>Program</StartAction>
+    <EnableSQLServerDebugging>true</EnableSQLServerDebugging>
+  </PropertyGroup>
 </Project>

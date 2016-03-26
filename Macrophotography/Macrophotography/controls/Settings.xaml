@@ -57,7 +57,11 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" 
+                             Visibility="{Binding SelectedCameraDevice.FNumber.Available}"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                                Width="auto" Height="auto" Margin="15,5,0,5"
+                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
                 <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
