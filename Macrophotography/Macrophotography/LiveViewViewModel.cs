@@ -543,7 +543,9 @@ namespace Macrophotography
             {
                 _LensSort = value;
                 RaisePropertyChanged(() => LensSort);
-                //AFLensConnected = _LensSort % 90 <= 1 || _LensSort % 90 >= 89 ? "True" : "False";
+                //AFLensConnected = (int)_LensSort == 1 ? "True" : "False";
+                if (Convert.ToInt16(_LensSort) == 1) AFLensConnected = true;
+                else AFLensConnected = false;
             }
         }
 
@@ -557,7 +559,16 @@ namespace Macrophotography
             }
         }
 
-
+        private bool _AFLensConnected;
+        public bool AFLensConnected
+        {
+            get { return _AFLensConnected; }
+            set
+            {
+                _AFLensConnected = value;
+                RaisePropertyChanged(() => AFLensConnected);
+            }
+        }
 
         
 
