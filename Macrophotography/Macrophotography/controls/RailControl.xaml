@@ -595,11 +595,11 @@
                             <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
 
-                        <Label x:Name="Progress_lbl" Content="Moving to Near Focus..." FontSize="18" FontWeight="Bold" Foreground="#FFA50000" Margin="10,0,0,0"/>
+                        <Label x:Name="Progress_lbl" Content="Progress Label" FontSize="18" FontWeight="Bold" Foreground="#FFA50000" Margin="10,0,0,0"/>
                         <ProgressBar x:Name="ProgressBarStack"
                                      Grid.Row="1" Width="180" Height="15" VerticalAlignment="Center"/>
-                        <Button x:Name="CancelStack_btn" Content="Cancel"
-                                Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="100" FontSize="14" Margin="5"/>
+                        <Button x:Name="CancelStack_btn" Content="Cancel" 
+                                Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="100" FontSize="14" Margin="5" Click="CancelStack_btn_Click"/>
                                                
                     </Grid>
 

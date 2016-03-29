@@ -21,6 +21,7 @@ namespace Macrophotography
         private int _speed = 50;
         private int _speed3d = 400;
         private bool _isBusy;
+        private bool _IsStacking;
         private bool _IsNearFocusLocked; 
         private bool _IsFarFocusLocked;
         private bool _GoNearToFar = true;
@@ -187,7 +188,7 @@ namespace Macrophotography
             get { return !IsFarFocusLocked; }
         }
 
-        private bool _IsStacking;
+        
         public bool IsStacking
         {
             get { return _IsStacking; }

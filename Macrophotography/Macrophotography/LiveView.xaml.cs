@@ -76,6 +76,8 @@ namespace Macrophotography
             }
         }
 
+
+
         /*private void cmb_transfer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {       
             if (_loading)

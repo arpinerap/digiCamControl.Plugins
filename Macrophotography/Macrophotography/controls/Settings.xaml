@@ -49,16 +49,10 @@
         <GroupBox Header="Type Lens"
                                       Grid.Column="0"
                                       Height="auto">
-            <Grid Margin="0,10,10,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
+            <StackPanel Margin="10">
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" 
-                             Visibility="{Binding SelectedCameraDevice.FNumber.Available}"
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.Available}" 
+                             Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                 Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
@@ -75,12 +69,11 @@
                                                 Width="auto" Height="auto" Margin="15,5,0,5"                                                
                                                 Grid.Row="3" Checked="ManuPropRdb_Checked" Click="ManuPropRdb_Click"/>
 
-            </Grid>
+            </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Lens Parameters" x:Name="LensParameters_grpbx"
-                                      Grid.Column="1">
-            <Grid Margin="0">
+        <GroupBox Header="Lens Parameters" x:Name="LensParameters_grpbx" Grid.Column="1">
+            <Grid Margin="0,5,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -130,11 +123,10 @@
 
         </GroupBox>
 
-        <GroupBox Header="Lens Presets" x:Name="LensPresets_grpbx"
-                                      Grid.Column="2">
+        <GroupBox Header="Lens Presets" x:Name="LensPresets_grpbx" Grid.Column="2">
             <Grid>
                 <Grid.RowDefinitions>                    
-                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="10"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="*"/>
@@ -165,24 +157,16 @@
                     <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
                 </Button>
 
-                <TextBox x:Name="Lens_txt" 
+                <TextBox x:Name="Lens_txt"
                          Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
                          HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
                          TextAlignment="Center" TextWrapping="NoWrap"/>
 
-                <controls:NumericUpDown x:Name="apertureAF_nud" Value="{Binding Path=SelectedCameraDevice.FNumber.NumericValue}"
-                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
-                        Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
-                        Grid.Column="1" Grid.Row="3"
-                        Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
-
-
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Sensor"
-                                      Grid.Column="3">
-            <Grid Margin="0">
+        <GroupBox Header="Sensor" Grid.Column="3">
+            <Grid Margin="0,5,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -259,9 +243,8 @@
         </GroupBox>
 
 
-        <GroupBox Header="Rail Parameters"
-            Grid.Column="4">
-            <Grid>
+        <GroupBox Header="Rail Parameters" Grid.Column="4">
+            <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
@@ -313,11 +296,10 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Rail Presets"
-                                      Grid.Column="5">
+        <GroupBox Header="Rail Presets" Grid.Column="5">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="10"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="*"/>
@@ -372,7 +354,7 @@
                                   Height="auto" MinWidth="150">
 
             <StackPanel >
-                <Grid>
+                <Grid Margin="0,5,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>

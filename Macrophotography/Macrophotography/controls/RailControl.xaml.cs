@@ -187,6 +187,8 @@ namespace Macrophotography.controls
 
         #region Stacking Method
 
+        CancellationTokenSource m_cancelTokenSource = null;
+
         private void Shot_MoveFar()
         {
             try
@@ -242,75 +244,119 @@ namespace Macrophotography.controls
         }
 
         private async void Start_btn_Click(object sender, RoutedEventArgs e)
-        {           
+        {               
+            // Update display to indicate we are running
+            StepperManager.Instance.IsStacking = true;
+            Progress_lbl.Content = "Starting...";
+
+            List<string> list = new List<string>();
+                
+            for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
+                list.Add(i.ToString());
+                
+
+            // ---------------Create progress and cancel objects
+            m_cancelTokenSource = new CancellationTokenSource();
+            var progress = new Progress<ProgressReport>();
+
+            progress.ProgressChanged += (o, report) =>
+            {
+                Progress_lbl.Content = string.Format("Shooting {0}%", report.PercentComplete);
+                ProgressBarStack.Value = report.PercentComplete;
+                //ProgressBarStack.Update();
+            };
+                              
             try
             {
-                StepperManager.Instance.IsStacking = true;
-                //GetLastPosition();
-                //Task.Factory.StartNew(StackTask);
-                List<string> list = new List<string>();
-                for (int i = 0; i < StepperManager.Instance.ShotsNumberFull; i++)
-                    list.Add(i.ToString());
-                Progress_lbl.Content = "Shooting ...";
-                var progress = new Progress<ProgressReport>();
-                progress.ProgressChanged += (o, report) =>
-                {
-                    Progress_lbl.Content = string.Format("Shooting {0}%", report.PercentComplete);
-                    ProgressBarStack.Value = report.PercentComplete;
-                    //ProgressBarStack.Update();
-                };
-                await ProcessData(list, progress);
-                Progress_lbl.Content = "Shooting Done";
-                Thread.Sleep(2000);
-                StepperManager.Instance.IsStacking = false;
+                // ------------Launch the process. After launching, will "return" from this method.
+                await ProcessData(list, progress, m_cancelTokenSource.Token);
+                //await ProcessData(list, progress);
+                
+                    
             }
 
-            catch (Exception ex)
+            catch (OperationCanceledException)
             {
-                Log.Error("Error execute stacking", ex);
-            }              
+                // ----------- If the operation was cancelled, the exception will be thrown as though it came from the await line
+                
+                Progress_lbl.Content = "Canceled";
+            }
+
+            catch (Exception)
+            {
+                Progress_lbl.Content = "Failed";
+            } 
+
+            finally
+            {
+                // -----------------Reset the UI
+                Progress_lbl.Content = "Done";
+                Thread.Sleep(5000);
+                StepperManager.Instance.IsStacking = false;
+                m_cancelTokenSource = null;
+            }            
         }
 
-        private Task ProcessData(List<string> list, IProgress<ProgressReport> progress)
+        private void CancelStack_btn_Click(object sender, RoutedEventArgs e)
+        {
+            if (m_cancelTokenSource != null)
+            {
+                m_cancelTokenSource.Cancel();
+                Progress_lbl.Content = "Canceled";
+                Thread.Sleep(5000);
+
+            }
+        }
+
+        private Task ProcessData(List<string> list, IProgress<ProgressReport> progress, CancellationToken m_cancelTokenSource)
+        //private Task ProcessData(List<string> list, IProgress<ProgressReport> progress)
         {
             int index = 0;
             int totalProcess = list.Count;
             var progressReport = new ProgressReport();
+
             return Task.Run(() =>
             {               
                 if (StepperManager.Instance.GoNearToFar == true)
                 {
+                    //Progress_lbl.Content = "Moving to Near Focus...";
                     MoveToNearFocus2();
                     Thread.Sleep(2000);
                     Thread.Sleep(StepperManager.Instance.InitStackDelay);
 
                     for (int i = 0; i < totalProcess; i++)
                     {
+                        m_cancelTokenSource.ThrowIfCancellationRequested();
                         progressReport.PercentComplete = index++ * 100 / totalProcess;
                         progress.Report(progressReport);
                         Shot_MoveFar();                      
                     }
+                    //Progress_lbl.Content = "Moving to Near Focus...";
                     MoveToNearFocus();
                     //StepperManager.Instance.IsNotStacking = true;
                 }
 
                 if (StepperManager.Instance.GoFarToNear == true)
                 {
+                    //Progress_lbl.Content = "Moving to Far Focus...";
                     MoveToFarFocus2();
                     Thread.Sleep(2000);
                     Thread.Sleep(StepperManager.Instance.InitStackDelay);
 
                     for (int i = 0; i < totalProcess; i++)
                     {
+                        m_cancelTokenSource.ThrowIfCancellationRequested();
                         progressReport.PercentComplete = index++ * 100 / totalProcess;
                         progress.Report(progressReport);
                         Shot_MoveNear();
                     }
+                    //Progress_lbl.Content = "Moving to Far Focus...";
                     MoveToFarFocus();
                     //StepperManager.Instance.IsNotStacking = true;
                 }
-                
-            });
+
+            }, m_cancelTokenSource);
+            //});
         }
 
 
@@ -431,6 +477,8 @@ namespace Macrophotography.controls
                 Log.Error("Take test photo", exception);
             }           
         }
+
+        
 
     }
 }

@@ -81,23 +81,25 @@ namespace Macrophotography.controls
             rot1_button.Visibility = System.Windows.Visibility.Visible;
             rot2_button.Visibility = System.Windows.Visibility.Visible;
             DCsteps_sld.Visibility = System.Windows.Visibility.Visible;
-            FlipDown_btn.Visibility = System.Windows.Visibility.Visible;
-            FlipUp_btn.Visibility = System.Windows.Visibility.Visible;
-            FlipRight_btn.Visibility = System.Windows.Visibility.Visible;
-            FlipLeft_btn.Visibility = System.Windows.Visibility.Visible;
+            //FlipDown_btn.Visibility = System.Windows.Visibility.Visible;
+            //FlipUp_btn.Visibility = System.Windows.Visibility.Visible;
+            //FlipRight_btn.Visibility = System.Windows.Visibility.Visible;
+            //FlipLeft_btn.Visibility = System.Windows.Visibility.Visible;
             LiveViewOff_btn.IsOpen = true;
+            LiveViewOff2_btn.IsOpen = true;
         }
 
         private void CloseJoystick(object sender, System.Windows.RoutedEventArgs e)
         {
             LiveViewOff_btn.IsOpen = false;
+            LiveViewOff2_btn.IsOpen = false;
             rot1_button.Visibility = System.Windows.Visibility.Hidden;
             rot2_button.Visibility = System.Windows.Visibility.Hidden;
             DCsteps_sld.Visibility = System.Windows.Visibility.Hidden;
-            FlipDown_btn.Visibility = System.Windows.Visibility.Hidden;
-            FlipUp_btn.Visibility = System.Windows.Visibility.Hidden;
-            FlipRight_btn.Visibility = System.Windows.Visibility.Hidden;
-            FlipLeft_btn.Visibility = System.Windows.Visibility.Hidden;
+            //FlipDown_btn.Visibility = System.Windows.Visibility.Hidden;
+            //FlipUp_btn.Visibility = System.Windows.Visibility.Hidden;
+            //FlipRight_btn.Visibility = System.Windows.Visibility.Hidden;
+            //FlipLeft_btn.Visibility = System.Windows.Visibility.Hidden;
             LiveViewOn_btn.IsOpen = true;
         }
     }
