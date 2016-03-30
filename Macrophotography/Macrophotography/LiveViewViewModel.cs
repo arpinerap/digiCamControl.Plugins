@@ -544,8 +544,7 @@ namespace Macrophotography
                 _LensSort = value;
                 RaisePropertyChanged(() => LensSort);
                 //AFLensConnected = (int)_LensSort == 1 ? "True" : "False";
-                if (Convert.ToInt16(_LensSort) == 1) AFLensConnected = true;
-                else AFLensConnected = false;
+                if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
             }
         }
 

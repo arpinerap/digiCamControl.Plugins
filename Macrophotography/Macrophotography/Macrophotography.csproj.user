@@ -31,7 +31,7 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup>
-    <ReferencePath>D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\</ReferencePath>
+    <ReferencePath>D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\;D:\devel\vs2010\CameraControl\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug NewCameraControl|AnyCPU'">
     <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
