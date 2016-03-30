@@ -19,7 +19,7 @@
                       
              mc:Ignorable="d" 
              d:DesignHeight="1050.544" d:DesignWidth="1150.718"
-             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing">
+             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing" >
     
     <Window.DataContext>
         <macrophotography:LiveViewViewModel/>
@@ -47,9 +47,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
@@ -331,7 +328,7 @@
         <GroupBox Header="3d Position" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
             <StackPanel Orientation="Vertical">
                 <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=LevelAngleRolling.value}"/>
-                <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngleLevelPitching.value}"/>
+                <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngleLevelPitching.Value}"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngelLevelYawing.value}"/>
                 <TextBox  x:Name="LevelAngle_txt" Width="50" BorderThickness="0" Text="{Binding Path=AngelLevelYawing}" />
                 <ComboBox x:Name="ApertureAF_combo" 

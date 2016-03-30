@@ -602,7 +602,7 @@ namespace Macrophotography
             StopLiveViewCommand = new RelayCommand(StopLiveView);
             SetAreaCommand = new RelayCommand(() => SettingArea = true);
             DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
-
+            ServiceProvider.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
             _timer.AutoReset = true;
             _timer.Elapsed += _timer_Elapsed;
             if (!IsInDesignMode)
@@ -641,6 +641,12 @@ namespace Macrophotography
                 ShowHistogram = true;
                 Init();
             }
+        }
+
+        void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
+        {
+            SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
+            CameraProperty = SelectedCameraDevice.LoadProperties();
         }
 
         public LiveViewViewModel(ICameraDevice device)

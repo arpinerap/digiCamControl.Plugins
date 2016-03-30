@@ -13,6 +13,7 @@ namespace Macrophotography
         public bool Register()
         {
             ServiceProvider.PluginManager.ToolBarPlugins.Add(new MacroPlugin());
+            ServiceProvider.WindowsManager.Add(new LiveView());
             return true;
         }
 

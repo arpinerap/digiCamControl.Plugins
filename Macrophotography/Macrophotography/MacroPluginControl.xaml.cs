@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using CameraControl.Core;
 
 namespace Macrophotography
 {
@@ -16,9 +17,10 @@ namespace Macrophotography
 
         private void but_qr_Click(object sender, RoutedEventArgs e)
         {
-            if (window == null || !window.IsVisible)
-                window = new LiveView();
-            window.Show();
+            //if (window == null || !window.IsVisible)
+            //    window = new LiveView();
+            //window.Show();
+            ServiceProvider.WindowsManager.ExecuteCommand("MacroLiveView_Show");
         }
     }
 }

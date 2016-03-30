@@ -18,6 +18,7 @@ using CameraControl.Core.Classes;
 using CameraControl.Core.Translation;
 using System.IO.Ports;
 using System.Timers;
+using CameraControl.Core.Interfaces;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 
@@ -26,7 +27,7 @@ namespace Macrophotography
     /// <summary>
     /// Interaction logic for LiveView.xaml
     /// </summary>
-    public partial class LiveView
+    public partial class LiveView : IWindow
     {
         private Timer _timer = new Timer();
 
@@ -35,7 +36,6 @@ namespace Macrophotography
         public LiveView()
         {
             InitializeComponent();
-            ServiceProvider.Settings.ApplyTheme(this);
             //if (ServiceProvider.DeviceManager != null)
             //    ServiceProvider.DeviceManager.PropertyChanged += DeviceManager_PropertyChanged;
             //RefreshItems();
@@ -67,6 +67,11 @@ namespace Macrophotography
             // Close Serial Port when Plugin is closed
             try
             {
+                if (IsVisible)
+                {
+                    e.Cancel = true;
+                    ServiceProvider.WindowsManager.ExecuteCommand("MacroLiveView_Hide");
+                }
                 ArduinoPorts.Instance.ClosePort();
                 ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
                 ServiceProvider.DeviceManager.SelectedCameraDevice.HostMode = false;
@@ -166,5 +171,31 @@ namespace Macrophotography
         }*/
 
 
+        public void ExecuteCommand(string cmd, object param)
+        {
+            switch (cmd)
+            {
+                case "MacroLiveView_Show":
+                    Dispatcher.Invoke(new Action(delegate
+                    {
+                        ServiceProvider.Settings.ApplyTheme(this);
+                        Owner = ServiceProvider.PluginManager.SelectedWindow as Window;
+                        Show();
+                        Activate();
+                        Focus();
+                    }));
+                    break;
+                case "MacroLiveView_Hide":
+                    Dispatcher.Invoke(new Action(Hide));
+                    break;
+                case CmdConsts.All_Close:
+                    Dispatcher.Invoke(new Action(delegate
+                    {
+                        Hide();
+                        Close();
+                    }));
+                    break;
+            }
+        }
     }
 }
