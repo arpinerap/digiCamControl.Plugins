@@ -609,44 +609,54 @@ namespace Macrophotography
             {
                 SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
                 CameraProperty = SelectedCameraDevice.LoadProperties();
-                
-                ExposureDelay = SelectedCameraDevice.GetProperty(0xD06A);
-                InitFlash = SelectedCameraDevice.GetProperty(0x500C);
-                ApplicationMode = SelectedCameraDevice.GetProperty(0xD1F0);
-                WbColorTemp = SelectedCameraDevice.GetProperty(0xD01E);
-                FlashCompensation = SelectedCameraDevice.GetProperty(0xD124);
-                NoiseReduction = SelectedCameraDevice.GetProperty(0xD06B);
-                ActivePicCtrlItem = SelectedCameraDevice.GetProperty(0xD200);
-                ImageSize = SelectedCameraDevice.GetProperty(0x5003);
-                RawCompressionType = SelectedCameraDevice.GetProperty(0xD016);
-                CompressionSetting = SelectedCameraDevice.GetProperty(0x5004);
-                FNumber = SelectedCameraDevice.GetProperty(0x5007);
-                LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
-                AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
-                AngleLevelYawing = SelectedCameraDevice.GetProperty(0xD07E);
-                CaptureAreaCrop = SelectedCameraDevice.GetProperty(0xD030);
-                DLighting = SelectedCameraDevice.GetProperty(0xD14E);
-                HDRMode = SelectedCameraDevice.GetProperty(0xD130);
-                HDREv = SelectedCameraDevice.GetProperty(0xD131);
-                HDRSmoothing = SelectedCameraDevice.GetProperty(0xD132);
-                FocalLength = SelectedCameraDevice.GetProperty(0x5008);
-                NoiseReductionHiIso = SelectedCameraDevice.GetProperty(0xD070);
-                FlashSyncSpeed = SelectedCameraDevice.GetProperty(0xD074);
-                ActiveSlot = SelectedCameraDevice.GetProperty(0xD1F2);
-                LensSort = SelectedCameraDevice.GetProperty(0xD0E1);
-                LensType = SelectedCameraDevice.GetProperty(0xD0E2);
-                
-                
+                InitAdvancedProperties();
                 InitCommands();
                 ShowHistogram = true;
                 Init();
             }
         }
 
+        void InitAdvancedProperties()
+        {
+            ExposureDelay = SelectedCameraDevice.GetProperty(0xD06A);
+            InitFlash = SelectedCameraDevice.GetProperty(0x500C);
+            ApplicationMode = SelectedCameraDevice.GetProperty(0xD1F0);
+            WbColorTemp = SelectedCameraDevice.GetProperty(0xD01E);
+            FlashCompensation = SelectedCameraDevice.GetProperty(0xD124);
+            NoiseReduction = SelectedCameraDevice.GetProperty(0xD06B);
+            ActivePicCtrlItem = SelectedCameraDevice.GetProperty(0xD200);
+            ImageSize = SelectedCameraDevice.GetProperty(0x5003);
+            RawCompressionType = SelectedCameraDevice.GetProperty(0xD016);
+            CompressionSetting = SelectedCameraDevice.GetProperty(0x5004);
+            FNumber = SelectedCameraDevice.GetProperty(0x5007);
+            LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
+            AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
+            AngleLevelYawing = SelectedCameraDevice.GetProperty(0xD07E);
+            CaptureAreaCrop = SelectedCameraDevice.GetProperty(0xD030);
+            DLighting = SelectedCameraDevice.GetProperty(0xD14E);
+            HDRMode = SelectedCameraDevice.GetProperty(0xD130);
+            HDREv = SelectedCameraDevice.GetProperty(0xD131);
+            HDRSmoothing = SelectedCameraDevice.GetProperty(0xD132);
+            FocalLength = SelectedCameraDevice.GetProperty(0x5008);
+            NoiseReductionHiIso = SelectedCameraDevice.GetProperty(0xD070);
+            FlashSyncSpeed = SelectedCameraDevice.GetProperty(0xD074);
+            ActiveSlot = SelectedCameraDevice.GetProperty(0xD1F2);
+            LensSort = SelectedCameraDevice.GetProperty(0xD0E1);
+            LensType = SelectedCameraDevice.GetProperty(0xD0E2);
+            
+        }
+
         void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
         {
             SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
             CameraProperty = SelectedCameraDevice.LoadProperties();
+            SelectedCameraDevice.CameraInitDone += SelectedCameraDevice_CameraInitDone;
+        }
+
+        void SelectedCameraDevice_CameraInitDone(ICameraDevice cameraDevice)
+        {
+            InitAdvancedProperties();
+            SelectedCameraDevice.CameraInitDone -= SelectedCameraDevice_CameraInitDone;
         }
 
         public LiveViewViewModel(ICameraDevice device)
