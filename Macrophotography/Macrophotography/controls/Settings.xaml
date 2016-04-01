@@ -53,7 +53,7 @@
             <StackPanel Margin="10">
 
                 <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding  AFLensConnected}" 
-                             Visibility="{Binding AFLensConnected}"
+                             Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                 Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>

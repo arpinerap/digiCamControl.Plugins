@@ -551,15 +551,27 @@ namespace Macrophotography
             get { return _LensSort; }
             set
             {
+                if (_LensSort != null)
+                    _LensSort.PropertyChanged -= _LensSort_PropertyChanged;
                 _LensSort = value;
-                RaisePropertyChanged(() => LensSort);
-                //AFLensConnected = (_LensSort.NumericValue == 1) ? true : false;
-                if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
-                else AFLensConnected = false;
 
-                //if (_LensSort.NumericValue == 1) AFLensConnected = true;
-                //else AFLensConnected = false;
+                if (_LensSort != null)
+                    _LensSort.PropertyChanged += _LensSort_PropertyChanged;
+                SetAFLensConnected();
+
+                RaisePropertyChanged(() => LensSort);
             }
+        }
+
+        void SetAFLensConnected()
+        {
+            if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
+            else AFLensConnected = false;
+           
+        }
+        void _LensSort_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SetAFLensConnected();
         }
 
         private bool _AFLensConnected = false;
