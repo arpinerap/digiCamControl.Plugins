@@ -555,6 +555,8 @@ namespace Macrophotography
                 RaisePropertyChanged(() => LensSort);
                 //AFLensConnected = (_LensSort.NumericValue == 1) ? true : false;
                 if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
+                else AFLensConnected = false;
+
                 //if (_LensSort.NumericValue == 1) AFLensConnected = true;
                 //else AFLensConnected = false;
             }
@@ -613,6 +615,7 @@ namespace Macrophotography
             SetAreaCommand = new RelayCommand(() => SettingArea = true);
             DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
             ServiceProvider.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
+            ServiceProvider.DeviceManager.CameraDisconnected += DeviceManager_CameraDisconnected;
             _timer.AutoReset = true;
             _timer.Elapsed += _timer_Elapsed;
             if (!IsInDesignMode)
@@ -625,6 +628,21 @@ namespace Macrophotography
                 Init();
             }
         }
+
+        void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
+        {
+            SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
+            CameraProperty = SelectedCameraDevice.LoadProperties();
+            SelectedCameraDevice.CameraInitDone += SelectedCameraDevice_CameraInitDone;           
+        }
+
+        void DeviceManager_CameraDisconnected(ICameraDevice cameraDevice)
+        {
+            SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
+            CameraProperty = SelectedCameraDevice.LoadProperties();
+            InitAdvancedProperties();
+        }
+
 
         void InitAdvancedProperties()
         {
@@ -654,13 +672,6 @@ namespace Macrophotography
             LensSort = SelectedCameraDevice.GetProperty(0xD0E1);
             LensType = SelectedCameraDevice.GetProperty(0xD0E2);
             
-        }
-
-        void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
-        {
-            SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
-            CameraProperty = SelectedCameraDevice.LoadProperties();
-            SelectedCameraDevice.CameraInitDone += SelectedCameraDevice_CameraInitDone;
         }
 
         void SelectedCameraDevice_CameraInitDone(ICameraDevice cameraDevice)
