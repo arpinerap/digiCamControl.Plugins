@@ -10,7 +10,11 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              xmlns:devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
-             d:DesignHeight="200" d:DesignWidth="1800" Loaded="Window_Loaded">
+             d:DesignHeight="200" d:DesignWidth="1800">
+    
+    <UserControl.DataContext>
+        <macrophotography:LiveViewViewModel/>
+    </UserControl.DataContext>
    
 
     <UserControl.Resources>
@@ -48,8 +52,8 @@
                                       Height="auto">
             <StackPanel Margin="10">
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding Path=SelectedCameraDevice.FNumber.Available}" 
-                             Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding AFLensConnected, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                             Visibility="{Binding AFLensConnected, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                 Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
@@ -65,6 +69,15 @@
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"                                                
                                                 Grid.Row="3" Checked="ManuPropRdb_Checked" Click="ManuPropRdb_Click"/>
+                <TextBox x:Name="LensSort_txt" Text="{Binding LensSort.Value}"
+                         Grid.Row="3"
+                         HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"  Width="70"
+                         TextAlignment="Left" BorderThickness="1"/>
+
+                <TextBox x:Name="AfLensConnected_txt" Text="{Binding AFLensConnected}"
+                         Grid.Row="3"
+                         HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"  Width="70"
+                         TextAlignment="Left" BorderThickness="1"/>
 
             </StackPanel>
         </GroupBox>
@@ -120,8 +133,8 @@
 
         </GroupBox>
 
-        <GroupBox Header="Lens Presets" x:Name="LensPresets_grpbx" Grid.Column="2">
-            <Grid>
+        <GroupBox Header="Lens Presets"  Grid.Column="2">
+            <Grid x:Name="LensPresets_grpbx">
                 <Grid.RowDefinitions>                    
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="40"/>
@@ -158,6 +171,8 @@
                          Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
                          HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
                          TextAlignment="Center" TextWrapping="NoWrap"/>
+
+                
 
             </Grid>
         </GroupBox>

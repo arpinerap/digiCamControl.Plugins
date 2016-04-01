@@ -536,18 +536,6 @@ namespace Macrophotography
             }
         }
 
-        public PropertyValue<long> LensSort
-        {
-            get { return _LensSort; }
-            set
-            {
-                _LensSort = value;
-                RaisePropertyChanged(() => LensSort);
-                //AFLensConnected = (int)_LensSort == 1 ? "True" : "False";
-                if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
-            }
-        }
-
         public PropertyValue<long> LensType
         {
             get { return _LensType; }
@@ -558,18 +546,40 @@ namespace Macrophotography
             }
         }
 
-        private bool _AFLensConnected;
-        public bool AFLensConnected
+        public PropertyValue<long> LensSort
         {
-            get { return _AFLensConnected; }
+            get { return _LensSort; }
             set
             {
-                _AFLensConnected = value;
-                RaisePropertyChanged(() => AFLensConnected);
+                _LensSort = value;
+                RaisePropertyChanged(() => LensSort);
+                //AFLensConnected = (_LensSort.NumericValue == 1) ? true : false;
+                if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
+                //if (_LensSort.NumericValue == 1) AFLensConnected = true;
+                //else AFLensConnected = false;
             }
         }
 
-        
+        private bool _AFLensConnected = false;
+      
+
+        public bool AFLensConnected
+        {
+            //get { return StepperManager.Instance.AFLensConnected; }
+            get { return _AFLensConnected; }
+            set
+            {
+                //StepperManager.Instance.AFLensConnected = value;
+                _AFLensConnected = value;
+                RaisePropertyChanged(() => AFLensConnected);
+                RaisePropertyChanged(() => NotAFLensConnected);
+            }
+        }
+
+        public bool NotAFLensConnected
+        {
+            get { return !AFLensConnected; }
+        }
 
 
         

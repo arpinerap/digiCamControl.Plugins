@@ -503,7 +503,7 @@ namespace Macrophotography
 
         #region AF Lens
 
-        private bool _AFLensConnected;
+        /*private bool _AFLensConnected = false;
 
         public bool AFLensConnected
         {
@@ -512,10 +512,14 @@ namespace Macrophotography
             {
                 _AFLensConnected = value;
                 RaisePropertyChanged(() => AFLensConnected);
+                RaisePropertyChanged(() => NotAFLensConnected);
             }
         }
 
-
+        public bool NotAFLensConnected
+        {
+            get { return !AFLensConnected; }
+        }*/
 
         #endregion
     }

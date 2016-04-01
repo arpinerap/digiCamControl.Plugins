@@ -34,9 +34,10 @@ namespace Macrophotography.controls
         public Settings()
         {
             InitializeComponent();
+            Clear_LensData();
             LensParameters_grpbx.IsEnabled = false;
             //LensPresets_grpbx.IsEnabled = false;
-            Fill_ComboName();
+            Fill_ComboNameLens();
             Fill_ComboNameRail();
             Fill_ComboNameSensor();
             ArduinoPorts.Instance.DetectArduino();
@@ -55,13 +56,6 @@ namespace Macrophotography.controls
         }
 
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-           
-        }
-
-
         # region RadioButtons
         public void ChkAFLens()
         {
@@ -77,6 +71,7 @@ namespace Macrophotography.controls
             ManuLensRdb.IsChecked = false;
             ManuPropRdb.IsChecked = false;
 
+            LensPresets_grpbx.Visibility = System.Windows.Visibility.Hidden;
             ApertureAF_combo.Visibility = System.Windows.Visibility.Visible;
             aperture_nud.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Visible;
@@ -105,6 +100,7 @@ namespace Macrophotography.controls
             ManuLensRdb.IsChecked = true;
             ManuPropRdb.IsChecked = false;
 
+            LensPresets_grpbx.Visibility = System.Windows.Visibility.Visible;
             aperture_nud.Visibility = System.Windows.Visibility.Visible;
             ApertureAF_combo.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Visible;
@@ -127,6 +123,7 @@ namespace Macrophotography.controls
             MicroLensRdb.IsChecked = true;
             ManuPropRdb.IsChecked = false;
 
+            LensPresets_grpbx.Visibility = System.Windows.Visibility.Visible;
             aperture_nud.Visibility = System.Windows.Visibility.Hidden;
             ApertureAF_combo.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Hidden;
@@ -146,6 +143,7 @@ namespace Macrophotography.controls
             ManuLensRdb.IsChecked = false;
             ManuPropRdb.IsChecked = true;
 
+            LensPresets_grpbx.Visibility = System.Windows.Visibility.Hidden;
             aperture_nud.Visibility = System.Windows.Visibility.Hidden;
             ApertureAF_combo.Visibility = System.Windows.Visibility.Hidden;
             Aperture_label.Visibility = System.Windows.Visibility.Hidden;
@@ -251,9 +249,9 @@ namespace Macrophotography.controls
             ManuLensInt = 0;
             MicroLensInt = 0;
             StepperManager.Instance.Magni = 0;
-            Fill_ComboName();
+            Fill_ComboNameLens();
         }
-        void Fill_ComboName()
+        void Fill_ComboNameLens()
         {
             string QueryName = "select * from LensTable";       
             try
@@ -329,7 +327,7 @@ namespace Macrophotography.controls
         {
             SettingsDB.DeleteLens(NameLens_Combo.SelectedItem.ToString());
             MessageBox.Show("Lens Deleted");
-            Fill_ComboName();                      
+            Fill_ComboNameLens();                      
         }
         #endregion
 
