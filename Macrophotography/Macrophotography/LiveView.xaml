@@ -330,12 +330,10 @@
 
         <GroupBox Header="3d Position" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
             <StackPanel Orientation="Vertical">
-                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=LevelAngleRolling.value}"/>
-                <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngleLevelPitching.Value}"/>
-                <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngelLevelYawing.value}"/>
-                <TextBox  x:Name="LevelAngle_txt" Width="50" BorderThickness="0" Text="{Binding Path=AngelLevelYawing}" />
+                <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngleRolling}"/>
+                <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngleLevelPitching}"/>
+                <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngelLevelYawing}"/>
                 <Label Content="{Binding NameRail}"/>
-                <TextBox Width="50" Text="{Binding NameRail}" IsReadOnly="True"/>
             </StackPanel>
         </GroupBox>
 

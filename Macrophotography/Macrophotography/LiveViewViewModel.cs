@@ -50,11 +50,14 @@ namespace Macrophotography
         private PropertyValue<long> _exposureDelay;
         private PropertyValue<long> _compressionSetting;
         private PropertyValue<long> _rawCompressionType;
+        private PropertyValue<long> _RawCompressionBitMode;      
         private PropertyValue<long> _imageSize;
         private PropertyValue<long> _activePicCtrlItem;
         private PropertyValue<long> _noiseReduction;
         private PropertyValue<long> _flashCompensation;
-        private PropertyValue<long> _wbColorTemp;
+        private PropertyValue<long> _ColorSpace;
+        private PropertyValue<long> _WbColorTemp;
+        private PropertyValue<long> _WbTuneFluorescentType;       
         private PropertyValue<long> _applicationMode;
         private PropertyValue<long> _initFlash;
         private PropertyValue<long> _fNumber;
@@ -350,6 +353,16 @@ namespace Macrophotography
             }
         }
 
+        public PropertyValue<long> RawCompressionBitMode
+        {
+            get { return _RawCompressionBitMode; }
+            set
+            {
+                _RawCompressionBitMode = value;
+                RaisePropertyChanged(() => RawCompressionBitMode);
+            }
+        }
+
         public PropertyValue<long> ImageSize
         {
             get { return _imageSize; }
@@ -390,13 +403,33 @@ namespace Macrophotography
             }
         }
 
-        public PropertyValue<long> WbColorTemp
+        public PropertyValue<long> ColorSpace
         {
-            get { return _wbColorTemp; }
+            get { return _ColorSpace; }
             set
             {
-                _wbColorTemp = value;
+                _ColorSpace = value;
+                RaisePropertyChanged(() => ColorSpace);
+            }
+        }
+        
+        public PropertyValue<long> WbColorTemp
+        {
+            get { return _WbColorTemp; }
+            set
+            {
+                _WbColorTemp = value;
                 RaisePropertyChanged(() => WbColorTemp);
+            }
+        }
+
+        public PropertyValue<long> WbTuneFluorescentType
+        {
+            get { return _WbTuneFluorescentType; }
+            set
+            {
+                _WbTuneFluorescentType = value;
+                RaisePropertyChanged(() => WbTuneFluorescentType);
             }
         }
 
@@ -712,13 +745,15 @@ namespace Macrophotography
             ExposureDelay = SelectedCameraDevice.GetProperty(0xD06A);
             InitFlash = SelectedCameraDevice.GetProperty(0x500C);
             ApplicationMode = SelectedCameraDevice.GetProperty(0xD1F0);
+            ColorSpace = SelectedCameraDevice.GetProperty(0xD032);
             WbColorTemp = SelectedCameraDevice.GetProperty(0xD01E);
+            WbTuneFluorescentType = SelectedCameraDevice.GetProperty(0xD14F);
             FlashCompensation = SelectedCameraDevice.GetProperty(0xD124);
             NoiseReduction = SelectedCameraDevice.GetProperty(0xD06B);
             ActivePicCtrlItem = SelectedCameraDevice.GetProperty(0xD200);
             ImageSize = SelectedCameraDevice.GetProperty(0x5003);
             RawCompressionType = SelectedCameraDevice.GetProperty(0xD016);
-            CompressionSetting = SelectedCameraDevice.GetProperty(0x5004);
+            RawCompressionBitMode = SelectedCameraDevice.GetProperty(0xD149);
             FNumber = SelectedCameraDevice.GetProperty(0x5007);
             LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
             AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
