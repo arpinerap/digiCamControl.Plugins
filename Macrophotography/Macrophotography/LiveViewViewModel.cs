@@ -38,6 +38,8 @@ namespace Macrophotography
         private bool _settingArea;
         private CameraProperty _cameraProperty;
 
+        private static LiveViewViewModel _instance;
+
         private AsyncObservableCollection<string> _grids;
         private int _gridType;
 
@@ -70,8 +72,8 @@ namespace Macrophotography
         private PropertyValue<long> _ActiveSlot;
         private PropertyValue<long> _LensSort;
         private PropertyValue<long> _LensType;
-        
-        
+
+
         public ICameraDevice SelectedCameraDevice
         {
             get { return _cameraDevice; }
@@ -81,6 +83,18 @@ namespace Macrophotography
                 RaisePropertyChanged(() => SelectedCameraDevice);
             }
         }
+
+        public static LiveViewViewModel Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new LiveViewViewModel();
+                return _instance;
+            }
+            set { _instance = value; }
+        }
+
        
         private int _rotation;
 
@@ -563,7 +577,7 @@ namespace Macrophotography
             }
         }
 
-        void SetAFLensConnected()
+        public void SetAFLensConnected()
         {
             if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
             else AFLensConnected = false;
@@ -616,6 +630,43 @@ namespace Macrophotography
 
         #endregion
 
+        #region Name Strings
+
+        private string _NameLens;
+        private string _NameRail;
+        private string _NameSensor;
+
+        public string NameLens
+        {
+            get { return _NameLens; }
+            set
+            {
+                _NameLens = value;
+                RaisePropertyChanged(() => NameLens);
+            }
+        }
+
+        public string NameRail
+        {
+            get { return _NameRail; }
+            set
+            {
+                _NameRail = value;
+                RaisePropertyChanged(() => NameRail);
+            }
+        }
+
+        public string NameSensor
+        {
+            get { return _NameSensor; }
+            set
+            {
+                _NameSensor = value;
+                RaisePropertyChanged(() => NameSensor);
+            }
+        }
+
+        #endregion
 
 
 

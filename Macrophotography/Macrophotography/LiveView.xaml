@@ -28,17 +28,20 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <WrapPanel>
-                <Label Content="Put here LensComboBox and RailComboBox"/>
-                <ComboBox x:Name="NameLens_Combo_Commands"                        
-                          Height="38" VerticalAlignment="Center"/>
-                <ComboBox x:Name="RailLens_Combo_Commands"                           
-                          Height="38" VerticalAlignment="Center"/>
+                <Label Content="{Binding NameSensor}"/>
+                <Label Content=" || "/>
+                <Label Content="{Binding NameLens}"/>
+                <Label Content=" || "/>
+                <Label Content="{Binding NameRail}"/>
+                <Label Content=" || "/>
                 <ComboBox x:Name="Ports_Combo_Commands" SelectedItem="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
                                   ItemsSource="{Binding portslist, Source={x:Static macrophotography:ArduinoPorts.Instance}}"                        
                           Height="38" VerticalAlignment="Center"/>
-                <Button x:Name="Connect_btn_Commands" Content="Connect"  Command="{Binding DetectArduino, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                <Label Content=" || "/>
+                <Button Content="Connect" Command="{Binding DetectArduino, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
                         Height="38" VerticalAlignment="Center"/>            
             </WrapPanel>
+
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
 
@@ -331,9 +334,8 @@
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngleLevelPitching.Value}"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding Path=AngelLevelYawing.value}"/>
                 <TextBox  x:Name="LevelAngle_txt" Width="50" BorderThickness="0" Text="{Binding Path=AngelLevelYawing}" />
-                <ComboBox x:Name="ApertureAF_combo" 
-                    Visibility="{Binding LevelAngleRolling.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
-                    IsEnabled="{Binding Path=LevelAngleRolling.IsEnabled}" ItemsSource="{Binding Path=LevelAngleRolling.Values}" SelectedValue="{Binding Path=LevelAngleRolling.Value}"/>
+                <Label Content="{Binding NameRail}"/>
+                <TextBox Width="50" Text="{Binding NameRail}" IsReadOnly="True"/>
             </StackPanel>
         </GroupBox>
 

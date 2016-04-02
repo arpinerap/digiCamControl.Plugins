@@ -52,7 +52,7 @@
                                       Height="auto">
             <StackPanel Margin="10">
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding  AFLensConnected}" 
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding  AFLensConnected}" IsEnabled="False"
                              Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
@@ -69,12 +69,12 @@
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"                                                
                                                 Grid.Row="3" Checked="ManuPropRdb_Checked" Click="ManuPropRdb_Click"/>
-                <TextBox x:Name="LensSort_txt" Text="{Binding LensSort.Value}"
+                <TextBox x:Name="LensSort_txt" Text="{Binding LensSort.Value}" Visibility="Hidden"
                          Grid.Row="3"
                          HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"  Width="70"
-                         TextAlignment="Left" BorderThickness="1"/>
+                         TextAlignment="Left" BorderThickness="1" TextChanged="LensSort_txt_TextChanged"/>
 
-                <TextBox x:Name="AfLensConnected_txt" Text="{Binding AFLensConnected}"
+                <TextBox x:Name="AfLensConnected_txt" Text="{Binding AFLensConnected}" Visibility="Hidden"
                          Grid.Row="3"
                          HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"  Width="70"
                          TextAlignment="Left" BorderThickness="1"/>
@@ -97,13 +97,13 @@
                 </Grid.ColumnDefinitions>
 
 
-                <controls:NumericUpDown x:Name="aperture_nud" Value="{Binding Aperture, Source={x:Static macrophotography:StepperManager.Instance}}"
+                <controls:NumericUpDown x:Name="aperture_nud" Value="{Binding Aperture, Source={x:Static macrophotography:StepperManager.Instance}}" Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="0"
                         Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
                 <ComboBox x:Name="ApertureAF_combo" 
-                    Grid.Column="1" Grid.Row="0" Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                    Grid.Column="1" Grid.Row="0" Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                     IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"/>
 
                 <controls:NumericUpDown x:Name="NA_nud" Value="{Binding NA, Source={x:Static macrophotography:StepperManager.Instance}}"

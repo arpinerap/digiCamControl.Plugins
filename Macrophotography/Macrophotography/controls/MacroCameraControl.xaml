@@ -301,7 +301,7 @@
                 <Expander Header="Exposure" IsExpanded="True" >
                     <StackPanel>
                         <local:ExposureStatusControl ExposureStatus="{Binding Path=SelectedCameraDevice.ExposureStatus, Mode=TwoWay}"/>
-                        <StackPanel Margin="1" Visibility="{Binding SelectedCameraDevice.FNumber.Available, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Margin="1" Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Label Content="{translation:TranslateExtension Aperture}" Target="{Binding ElementName=cmb_aperture}"/>
                             <Border BorderThickness="1" BorderBrush="{Binding Path=SelectedCameraDevice.FNumber.ErrorColor}" >
                                 <ComboBox IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"/>

@@ -43,17 +43,11 @@ namespace Macrophotography.controls
             ArduinoPorts.Instance.DetectArduino();
             NameRail_Combo.SelectedIndex = 0;
             Fill_RailData();
-            if (AFLensRdb.IsChecked == true)
-            {
-                ChkAFLens();
-            }
-            else
-            {
-                NameLens_Combo.SelectedIndex = 0;
-                Fill_LensData();
-            }
-            
+            LiveViewViewModel.Instance.SetAFLensConnected();
+            DefaultRadiobutton();
         }
+
+
 
 
         # region RadioButtons
@@ -227,6 +221,22 @@ namespace Macrophotography.controls
             
 
         }
+
+        private void DefaultRadiobutton()
+        {
+            if (LiveViewViewModel.Instance.AFLensConnected == false)
+            {
+                NameLens_Combo.SelectedIndex = 0;
+                Fill_LensData();
+            }
+            else
+            {
+                LiveViewViewModel.Instance.AFLensConnected = true;
+                ChkAFLens();
+            }
+        }
+
+
         # endregion
 
         # region Lens DataBase
@@ -291,6 +301,7 @@ namespace Macrophotography.controls
                     double augmentation = (double)drfill.GetDecimal(6);
 
                     Lens_txt.Text = sname;
+                    LiveViewViewModel.Instance.NameLens = sname;
                     StepperManager.Instance.Aperture = aperture;
                     StepperManager.Instance.NA = NA;
                     NumUD_Magni.Value = augmentation;
@@ -387,6 +398,7 @@ namespace Macrophotography.controls
                     GearBox_nud.Value = gear_box;
                     Rail_txt.Text = sname;
                     NameRail_Combo.SelectedItem = sname;
+                    LiveViewViewModel.Instance.NameRail = sname;
 
                     RailCalc();
                     sDoFCalc();
@@ -487,6 +499,7 @@ namespace Macrophotography.controls
                     N_nud.Value = n;
                     Sensor_txt.Text = sname;
                     NameSensor_Combo.SelectedItem = sname;
+                    LiveViewViewModel.Instance.NameSensor = sname;
 
                     RailCalc();
                     sDoFCalc();
@@ -586,12 +599,11 @@ namespace Macrophotography.controls
             sDoFCalc();
         }
 
-       
+        private void LensSort_txt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DefaultRadiobutton();
+        }
 
-     
-
-
-
-
+        
     }
 }
