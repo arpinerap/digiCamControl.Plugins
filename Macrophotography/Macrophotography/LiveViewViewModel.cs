@@ -30,6 +30,7 @@ namespace Macrophotography
     {
         private const int DesiredFrameRate = 20;
         private int _totalframes = 0;
+        private DateTime _photoCapturedTime = DateTime.MinValue;
 
         private bool _operInProgress = false;
         private Timer _timer = new Timer(1000 / 25.0);
@@ -114,6 +115,15 @@ namespace Macrophotography
             }
         }
 
+        public int PreviewTime
+        {
+            get { return CameraProperty.LiveviewSettings.PreviewTime; }
+            set
+            {
+                CameraProperty.LiveviewSettings.PreviewTime = value;
+                RaisePropertyChanged(() => PreviewTime);
+            }
+        }
 
         #region Commands
 
@@ -882,7 +892,7 @@ namespace Macrophotography
             _timer.AutoReset = true;
             //CameraDevice.CameraDisconnected += CameraDeviceCameraDisconnected;
             //_photoCapturedTime = DateTime.MinValue;
-           // CameraDevice.PhotoCaptured += CameraDevicePhotoCaptured;
+            SelectedCameraDevice.PhotoCaptured += CameraDevicePhotoCaptured;
             //StartLiveView();
             //_freezeTimer.Interval = ServiceProvider.Settings.LiveViewFreezeTimeOut * 1000;
             //_freezeTimer.Elapsed += _freezeTimer_Elapsed;
@@ -892,6 +902,12 @@ namespace Macrophotography
             //_focusStackingTimer.Elapsed += _focusStackingTimer_Elapsed;
             //_restartTimer.AutoReset = true;
             //_restartTimer.Elapsed += _restartTimer_Elapsed;
+        }
+
+        private void CameraDevicePhotoCaptured(object sender, PhotoCapturedEventArgs eventargs)
+        {
+            _photoCapturedTime = DateTime.Now;
+            StartLiveView();
         }
 
         private void InitCommands()
@@ -1050,6 +1066,15 @@ namespace Macrophotography
 
             try
             {
+                if (PreviewTime > 0 && (DateTime.Now - _photoCapturedTime).TotalSeconds <= PreviewTime)
+                {
+                    var bitmap = ServiceProvider.Settings.SelectedBitmap.DisplayImage.Clone();
+                    // flip image only if the prview not fliped 
+                    bitmap.Freeze();
+                    Bitmap = bitmap;
+                    return;
+                }
+
                 if (LiveViewData != null && LiveViewData.ImageData != null)
                 {
                     MemoryStream stream = new MemoryStream(LiveViewData.ImageData,
