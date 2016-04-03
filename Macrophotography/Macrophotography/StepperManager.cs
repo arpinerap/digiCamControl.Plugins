@@ -43,6 +43,8 @@ namespace Macrophotography
         private int _Overlap = 20;
         
         private double _magni = 2;
+        private double _magniMax = 40;
+        private double _magniMin = 0.5;
         private double _railAccuracy = 0;
         private int _InitStackDelay = 0;
         private int _StabilizationDelay = 0;
@@ -55,7 +57,7 @@ namespace Macrophotography
         private double _aperture = 0;
         private double _nA = 0;
 
-
+        private int _LinesNumber = 0;
 
 
 
@@ -268,6 +270,26 @@ namespace Macrophotography
             }
         }
 
+        public double MagniMin
+        {
+            get { return _magniMin; }
+            set
+            {
+                _magniMin = value;
+                RaisePropertyChanged(() => MagniMin);
+            }
+        }
+
+        public double MagniMax
+        {
+            get { return _magniMax; }
+            set
+            {
+                _magniMax = value;
+                RaisePropertyChanged(() => MagniMax);
+            }
+        }
+
         public double RailAccuracy
         {
             get { return _railAccuracy; }
@@ -430,7 +452,17 @@ namespace Macrophotography
             }
         }
 
+        public int LinesNumber
+        {
+            get { return _LinesNumber; }
+            set
+            {
+                _LinesNumber = value;
+                RaisePropertyChanged(() => LinesNumber);
+            }
+        }
 
+        
         #endregion
 
 

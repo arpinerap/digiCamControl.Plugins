@@ -36,6 +36,8 @@ namespace Macrophotography
 
         private ICameraDevice _cameraDevice;
         private BitmapSource _bitmap;
+        private Bitmap _ColorBitmap;
+        private BitmapSource _ColorBitmapSource;
         private bool _settingArea;
         private CameraProperty _cameraProperty;
 
@@ -277,6 +279,28 @@ namespace Macrophotography
                 RaisePropertyChanged(() => Bitmap);
             }
         }
+
+
+        public Bitmap ColorBitmap
+        {
+            get { return _ColorBitmap; }
+            set
+            {
+                _ColorBitmap = value;
+                RaisePropertyChanged(() => ColorBitmap);
+            }
+        }
+
+        public BitmapSource ColorBitmapSource
+        {
+            get { return _ColorBitmapSource; }
+            set
+            {
+                _ColorBitmapSource = value;
+                RaisePropertyChanged(() => ColorBitmapSource);
+            }
+        }
+
 
         public int RotationIndex
         {
@@ -717,10 +741,12 @@ namespace Macrophotography
             // create filter
             ConnectedComponentsLabeling filter2 = new ConnectedComponentsLabeling();
             // apply the filter
-            Bitmap newImage = filter2.Apply(binaryimage);
+            Bitmap ColorImage = filter2.Apply(binaryimage);
+            ColorBitmap = ColorImage;
+
             // check objects count
             int objectCount = filter2.ObjectCount;
-
+            StepperManager.Instance.LinesNumber = objectCount;
 
 
 
@@ -737,7 +763,23 @@ namespace Macrophotography
 
             StepperManager.Instance.Magni = _Magni;
 
-            MessageBox.Show("Magnification = " + StepperManager.Instance.Magni + " Lines..." + objectCount);
+            //MessageBox.Show("Magnification = " + StepperManager.Instance.Magni + " Lines..." + objectCount);
+
+        }
+
+
+        public BitmapSource ConvertBitmap(System.Drawing.Bitmap bitmap)
+        {
+            var bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            var ColorBitmapSource = BitmapSource.Create(
+                bitmapData.Width, bitmapData.Height, 96, 96, PixelFormats.Bgr24, null,
+                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+
+            bitmap.UnlockBits(bitmapData);
+            return ColorBitmapSource;
         }
 
         #endregion

@@ -21,6 +21,7 @@ using System.Timers;
 using CameraControl.Core.Interfaces;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
+using Macrophotography;
 
 namespace Macrophotography
 {
@@ -201,6 +202,8 @@ namespace Macrophotography
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             LiveViewViewModel.Instance.MagiCalc(3.6);
+            Windows.MagniWin MW= new Windows.MagniWin();
+            MW.ShowDialog();
         }
     }
 }

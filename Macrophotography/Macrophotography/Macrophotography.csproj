@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArduinoPorts.cs" />
+    <Compile Include="Classes\ImageConverter.cs" />
     <Compile Include="Classes\Lens.cs" />
     <Compile Include="Classes\MilimetersConverter.cs" />
     <Compile Include="Classes\ProgressReport.cs" />
@@ -270,6 +271,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="StepperManager.cs" />
+    <Compile Include="Windows\MagniWin.xaml.cs">
+      <DependentUpon>MagniWin.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="controls\CombineZP.xaml">
@@ -325,6 +329,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\ExpanderEx.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MagniWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
