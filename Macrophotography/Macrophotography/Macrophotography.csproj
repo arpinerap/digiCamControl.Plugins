@@ -226,7 +226,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArduinoPorts.cs" />
-    <Compile Include="Classes\ImageConverter.cs" />
     <Compile Include="Classes\Lens.cs" />
     <Compile Include="Classes\MilimetersConverter.cs" />
     <Compile Include="Classes\ProgressReport.cs" />

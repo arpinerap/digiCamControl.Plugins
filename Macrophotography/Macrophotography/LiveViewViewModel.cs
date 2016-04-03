@@ -39,6 +39,7 @@ namespace Macrophotography
         private BitmapSource _bitmap;
         private Bitmap _ColorBitmap;
         private BitmapSource _ColorBitmapSource;
+        private BitmapImage _ColorBitmapImage;
         private bool _settingArea;
         private CameraProperty _cameraProperty;
 
@@ -311,6 +312,15 @@ namespace Macrophotography
             }
         }
 
+        public BitmapImage ColorBitmapImage
+        {
+            get { return _ColorBitmapImage; }
+            set
+            {
+                _ColorBitmapImage = value;
+                RaisePropertyChanged(() => ColorBitmapImage);
+            }
+        }
 
         public int RotationIndex
         {
@@ -714,82 +724,70 @@ namespace Macrophotography
                         LiveViewData.
                             ImageDataPosition);
 
-            // load image
-            Bitmap tempImage = new Bitmap(stream);
+            using (var tempImage = new Bitmap(stream))
+            {
+                Bitmap bmp = tempImage;
+        
 
-            Bitmap image = AForge.Imaging.Image.Clone(tempImage, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            tempImage.Dispose();
-
-            // lock the source image
-            BitmapData sourceData = image.LockBits(
-                new Rectangle(0, 0, image.Width, image.Height),
-                ImageLockMode.ReadOnly, image.PixelFormat); 
-
-            // binarize the image
-            FiltersSequence filter = new FiltersSequence(
-            Grayscale.CommonAlgorithms.BT709,
-            new Threshold(100)
-            );
-            //UnmanagedImage binarySource = filter.Apply(new UnmanagedImage(sourceData));
-            Bitmap binaryimage = filter.Apply(sourceData);
-
-            // binarization filtering sequence
-            
-
-            //Bitmap binaryimage = filter.Apply(image);
-            //Bitmap binaryimage2 = AForge.Imaging.Image.Clone(binaryimage, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-
-            /*
-            // apply Hough line transofrm
-            HoughLineTransformation lineTransform = new HoughLineTransformation();
-            lineTransform.ProcessImage(binarySource);
-
-            // get lines using relative intensity
-            HoughLine[] lines = lineTransform.GetLinesByRelativeIntensity(0.8);
-            */
-
-            // create filter
-            ConnectedComponentsLabeling filter2 = new ConnectedComponentsLabeling();
-            // apply the filter
-            Bitmap ColorImage = filter2.Apply(binaryimage);
-            ColorBitmap = ColorImage;
-
-            // check objects count
-            int objectCount = filter2.ObjectCount;
-            StepperManager.Instance.LinesNumber = objectCount;
+                var preview = BitmapFactory.ConvertToPbgra32Format(
+                    BitmapSourceConvert.ToBitmapSource(bmp));
 
 
 
+                Bitmap binaryimage = bmp;
+
+                // binarize the image to BinaryImage
+                var filter = new FiltersSequence(
+                                Grayscale.CommonAlgorithms.BT709,
+                                new Threshold(100)
+                                );
+                binaryimage = filter.Apply(bmp);
+
+                // Pass ConnectedComponentsLabeling Filter
+                WriteableBitmap writeableBitmap;
+
+                // Pass ConnectedComponentsLabeling Filter
+                ConnectedComponentsLabeling filter2 = new ConnectedComponentsLabeling();
+                writeableBitmap = BitmapFactory.ConvertToPbgra32Format(BitmapSourceConvert.ToBitmapSource(filter2.Apply(binaryimage)));
+
+                // Check objects count
+                int objectCount = filter2.ObjectCount;
+                StepperManager.Instance.LinesNumber = objectCount;
+
+                writeableBitmap.Freeze();
+                ColorBitmapSource = writeableBitmap;
 
 
-            // 
-            double one_one;
-            one_one = 59 * sensor;
+                // Calc Magnification
+                double one_one;
+                one_one = 59 * sensor;
 
-            double _magni;
-            _magni = one_one / (objectCount);
+                double _magni;
+                _magni = one_one / (objectCount);
 
-            double _Magni = Math.Round(_magni, 1, MidpointRounding.AwayFromZero); //Rounds"up"
+                double _Magni = Math.Round(_magni, 1, MidpointRounding.AwayFromZero); //Rounds"up"
 
-            StepperManager.Instance.Magni = _Magni;
-
-            //MessageBox.Show("Magnification = " + StepperManager.Instance.Magni + " Lines..." + objectCount);
-
+                StepperManager.Instance.Magni = _Magni;
+            }
+            return;
         }
 
 
-        public BitmapSource ConvertBitmap(System.Drawing.Bitmap bitmap)
+        public BitmapImage ConvertWriteableBitmapToBitmapImage(WriteableBitmap wbm)
         {
-            var bitmapData = bitmap.LockBits(
-                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
-
-            var ColorBitmapSource = BitmapSource.Create(
-                bitmapData.Width, bitmapData.Height, 96, 96, PixelFormats.Bgr24, null,
-                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
-
-            bitmap.UnlockBits(bitmapData);
-            return ColorBitmapSource;
+            BitmapImage bmImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(wbm));
+                encoder.Save(stream);
+                bmImage.BeginInit();
+                bmImage.CacheOption = BitmapCacheOption.OnLoad;
+                bmImage.StreamSource = stream;
+                bmImage.EndInit();
+                bmImage.Freeze();
+            }
+            return bmImage;
         }
 
         #endregion

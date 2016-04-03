@@ -30,5 +30,10 @@ namespace Macrophotography.Windows
         {
             this.Close();
         }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            colorbmpbx.Source = LiveViewViewModel.Instance.ColorBitmapSource;
+        }
     }
 }
