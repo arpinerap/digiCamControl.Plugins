@@ -432,8 +432,47 @@ namespace Macrophotography
 
 
         #endregion
-     
 
+
+        #region Name Strings
+
+        private string _NameLens;
+        private string _NameRail;
+        private string _NameSensor;
+
+        public string NameLens
+        {
+            get { return _NameLens; }
+            set
+            {
+                _NameLens = value;
+                RaisePropertyChanged(() => NameLens);
+            }
+        }
+
+        public string NameRail
+        {
+            get { return _NameRail; }
+            set
+            {
+                _NameRail = value;
+                RaisePropertyChanged(() => NameRail);
+            }
+        }
+
+        public string NameSensor
+        {
+            get { return _NameSensor; }
+            set
+            {
+                _NameSensor = value;
+                RaisePropertyChanged(() => NameSensor);
+            }
+        }
+
+        #endregion
+
+     
         #region Position
 
         public void UpDatePosition()

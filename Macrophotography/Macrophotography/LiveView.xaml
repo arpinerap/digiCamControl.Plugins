@@ -28,17 +28,17 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <WrapPanel>
-                <Label Content="{Binding NameSensor}"/>
+                <Label Content="{Binding NameSensor, Source={x:Static macrophotography:StepperManager.Instance}}"/>
                 <Label Content=" || "/>
-                <Label Content="{Binding NameLens}"/>
+                <Label Content="{Binding NameLens, Source={x:Static macrophotography:StepperManager.Instance}}"/>
                 <Label Content=" || "/>
-                <Label Content="{Binding NameRail}"/>
+                <Label Content="{Binding NameRail, Source={x:Static macrophotography:StepperManager.Instance}}"/>
                 <Label Content=" || "/>
                 <ComboBox x:Name="Ports_Combo_Commands" SelectedItem="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
                                   ItemsSource="{Binding portslist, Source={x:Static macrophotography:ArduinoPorts.Instance}}"                        
                           Height="38" VerticalAlignment="Center"/>
                 <Label Content=" || "/>
-                <Button Content="Connect" Command="{Binding DetectArduino, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                <Button Content="Search Stage" Command="{Binding DetectArduino, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
                         Height="38" VerticalAlignment="Center"/>            
             </WrapPanel>
 
@@ -333,7 +333,7 @@
                 <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngleRolling}"/>
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngleLevelPitching}"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngelLevelYawing}"/>
-                <Label Content="{Binding NameRail}"/>
+                <Button Click="Button_Click" Content="SET Magnification"/>
             </StackPanel>
         </GroupBox>
 

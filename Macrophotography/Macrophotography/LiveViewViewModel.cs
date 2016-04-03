@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
+using System.Drawing.Imaging;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Core.Translation;
@@ -663,45 +664,83 @@ namespace Macrophotography
 
         #endregion
 
-        #region Name Strings
 
-        private string _NameLens;
-        private string _NameRail;
-        private string _NameSensor;
+        #region Auto Magnification
 
-        public string NameLens
+        public void MagiCalc(double sensor)
         {
-            get { return _NameLens; }
-            set
-            {
-                _NameLens = value;
-                RaisePropertyChanged(() => NameLens);
-            }
-        }
+            // get image from LiveView
+            LiveViewData = SelectedCameraDevice.GetLiveViewImage();
 
-        public string NameRail
-        {
-            get { return _NameRail; }
-            set
-            {
-                _NameRail = value;
-                RaisePropertyChanged(() => NameRail);
-            }
-        }
+            MemoryStream stream = new MemoryStream(LiveViewData.ImageData,
+                        LiveViewData.
+                            ImageDataPosition,
+                        LiveViewData.ImageData.
+                            Length -
+                        LiveViewData.
+                            ImageDataPosition);
 
-        public string NameSensor
-        {
-            get { return _NameSensor; }
-            set
-            {
-                _NameSensor = value;
-                RaisePropertyChanged(() => NameSensor);
-            }
+            // load image
+            Bitmap tempImage = new Bitmap(stream);
+
+            Bitmap image = AForge.Imaging.Image.Clone(tempImage, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            tempImage.Dispose();
+
+            // lock the source image
+            BitmapData sourceData = image.LockBits(
+                new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat); 
+
+            // binarize the image
+            FiltersSequence filter = new FiltersSequence(
+            Grayscale.CommonAlgorithms.BT709,
+            new Threshold(100)
+            );
+            //UnmanagedImage binarySource = filter.Apply(new UnmanagedImage(sourceData));
+            Bitmap binaryimage = filter.Apply(sourceData);
+
+            // binarization filtering sequence
+            
+
+            //Bitmap binaryimage = filter.Apply(image);
+            //Bitmap binaryimage2 = AForge.Imaging.Image.Clone(binaryimage, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
+            /*
+            // apply Hough line transofrm
+            HoughLineTransformation lineTransform = new HoughLineTransformation();
+            lineTransform.ProcessImage(binarySource);
+
+            // get lines using relative intensity
+            HoughLine[] lines = lineTransform.GetLinesByRelativeIntensity(0.8);
+            */
+
+            // create filter
+            ConnectedComponentsLabeling filter2 = new ConnectedComponentsLabeling();
+            // apply the filter
+            Bitmap newImage = filter2.Apply(binaryimage);
+            // check objects count
+            int objectCount = filter2.ObjectCount;
+
+
+
+
+
+
+            // 
+            double one_one;
+            one_one = 59 * sensor;
+
+            double _magni;
+            _magni = one_one / (objectCount);
+
+            double _Magni = Math.Round(_magni, 1, MidpointRounding.AwayFromZero); //Rounds"up"
+
+            StepperManager.Instance.Magni = _Magni;
+
+            MessageBox.Show("Magnification = " + StepperManager.Instance.Magni + " Lines..." + objectCount);
         }
 
         #endregion
-
-
 
 
         public LiveViewViewModel()

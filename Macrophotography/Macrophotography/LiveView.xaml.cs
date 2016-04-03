@@ -197,5 +197,10 @@ namespace Macrophotography
                     break;
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            LiveViewViewModel.Instance.MagiCalc(3.6);
+        }
     }
 }

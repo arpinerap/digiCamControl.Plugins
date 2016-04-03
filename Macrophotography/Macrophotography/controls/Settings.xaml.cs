@@ -301,7 +301,7 @@ namespace Macrophotography.controls
                     double augmentation = (double)drfill.GetDecimal(6);
 
                     Lens_txt.Text = sname;
-                    LiveViewViewModel.Instance.NameLens = sname;
+                    StepperManager.Instance.NameLens = sname;
                     StepperManager.Instance.Aperture = aperture;
                     StepperManager.Instance.NA = NA;
                     NumUD_Magni.Value = augmentation;
@@ -398,7 +398,7 @@ namespace Macrophotography.controls
                     GearBox_nud.Value = gear_box;
                     Rail_txt.Text = sname;
                     NameRail_Combo.SelectedItem = sname;
-                    LiveViewViewModel.Instance.NameRail = sname;
+                    StepperManager.Instance.NameRail = sname;
 
                     RailCalc();
                     sDoFCalc();
@@ -499,7 +499,7 @@ namespace Macrophotography.controls
                     N_nud.Value = n;
                     Sensor_txt.Text = sname;
                     NameSensor_Combo.SelectedItem = sname;
-                    LiveViewViewModel.Instance.NameSensor = sname;
+                    StepperManager.Instance.NameSensor = sname;
 
                     RailCalc();
                     sDoFCalc();
