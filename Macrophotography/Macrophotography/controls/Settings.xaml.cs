@@ -251,8 +251,29 @@ namespace Macrophotography.controls
                 aperture_nud.Value = 0;
             }
 
-            SettingsDB.AddLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value);
+            SettingsDB.AddLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value, (double)NumUD_Magni.Maximum, (double)NumUD_Magni.Minimum);
             MessageBox.Show("Lens Added");
+            Lens_txt.Text = "";
+            StepperManager.Instance.Aperture = 0;
+            StepperManager.Instance.NA = 0;
+            ManuLensInt = 0;
+            MicroLensInt = 0;
+            StepperManager.Instance.Magni = 0;
+            Fill_ComboNameLens();
+        }
+        private void Updatelens_button_Click(object sender, RoutedEventArgs e)
+        {
+            if (ManuLensRdb.IsChecked == true)
+            {
+                NA_nud.Value = 0;
+            }
+            else
+            {
+                aperture_nud.Value = 0;
+            }
+
+            SettingsDB.UpdateLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value, (double)NumUD_Magni.Maximum, (double)NumUD_Magni.Minimum);
+            MessageBox.Show("Lens UpDated");
             Lens_txt.Text = "";
             StepperManager.Instance.Aperture = 0;
             StepperManager.Instance.NA = 0;
@@ -299,12 +320,16 @@ namespace Macrophotography.controls
                     bool bManuLens = drfill.GetBoolean(4);
                     bool bMicroLens = drfill.GetBoolean(5);
                     double augmentation = (double)drfill.GetDecimal(6);
+                    double augmenMax = (double)drfill.GetDecimal(7);
+                    double augmenMin = (double)drfill.GetDecimal(8);
 
                     Lens_txt.Text = sname;
                     StepperManager.Instance.NameLens = sname;
                     StepperManager.Instance.Aperture = aperture;
                     StepperManager.Instance.NA = NA;
-                    NumUD_Magni.Value = augmentation;
+                    NumUD_Magni.Value = augmentation;  //valorar pasarlo a StepperManager.Instance.Magni
+                    StepperManager.Instance.MagniMax = augmenMax;
+                    StepperManager.Instance.MagniMin = augmenMin;
 
 
                     if (bManuLens == true)
@@ -347,6 +372,17 @@ namespace Macrophotography.controls
         {
             SettingsDB.AddRail(Rail_txt.Text, MotorSteps_nud.Value.ToString(), MicroSteps_nud.Value.ToString(), BallScrew_nud.Value.ToString(), GearBox_nud.Value.ToString());
             MessageBox.Show("Rail Added");
+            Rail_txt.Text = "";
+            MotorSteps_nud.Value = 0;
+            MicroSteps_nud.Value = 0;
+            BallScrew_nud.Value = 0;
+            GearBox_nud.Value = 0;
+            Fill_ComboNameRail();
+        }
+        private void Updaterail_button_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsDB.UpdateRail(Rail_txt.Text, MotorSteps_nud.Value.ToString(), MicroSteps_nud.Value.ToString(), BallScrew_nud.Value.ToString(), GearBox_nud.Value.ToString());
+            MessageBox.Show("Rail UpDated");
             Rail_txt.Text = "";
             MotorSteps_nud.Value = 0;
             MicroSteps_nud.Value = 0;
@@ -448,6 +484,17 @@ namespace Macrophotography.controls
         {
             SettingsDB.AddSensor(Sensor_txt.Text, (double)Pitch_nud.Value, (double)E_nud.Value, (int)Lambda_nud.Value, (double)N_nud.Value);
             MessageBox.Show("Sensor Added");
+            Sensor_txt.Text = "";
+            Pitch_nud.Value = 0;
+            E_nud.Value = 0;
+            Lambda_nud.Value = 0;
+            N_nud.Value = 0;
+            Fill_ComboNameSensor();
+        }
+        private void Updatesensor_button_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsDB.UpdateSensor(Sensor_txt.Text, (double)Pitch_nud.Value, (double)E_nud.Value, (int)Lambda_nud.Value, (double)N_nud.Value);
+            MessageBox.Show("Sensor UpDated");
             Sensor_txt.Text = "";
             Pitch_nud.Value = 0;
             E_nud.Value = 0;

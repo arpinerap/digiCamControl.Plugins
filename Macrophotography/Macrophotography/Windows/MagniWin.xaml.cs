@@ -35,5 +35,17 @@ namespace Macrophotography.Windows
         {
             colorbmpbx.Source = LiveViewViewModel.Instance.ColorBitmapSource;
         }
+
+        private void Max_btn_Click(object sender, RoutedEventArgs e)
+        {
+            StepperManager.Instance.MagniMax = StepperManager.Instance.Magni;
+            MessageBox.Show("Maximun Magnification Saved");
+        }
+
+        private void Min_btn_Click(object sender, RoutedEventArgs e)
+        {
+            StepperManager.Instance.MagniMin = StepperManager.Instance.Magni;
+            MessageBox.Show("Minimun Magnification Saved");
+        }
     }
 }

@@ -16,9 +16,9 @@ namespace Macrophotography.Classes
             SqlConnection conn = new SqlConnection(SettingsCS);
             return conn;
         }
-        public static void AddLens(string NameLens, double Aperture, double NA, int iManualLens, int iMicrolens, double Augmentation)
+        public static void AddLens(string NameLens, double Aperture, double NA, int iManualLens, int iMicrolens, double Augmentation, double AugmenMax, double AugmenMin)
         {
-            string QueryIns = "insert into LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens, augmentation) values (@nameLens, @aperture, @na, @manualLens, @microLens, @augmentation)";
+            string QueryIns = "insert into LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens, augmentation, augmenMax, augmenMin) values (@nameLens, @aperture, @na, @manualLens, @microLens, @augmentation, @augmenMax, @augmenMin)";
             SqlConnection conn = GetConnection();
             SqlCommand InsComm = new SqlCommand(QueryIns, conn);
             InsComm.Parameters.AddWithValue("@nameLens", NameLens);
@@ -27,10 +27,31 @@ namespace Macrophotography.Classes
             InsComm.Parameters.AddWithValue("@manualLens", iManualLens);
             InsComm.Parameters.AddWithValue("@microLens", iMicrolens);
             InsComm.Parameters.AddWithValue("@augmentation", Augmentation);
+            InsComm.Parameters.AddWithValue("@augmenMax", Augmentation);
+            InsComm.Parameters.AddWithValue("@augmenMin", Augmentation);
             try { conn.Open(); InsComm.ExecuteNonQuery(); }
             catch (SqlException ex) { throw ex; }
             finally { conn.Close(); }
         }
+
+        public static void UpdateLens(string NameLens, double Aperture, double NA, int iManualLens, int iMicrolens, double Augmentation, double AugmenMax, double AugmenMin)
+        {
+            string QueryIns = "Update LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens, augmentation, augmenMax, augmenMin) values (@nameLens, @aperture, @na, @manualLens, @microLens, @augmentation, @augmenMax, @augmenMin) where name_lens = @nameLens";
+            SqlConnection conn = GetConnection();
+            SqlCommand InsComm = new SqlCommand(QueryIns, conn);
+            InsComm.Parameters.AddWithValue("@nameLens", NameLens);
+            InsComm.Parameters.AddWithValue("@aperture", Aperture);
+            InsComm.Parameters.AddWithValue("@na", NA);
+            InsComm.Parameters.AddWithValue("@manualLens", iManualLens);
+            InsComm.Parameters.AddWithValue("@microLens", iMicrolens);
+            InsComm.Parameters.AddWithValue("@augmentation", Augmentation);
+            InsComm.Parameters.AddWithValue("@augmenMax", AugmenMax);
+            InsComm.Parameters.AddWithValue("@augmenMin", AugmenMin);
+            try { conn.Open(); InsComm.ExecuteNonQuery(); }
+            catch (SqlException ex) { throw ex; }
+            finally { conn.Close(); }
+        }
+
         public static List<Lens> GetLens()
         {
             List<Lens> LensList = new List<Lens>();
@@ -72,6 +93,20 @@ namespace Macrophotography.Classes
         public static void AddRail(string NameRail, string Motor_steps, string Micro_steps, string Ball_screw, string Gear_box)
         {
             string QueryIns = "insert into RailTable (name_rail, motor_steps, micro_steps, ball_screw, gear_box) values (@nameRail, @motor_steps, @micro_steps, @ball_screw, @gear_box)";
+            SqlConnection conn = GetConnection();
+            SqlCommand InsComm = new SqlCommand(QueryIns, conn);
+            InsComm.Parameters.AddWithValue("@nameRail", NameRail);
+            InsComm.Parameters.AddWithValue("@motor_steps", Motor_steps);
+            InsComm.Parameters.AddWithValue("@micro_steps", Micro_steps);
+            InsComm.Parameters.AddWithValue("@ball_screw", Ball_screw);
+            InsComm.Parameters.AddWithValue("@gear_box", Gear_box);
+            try { conn.Open(); InsComm.ExecuteNonQuery(); }
+            catch (SqlException ex) { throw ex; }
+            finally { conn.Close(); }
+        }
+        public static void UpdateRail(string NameRail, string Motor_steps, string Micro_steps, string Ball_screw, string Gear_box)
+        {
+            string QueryIns = "UPDATE RailTable (name_rail, motor_steps, micro_steps, ball_screw, gear_box) values (@nameRail, @motor_steps, @micro_steps, @ball_screw, @gear_box) where name_rail = @nameRail";
             SqlConnection conn = GetConnection();
             SqlCommand InsComm = new SqlCommand(QueryIns, conn);
             InsComm.Parameters.AddWithValue("@nameRail", NameRail);
@@ -136,6 +171,21 @@ namespace Macrophotography.Classes
             catch (SqlException ex) { throw ex; }
             finally { conn.Close(); }
         }
+        public static void UpdateSensor(string NameSensor, double Pitch, double E, int Lambda, double N)
+        {
+            string QueryIns = "UPDATE SensorTable (name_sensor, pitch, e, lambda, n) values (@nameSensor, @pitch, @e, @lambda, @n) where name_sensor = @nameSensor";
+            SqlConnection conn = GetConnection();
+            SqlCommand InsComm = new SqlCommand(QueryIns, conn);
+            InsComm.Parameters.AddWithValue("@nameSensor", NameSensor);
+            InsComm.Parameters.AddWithValue("@pitch", Pitch);
+            InsComm.Parameters.AddWithValue("@e", E);
+            InsComm.Parameters.AddWithValue("@lambda", Lambda);
+            InsComm.Parameters.AddWithValue("n", N);
+            try { conn.Open(); InsComm.ExecuteNonQuery(); }
+            catch (SqlException ex) { throw ex; }
+            finally { conn.Close(); }
+        }
+
         public static List<Sensor> GetSensor()
         {
             List<Sensor> SensorList = new List<Sensor>();

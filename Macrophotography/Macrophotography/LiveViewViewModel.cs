@@ -104,27 +104,7 @@ namespace Macrophotography
         }
 
        
-        private int _rotation;
-
-        public bool ShowFocusRect
-        {
-            get { return CameraProperty.LiveviewSettings.ShowFocusRect; }
-            set
-            {
-                CameraProperty.LiveviewSettings.ShowFocusRect = value;
-                RaisePropertyChanged(() => ShowFocusRect);
-            }
-        }
-
-        public int PreviewTime
-        {
-            get { return CameraProperty.LiveviewSettings.PreviewTime; }
-            set
-            {
-                CameraProperty.LiveviewSettings.PreviewTime = value;
-                RaisePropertyChanged(() => PreviewTime);
-            }
-        }
+        
 
         #region Commands
 
@@ -173,7 +153,32 @@ namespace Macrophotography
 
         #endregion
 
-        #region Others
+        #region RaisePropertyChanged
+
+
+        private int _rotation;
+
+        public bool ShowFocusRect
+        {
+            get { return CameraProperty.LiveviewSettings.ShowFocusRect; }
+            set
+            {
+                CameraProperty.LiveviewSettings.ShowFocusRect = value;
+                RaisePropertyChanged(() => ShowFocusRect);
+            }
+        }
+
+        public int PreviewTime
+        {
+            get { return CameraProperty.LiveviewSettings.PreviewTime; }
+            set
+            {
+                CameraProperty.LiveviewSettings.PreviewTime = value;
+                RaisePropertyChanged(() => PreviewTime);
+            }
+        }
+
+
 
         public bool ShowRuler
         {
@@ -235,11 +240,6 @@ namespace Macrophotography
                 RaisePropertyChanged(() => RullerRect);
             }
         }
-
-
-
-
-
 
         public int VerticalMax
         {
@@ -708,7 +708,6 @@ namespace Macrophotography
 
         #endregion
 
-
         #region Auto Magnification
 
         public void MagiCalc(double sensor)
@@ -737,9 +736,30 @@ namespace Macrophotography
                 Bitmap binaryimage = bmp;
 
                 // binarize the image to BinaryImage
+                
+                short[,] se = new short[,] {
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 },
+                {  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1 }
+                };
+
+
                 var filter = new FiltersSequence(
                                 Grayscale.CommonAlgorithms.BT709,
-                                new Threshold(100)
+                                new Threshold(100),
+                                new Closing(se),
+                                new Opening(se),
+                                new Opening(se),
+                                new Opening(se),
+                                new Invert()
                                 );
                 binaryimage = filter.Apply(bmp);
 
