@@ -110,7 +110,7 @@ namespace Macrophotography.Classes
         }
         public static void UpdateRail(string NameRail, string Motor_steps, string Micro_steps, string Ball_screw, string Gear_box)
         {
-            string QueryIns = "UPDATE RailTable (name_rail, motor_steps, micro_steps, ball_screw, gear_box) values (@nameRail, @motor_steps, @micro_steps, @ball_screw, @gear_box) where name_rail = @nameRail";
+            string QueryIns = "update RailTable set name_rail = @nameRail, motor_steps = @motor_steps, micro_steps = @micro_steps, ball_screw = @ball_screw, gear_box = @gear_box) values where name_rail = @nameRail";
             SqlConnection conn = GetConnection();
             SqlCommand InsComm = new SqlCommand(QueryIns, conn);
             InsComm.Parameters.AddWithValue("@nameRail", NameRail);
@@ -177,7 +177,7 @@ namespace Macrophotography.Classes
         }
         public static void UpdateSensor(string NameSensor, double Pitch, double E, int Lambda, double N)
         {
-            string QueryIns = "UPDATE SensorTable (name_sensor, pitch, e, lambda, n) values (@nameSensor, @pitch, @e, @lambda, @n) where name_sensor = @nameSensor";
+            string QueryIns = "update SensorTable set name_sensor = @nameSensor, pitch = @pitch, e = @e, lambda = @lambda, n = @n) where name_sensor = @nameSensor";
             SqlConnection conn = GetConnection();
             SqlCommand InsComm = new SqlCommand(QueryIns, conn);
             InsComm.Parameters.AddWithValue("@nameSensor", NameSensor);

@@ -152,13 +152,13 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="CameraControl.Core">
-      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
+      <HintPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
     </Reference>
     <Reference Include="CameraControl.Devices">
-      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
+      <HintPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
     </Reference>
     <Reference Include="CameraControl.Plugins">
-      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\CameraControl.Plugins.dll</HintPath>
+      <HintPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\CameraControl.Plugins.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>

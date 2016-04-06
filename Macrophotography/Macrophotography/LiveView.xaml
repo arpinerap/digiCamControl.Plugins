@@ -336,7 +336,7 @@
                 <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngleRolling}"/>
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngleLevelPitching}"/>
                 <controls:NumericUpDown x:Name="AngleLevelYaw_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngelLevelYawing}"/>
-                <Button Click="Button_Click" Content="SET Magnification"/>
+                <Button Click="Button_Click" Content="Magnification" Width="120"/>
             </StackPanel>
         </GroupBox>
 
