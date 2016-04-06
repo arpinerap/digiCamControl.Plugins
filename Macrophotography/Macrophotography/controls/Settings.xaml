@@ -58,10 +58,12 @@
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                 Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
                 <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
+                             Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                  Grid.Row="1" Checked="ManuLensRdb_Checked" Click="ManuLensRdb_Click"/>
                 <RadioButton Content="Microscopy Lens" x:Name="MicroLensRdb"
+                             Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                  Grid.Row="2" Checked="MicroLensRdb_Checked" Click="MicroLensRdb_Click"/>
@@ -150,24 +152,31 @@
 
                 <ComboBox x:Name="NameLens_Combo" 
                           Grid.Row="1" Grid.ColumnSpan="3"
-                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,10,0"                         
+                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,50,0"                         
                           DropDownClosed="NameLens_Combo_DropDownClosed"/>
                 
+                <Button x:Name="updatelens_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"
+                    	 Width="45" Height="45"
+                    	Click="Updatelens_button_Click">
+                    <Image Source="/macrophotography;component/resources/appbar.edit.png"/>
+                </Button>
+
                 <Button x:Name="savelens_button" Style="{DynamicResource MetroCircleButtonStyle}"
                         Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right"
-                    	 Width="45" Height="45"
+                    	Width="45" Height="45"
                     	Click="savelens_button_Click">
                     <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
                 </Button>
 
                 <Button x:Name="deletelens_button" Style="{DynamicResource MetroCircleButtonStyle}"
-                        Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"
-                    	 Width="45" Height="45" Click="Deletelens_button_Click"
+                        Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"
+                    	 Width="42" Height="42" Click="Deletelens_button_Click"
                     	>
                     <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
                 </Button>
 
-                <TextBox x:Name="Lens_txt"
+                <TextBox x:Name="Lens_txt" Text="{Binding NameLens, Source={x:Static macrophotography:StepperManager.Instance}}"
                          Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
                          HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
                          TextAlignment="Center" TextWrapping="NoWrap"/>
@@ -320,11 +329,12 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
                 <ComboBox x:Name="NameRail_Combo" 
-                          Grid.Row="1" Grid.ColumnSpan="2"
-                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,10,0" 
+                          Grid.Row="1" Grid.ColumnSpan="3"
+                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,50,0" 
                           DropDownClosed="NameRail_Combo_DropDownClosed" />
 
                 <Button x:Name="SaveRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
@@ -334,9 +344,16 @@
                     <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
                 </Button>
 
-                <Button x:Name="DeleteRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                <Button x:Name="UpdateRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
                         Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"
-                    	 Width="45" Height="45" Click="Deleterail_button_Click"
+                    	 Width="45" Height="45" Click="Updaterail_button_Click"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.edit.png"/>
+                </Button>
+
+                <Button x:Name="DeleteRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"
+                    	 Width="42" Height="42" Click="Deleterail_button_Click"
                     	>
                     <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
                 </Button>
@@ -402,14 +419,18 @@
 
                 <controls:NumericUpDown x:Name="NumUD_Magni"
                                         Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Minimum="{Binding MagniMin, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Maximum="{Binding MagniMax, Source={x:Static macrophotography:StepperManager.Instance}}"
                                         Grid.Column="0" HorizontalAlignment="Stretch" TextAlignment="Left" BorderThickness="0"
-                                        HasDecimals="True" HideUpDownButtons="True" Interval="0.5" Minimum="0.5" Maximum="40"
+                                        HasDecimals="True" HideUpDownButtons="True" Interval="0.5"
                                         ValueChanged="sDoFCalcUpdate"   />
 
                 <Slider x:Name="Sld_Magni"
-                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0" 
+                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0"
                         AutoToolTipPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Grid.Column="1"
-                        Value="{Binding Path=Value, ElementName=NumUD_Magni}" Maximum="40" Minimum="0.5"/>
+                        Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                        Minimum="{Binding MagniMin, Source={x:Static macrophotography:StepperManager.Instance}}"
+                        Maximum="{Binding MagniMax, Source={x:Static macrophotography:StepperManager.Instance}}"/>
 
 
 

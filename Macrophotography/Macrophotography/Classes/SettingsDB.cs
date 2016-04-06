@@ -27,8 +27,8 @@ namespace Macrophotography.Classes
             InsComm.Parameters.AddWithValue("@manualLens", iManualLens);
             InsComm.Parameters.AddWithValue("@microLens", iMicrolens);
             InsComm.Parameters.AddWithValue("@augmentation", Augmentation);
-            InsComm.Parameters.AddWithValue("@augmenMax", Augmentation);
-            InsComm.Parameters.AddWithValue("@augmenMin", Augmentation);
+            InsComm.Parameters.AddWithValue("@augmenMax", AugmenMax);
+            InsComm.Parameters.AddWithValue("@augmenMin", AugmenMin);
             try { conn.Open(); InsComm.ExecuteNonQuery(); }
             catch (SqlException ex) { throw ex; }
             finally { conn.Close(); }
@@ -36,7 +36,11 @@ namespace Macrophotography.Classes
 
         public static void UpdateLens(string NameLens, double Aperture, double NA, int iManualLens, int iMicrolens, double Augmentation, double AugmenMax, double AugmenMin)
         {
-            string QueryIns = "Update LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens, augmentation, augmenMax, augmenMin) values (@nameLens, @aperture, @na, @manualLens, @microLens, @augmentation, @augmenMax, @augmenMin) where name_lens = @nameLens";
+            //string QueryIns = "Update LensTable (name_lens, aperture, NA, manual_lens, microscopy_lens, augmentation, augmenMax, augmenMin) values (@nameLens, @aperture, @na, @manualLens, @microLens, @augmentation, @augmenMax, @augmenMin) where name_lens = @nameLens";
+
+            string QueryIns = "update LensTable set aperture = @aperture, NA = @na, manual_lens = @manualLens, microscopy_lens = @microLens, augmentation = @augmentation, augmenMax = @augmenMax, augmenMin = @augmenMin where name_lens = @nameLens";
+
+            
             SqlConnection conn = GetConnection();
             SqlCommand InsComm = new SqlCommand(QueryIns, conn);
             InsComm.Parameters.AddWithValue("@nameLens", NameLens);

@@ -241,15 +241,20 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <controls:NumericUpDown x:Name="NumUD_Magni" Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}"
+                <controls:NumericUpDown x:Name="NumUD_Magni" 
+                                        Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                                        Minimum="{Binding MagniMin, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Maximum="{Binding MagniMax, Source={x:Static macrophotography:StepperManager.Instance}}"
                                         Grid.Column="0"
                                         TextAlignment="Center" BorderThickness="0"
                                         HasDecimals="True" HideUpDownButtons="True" Interval="0.5" Width="100"/>
 
                 <Slider x:Name="Sld_Magni" 
-                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,10,0" 
-                        AutoToolTipPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Grid.Column="1"
-                        Value="{Binding Path=Value, ElementName=NumUD_Magni}"/>
+                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,10,0" Grid.Column="1"
+                        AutoToolTipPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True"
+                        Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                        Minimum="{Binding MagniMin, Source={x:Static macrophotography:StepperManager.Instance}}"
+                        Maximum="{Binding MagniMax, Source={x:Static macrophotography:StepperManager.Instance}}"/>
 
 
 

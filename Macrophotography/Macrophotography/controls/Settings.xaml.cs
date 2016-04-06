@@ -251,7 +251,7 @@ namespace Macrophotography.controls
                 aperture_nud.Value = 0;
             }
 
-            SettingsDB.AddLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value, (double)NumUD_Magni.Maximum, (double)NumUD_Magni.Minimum);
+            SettingsDB.AddLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, StepperManager.Instance.Magni, StepperManager.Instance.MagniMax, StepperManager.Instance.MagniMin);
             MessageBox.Show("Lens Added");
             Lens_txt.Text = "";
             StepperManager.Instance.Aperture = 0;
@@ -272,8 +272,10 @@ namespace Macrophotography.controls
                 aperture_nud.Value = 0;
             }
 
-            SettingsDB.UpdateLens(Lens_txt.Text, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value, (double)NumUD_Magni.Maximum, (double)NumUD_Magni.Minimum);
-            MessageBox.Show("Lens UpDated");
+            //SettingsDB.UpdateLens((double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, (double)NumUD_Magni.Value, (double)NumUD_Magni.Maximum, (double)NumUD_Magni.Minimum);
+            SettingsDB.UpdateLens(StepperManager.Instance.NameLens, (double)aperture_nud.Value, (double)NA_nud.Value, ManuLensInt, MicroLensInt, StepperManager.Instance.Magni, StepperManager.Instance.MagniMax, StepperManager.Instance.MagniMin);
+
+            NameLens_Combo.Items.Clear();
             Lens_txt.Text = "";
             StepperManager.Instance.Aperture = 0;
             StepperManager.Instance.NA = 0;
@@ -281,6 +283,7 @@ namespace Macrophotography.controls
             MicroLensInt = 0;
             StepperManager.Instance.Magni = 0;
             Fill_ComboNameLens();
+            MessageBox.Show("Lens UpDated");
         }
         void Fill_ComboNameLens()
         {
@@ -327,7 +330,7 @@ namespace Macrophotography.controls
                     StepperManager.Instance.NameLens = sname;
                     StepperManager.Instance.Aperture = aperture;
                     StepperManager.Instance.NA = NA;
-                    NumUD_Magni.Value = augmentation;  //valorar pasarlo a StepperManager.Instance.Magni
+                    StepperManager.Instance.Magni = augmentation;
                     StepperManager.Instance.MagniMax = augmenMax;
                     StepperManager.Instance.MagniMin = augmenMin;
 
@@ -573,7 +576,7 @@ namespace Macrophotography.controls
 
         public void sDoFCalcAperture()
         {
-            if (StepperManager.Instance.Aperture != 0 && E_nud.Value != 0 && Pitch_nud.Value != 0 && Sld_Magni.Value != 0)
+            if (StepperManager.Instance.Aperture != 0 && E_nud.Value != 0 && Pitch_nud.Value != 0 && StepperManager.Instance.Magni != 0)
             {
                 double mShotDOF;
                 mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * StepperManager.Instance.Aperture * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni));
