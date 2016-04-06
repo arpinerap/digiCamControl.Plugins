@@ -10,11 +10,12 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              xmlns:devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
-             d:DesignHeight="200" d:DesignWidth="1800">
+             d:DesignHeight="200" d:DesignWidth="1800"
+             d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}">
     
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <macrophotography:LiveViewViewModel/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
    
 
     <UserControl.Resources>

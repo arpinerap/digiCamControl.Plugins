@@ -19,11 +19,12 @@
                       
              mc:Ignorable="d" 
              d:DesignHeight="1050.544" d:DesignWidth="1150.718"
-             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing" >
+             WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing" 
+                      d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}">
     
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <macrophotography:LiveViewViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>

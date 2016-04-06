@@ -179,6 +179,8 @@ namespace Macrophotography
                 case "MacroLiveView_Show":
                     Dispatcher.Invoke(new Action(delegate
                     {
+                        if (DataContext == null)
+                            DataContext = LiveViewViewModel.Instance;
                         ServiceProvider.Settings.ApplyTheme(this);
                         Owner = ServiceProvider.PluginManager.SelectedWindow as Window;
                         Show();

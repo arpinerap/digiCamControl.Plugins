@@ -97,7 +97,7 @@ namespace Macrophotography
             get
             {
                 if (_instance == null)
-                    _instance = new LiveViewViewModel();
+                    _instance = new LiveViewViewModel(ServiceProvider.DeviceManager.SelectedCameraDevice);
                 return _instance;
             }
             set { _instance = value; }
@@ -815,23 +815,7 @@ namespace Macrophotography
 
         public LiveViewViewModel()
         {
-            StartLiveViewCommand = new RelayCommand(StartLiveView);
-            StopLiveViewCommand = new RelayCommand(StopLiveView);
-            SetAreaCommand = new RelayCommand(() => SettingArea = true);
-            DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
-            ServiceProvider.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
-            ServiceProvider.DeviceManager.CameraDisconnected += DeviceManager_CameraDisconnected;
-            _timer.AutoReset = true;
-            _timer.Elapsed += _timer_Elapsed;
-            if (!IsInDesignMode)
-            {
-                SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
-                CameraProperty = SelectedCameraDevice.LoadProperties();
-                InitAdvancedProperties();
-                InitCommands();
-                ShowHistogram = true;
-                Init();
-            }
+
         }
 
         void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
@@ -889,11 +873,23 @@ namespace Macrophotography
 
         public LiveViewViewModel(ICameraDevice device)
         {
-            SelectedCameraDevice = device;
-            CameraProperty = device.LoadProperties();
-            InitCommands();
-            ShowHistogram = true;
-            Init();
+            StartLiveViewCommand = new RelayCommand(StartLiveView);
+            StopLiveViewCommand = new RelayCommand(StopLiveView);
+            SetAreaCommand = new RelayCommand(() => SettingArea = true);
+            DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
+            ServiceProvider.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
+            ServiceProvider.DeviceManager.CameraDisconnected += DeviceManager_CameraDisconnected;
+            _timer.AutoReset = true;
+            _timer.Elapsed += _timer_Elapsed;
+            if (!IsInDesignMode)
+            {
+                SelectedCameraDevice = ServiceProvider.DeviceManager.SelectedCameraDevice;
+                CameraProperty = SelectedCameraDevice.LoadProperties();
+                InitAdvancedProperties();
+                InitCommands();
+                ShowHistogram = true;
+                Init();
+            }
         }
 
         private void Init()
