@@ -10,12 +10,11 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              xmlns:devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
-             d:DesignHeight="200" d:DesignWidth="1800"
-             d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}">
+             d:DesignHeight="190" d:DesignWidth="1800">
     
-    <!--<UserControl.DataContext>
+    <UserControl.DataContext>
         <macrophotography:LiveViewViewModel/>
-    </UserControl.DataContext>-->
+    </UserControl.DataContext>
    
 
     <UserControl.Resources>
@@ -246,17 +245,24 @@
                           Grid.Row="1" 
                           HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="0,0,30,0"                         
                           DropDownClosed="NameSensor_Combo_DropDownClosed"/>
+                
+                <Button x:Name="updatesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Margin="25,0,0,0"
+                    	 Width="30" Height="30"
+                    	Click="Updatesensor_button_Click">
+                    <Image Source="/macrophotography;component/resources/appbar.edit.png"/>
+                </Button>
 
                 <Button x:Name="savesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
-                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Margin="35,0,0,0"
-                    	 Width="35" Height="35"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Margin="50,0,0,0"
+                    	 Width="30" Height="30"
                     	Click="savesensor_button_Click">
                     <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
                 </Button>
 
                 <Button x:Name="deletesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
                         Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"
-                    	 Width="35" Height="35" Click="Deletesensor_button_Click"
+                    	 Width="30" Height="30" Click="Deletesensor_button_Click"
                     	>
                     <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
                 </Button>
@@ -402,7 +408,7 @@
                     <Label Content="Ports" 
                                                HorizontalAlignment="Left" Grid.Row="0" VerticalAlignment="Top" Height="26" Width="50"/>
                     <Button x:Name="SearchPort_btn" Content="Seach Arduino"
-                                            Grid.Row="1" Width="100" Margin="0,10,0,10" Click="SearchPort_btn_Click" />
+                                            Grid.Row="1" Width="100" Margin="5" Click="SearchPort_btn_Click" />
 
                 </Grid>
             </StackPanel>
