@@ -10,11 +10,12 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              xmlns:devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
-             d:DesignHeight="190" d:DesignWidth="1800">
+             d:DesignHeight="190" d:DesignWidth="1800"
+             d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}">
     
-    <UserControl.DataContext>
+    <!--UserControl.DataContext>
         <macrophotography:LiveViewViewModel/>
-    </UserControl.DataContext>
+    </-->
    
 
     <UserControl.Resources>
@@ -52,7 +53,7 @@
                                       Height="auto">
             <StackPanel Margin="10">
 
-                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding  AFLensConnected}" IsEnabled="False"
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding AFLensConnected}" IsEnabled="False"
                              Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"

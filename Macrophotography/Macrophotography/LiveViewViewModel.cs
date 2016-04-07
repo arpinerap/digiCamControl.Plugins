@@ -45,6 +45,9 @@ namespace Macrophotography
 
         private static LiveViewViewModel _instance;
 
+        public LiveViewData LiveViewData { get; set; }
+
+
         private AsyncObservableCollection<string> _grids;
         private int _gridType;
 
@@ -67,9 +70,10 @@ namespace Macrophotography
         private PropertyValue<long> _initFlash;
         private PropertyValue<long> _fNumber;
         private PropertyValue<long> _captureAreaCrop;
-        private PropertyValue<long> _LevelAngle;
-        private PropertyValue<long> _angleLevelPitching;
-        private PropertyValue<long> _angleLevelYawing;
+        private int _LevelAngle;
+        private string _levelAngleColor;
+        private decimal _angleLevelPitching;
+        private decimal _angleLevelYawing;
         private PropertyValue<long> _dLighting;
         private PropertyValue<long> _HDRMode;
         private PropertyValue<long> _HDREv;
@@ -80,6 +84,7 @@ namespace Macrophotography
         private PropertyValue<long> _ActiveSlot;
         private PropertyValue<long> _LensSort;
         private PropertyValue<long> _LensType;
+
 
 
         public ICameraDevice SelectedCameraDevice
@@ -177,8 +182,6 @@ namespace Macrophotography
                 RaisePropertyChanged(() => PreviewTime);
             }
         }
-
-
 
         public bool ShowRuler
         {
@@ -344,7 +347,6 @@ namespace Macrophotography
 
 
         public bool IsActive { get; set; }
-        public LiveViewData LiveViewData { get; set; }
 
         public RelayCommand StartLiveViewCommand { get; set; }
         public RelayCommand StopLiveViewCommand { get; set; }
@@ -356,7 +358,7 @@ namespace Macrophotography
 
         #region Camera Properties
 
-
+        
 
         public CameraProperty CameraProperty
         {
@@ -508,17 +510,28 @@ namespace Macrophotography
             }
         }
 
-        public PropertyValue<long> LevelAngle
+        public int LevelAngle
         {
             get { return _LevelAngle; }
             set
             {
                 _LevelAngle = value;
                 RaisePropertyChanged(() => LevelAngle);
+                LevelAngleColor = _LevelAngle % 90 <= 1 || _LevelAngle % 90 >= 89 ? "Green" : "Red";
             }
         }
 
-        public PropertyValue<long> AngleLevelPitching
+        public string LevelAngleColor
+        {
+            get { return _levelAngleColor; }
+            set
+            {
+                _levelAngleColor = value;
+                RaisePropertyChanged(() => LevelAngleColor);
+            }
+        }
+
+        public decimal AngleLevelPitching
         {
             get { return _angleLevelPitching; }
             set
@@ -527,8 +540,8 @@ namespace Macrophotography
                 RaisePropertyChanged(() => AngleLevelPitching);
             }
         }
-
-        public PropertyValue<long> AngleLevelYawing
+        
+        public decimal AngleLevelYawing
         {
             get { return _angleLevelYawing; }
             set
@@ -690,16 +703,8 @@ namespace Macrophotography
 
         
 
-        private string _levelAngleColor;
-        public string LevelAngleColor
-        {
-            get { return _levelAngleColor; }
-            set
-            {
-                _levelAngleColor = value;
-                RaisePropertyChanged(() => LevelAngleColor);
-            }
-        }
+        
+        
 
 
 
@@ -848,9 +853,9 @@ namespace Macrophotography
             RawCompressionType = SelectedCameraDevice.GetProperty(0xD016);
             RawCompressionBitMode = SelectedCameraDevice.GetProperty(0xD149);
             FNumber = SelectedCameraDevice.GetProperty(0x5007);
-            LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
-            AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
-            AngleLevelYawing = SelectedCameraDevice.GetProperty(0xD07E);
+            //LevelAngle = SelectedCameraDevice.GetProperty(0xD067);
+            //AngleLevelPitching = SelectedCameraDevice.GetProperty(0xD07D);
+            //AngleLevelYawing = SelectedCameraDevice.GetProperty(0xD07E);
             CaptureAreaCrop = SelectedCameraDevice.GetProperty(0xD030);
             DLighting = SelectedCameraDevice.GetProperty(0xD14E);
             HDRMode = SelectedCameraDevice.GetProperty(0xD130);
@@ -1098,6 +1103,10 @@ namespace Macrophotography
                             Length -
                         LiveViewData.
                             ImageDataPosition);
+
+                    LevelAngle = (int)LiveViewData.LevelAngleRolling;
+                    AngleLevelPitching = LiveViewData.LevelAnglePitching;
+                    AngleLevelYawing = LiveViewData.LevelAngleYawing;
 
 
                     using (var res = new Bitmap(stream))

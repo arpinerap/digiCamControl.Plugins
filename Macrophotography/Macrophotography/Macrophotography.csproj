@@ -154,8 +154,9 @@
     <Reference Include="CameraControl.Core">
       <HintPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
     </Reference>
-    <Reference Include="CameraControl.Devices">
-      <HintPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
+    <Reference Include="CameraControl.Devices, Version=2.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\digiCamControl-acfb051b07573c745a69575fd3dc9178a4cd3a04\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
     </Reference>
     <Reference Include="CameraControl.Plugins">
       <HintPath>..\..\..\..\Carril Ultimos\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\digiCamControl-29fe937d2bc6f1a59cc72069d3614e4ba5afb78a\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\CameraControl.Plugins.dll</HintPath>
