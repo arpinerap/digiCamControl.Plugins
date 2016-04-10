@@ -22,6 +22,7 @@ using CameraControl.Core.Interfaces;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using Macrophotography;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Macrophotography
 {
@@ -190,6 +191,19 @@ namespace Macrophotography
                     break;
                 case "MacroLiveView_Hide":
                     Dispatcher.Invoke(new Action(Hide));
+                    break;
+                case WindowsCmdConsts.LiveViewWnd_Message:
+                    {
+                        Dispatcher.Invoke(new Action(delegate
+                        {
+                            if (this.IsLoaded)
+                                this.ShowMessageAsync("", (string)param);
+                            else
+                            {
+                                MessageBox.Show((string)param);
+                            }
+                        }));
+                    }
                     break;
                 case CmdConsts.All_Close:
                     Dispatcher.Invoke(new Action(delegate

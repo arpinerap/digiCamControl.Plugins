@@ -468,8 +468,9 @@ namespace Macrophotography.controls
             Log.Debug("Macrophotography test capture started");
             try
             {
-                if (ServiceProvider.DeviceManager.SelectedCameraDevice.ShutterSpeed != null)
-                { ServiceProvider.WindowsManager.ExecuteCommand(CmdConsts.CaptureNoAf); }
+                //if (ServiceProvider.DeviceManager.SelectedCameraDevice.ShutterSpeed != null)
+                //{ ServiceProvider.WindowsManager.ExecuteCommand(CmdConsts.CaptureNoAf); }
+                LiveViewViewModel.Instance.CaptureInThread();
             }
             catch (Exception exception)
             {

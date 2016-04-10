@@ -160,6 +160,15 @@ namespace Macrophotography
 
         #region RaisePropertyChanged
 
+        public bool CaptureInProgress
+        {
+            get { return _captureInProgress; }
+            set
+            {
+                _captureInProgress = value;
+                RaisePropertyChanged(() => CaptureInProgress);
+            }
+        }
 
         private int _rotation;
 
@@ -343,6 +352,22 @@ namespace Macrophotography
                 _rotation = value;
                 RaisePropertyChanged(() => Rotation);
             }
+        }
+
+        public bool LiveViewIsRunning
+        {
+            get { return _liveViewIsRunning; }
+            set
+            {
+                _liveViewIsRunning = value;
+                RaisePropertyChanged(() => LiveViewIsRunning);
+                RaisePropertyChanged(() => LiveViewNotRunning);
+            }
+        }
+
+        public bool LiveViewNotRunning
+        {
+            get { return !LiveViewIsRunning; }
         }
 
 
@@ -668,6 +693,7 @@ namespace Macrophotography
             }
         }
 
+
         public void SetAFLensConnected()
         {
             if (_LensSort != null) AFLensConnected = _LensSort.NumericValue == 1;
@@ -680,7 +706,9 @@ namespace Macrophotography
         }
 
         private bool _AFLensConnected = false;
-      
+        private bool _captureInProgress;
+        private bool _liveViewIsRunning;
+
 
         public bool AFLensConnected
         {
@@ -884,6 +912,7 @@ namespace Macrophotography
             DoneSetAreaCommand = new RelayCommand(() => SettingArea = false);
             ServiceProvider.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
             ServiceProvider.DeviceManager.CameraDisconnected += DeviceManager_CameraDisconnected;
+            ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
             _timer.AutoReset = true;
             _timer.Elapsed += _timer_Elapsed;
             if (!IsInDesignMode)
@@ -896,6 +925,17 @@ namespace Macrophotography
                 Init();
             }
         }
+
+        void ServiceProvider_FileTransfered(object sender, FileItem fileItem)
+        {
+            if (LiveViewIsRunning)
+            {
+                _timer.Start();
+                StartLiveView();
+            }
+            _photoCapturedTime = DateTime.Now;
+        }
+
 
         private void Init()
         {
@@ -999,6 +1039,40 @@ namespace Macrophotography
 
         }
 
+        public void CaptureInThread()
+        {
+            var thread = new Thread(Capture);
+            thread.Start();
+            //thread.Join();
+        }
+
+        private void Capture()
+        {
+            if (SelectedCameraDevice.ShutterSpeed != null && SelectedCameraDevice.ShutterSpeed.Value == "Bulb")
+            {
+                StaticHelper.Instance.SystemMessage = TranslationStrings.MsgBulbModeNotSupported;
+                ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.LiveViewWnd_Message,
+                    TranslationStrings.MsgBulbModeNotSupported);
+                CaptureInProgress = false;
+                return;
+            }
+            CaptureInProgress = true;
+            Log.Debug("LiveView: Capture started");
+            _timer.Stop();
+            Thread.Sleep(300);
+            try
+            {
+                SelectedCameraDevice.CapturePhotoNoAf();
+                Log.Debug("LiveView: Capture Initialization Done");
+            }
+            catch (Exception exception)
+            {
+                StaticHelper.Instance.SystemMessage = exception.Message;
+                Log.Error("Unable to take picture with no af", exception);
+            }
+            CaptureInProgress = false;
+        }
+
         private void ToggleZoom()
         {
             try
@@ -1087,10 +1161,9 @@ namespace Macrophotography
             {
                 if (PreviewTime > 0 && (DateTime.Now - _photoCapturedTime).TotalSeconds <= PreviewTime)
                 {
-                    var bitmap = ServiceProvider.Settings.SelectedBitmap.DisplayImage.Clone();
-                    // flip image only if the prview not fliped 
-                    bitmap.Freeze();
-                    Bitmap = bitmap;
+                    Bitmap = ServiceProvider.Settings.SelectedBitmap.DisplayImage;
+                    _operInProgress = false;
+                    Console.WriteLine("Previeving");
                     return;
                 }
 
@@ -1299,6 +1372,7 @@ namespace Macrophotography
                 Thread thread = new Thread(StartLiveViewThread);
                 thread.Start();
                 thread.Join();
+                LiveViewIsRunning = true;
             }
             else
             {
@@ -1389,6 +1463,7 @@ namespace Macrophotography
                         }
                     }
                 } while (retry && retryNum < 35);
+                LiveViewIsRunning = false;
             }
             catch (Exception exception)
             {
