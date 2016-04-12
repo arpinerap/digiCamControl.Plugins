@@ -63,6 +63,8 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
 
+            <!-- Iamge ListBox Template-->
+
             <Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
@@ -70,7 +72,7 @@
                             <Grid Margin="-5,0,0,0" >
                                 <!--<Line Stroke="Green" StrokeThickness="4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" X2="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" Visibility="{Binding Alternate, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.5"/>-->
                                 <StackPanel Orientation="Horizontal">
-                                    <Grid Height="170" Margin="4,4,4,4">
+                                    <Grid Height="150" Margin="4,4,4,4">
                                         <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5">
                                             <Image.Effect>
                                                 <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
@@ -475,7 +477,8 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Session">
-                    <ListBox VirtualizingStackPanel.IsVirtualizing="True"  Name="ImageLIstBox" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" >
+                    <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
+                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>

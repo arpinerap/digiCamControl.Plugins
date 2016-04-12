@@ -10,6 +10,7 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:my="clr-namespace:NMT.Wpf.Controls;assembly=PulseButton"
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="2000">
 
@@ -30,6 +31,63 @@
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Iamge ListBox Template-->
+
+            <Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate DataType="classes:FileItem">
+                            <Grid Margin="-5,0,0,0" >
+                                <!--<Line Stroke="Green" StrokeThickness="4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" X2="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" Visibility="{Binding Alternate, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.5"/>-->
+                                <StackPanel Orientation="Horizontal">
+                                    <Grid Height="125" Margin="4,4,4,4">
+                                        <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5"  Height="125">
+                                            <Image.Effect>
+                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
+                                            </Image.Effect>
+                                            <Image.LayoutTransform>
+                                                <RotateTransform  Angle="{Binding RotationAngle}" />
+                                            </Image.LayoutTransform>
+                                        </Image>
+                                        <Image Source="{Binding Path=ThumbnailMarks}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" RenderTransformOrigin="0.5,0.5" Height="125"
+                                       Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=EnhancedThumbs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Image.Effect>
+                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
+                                            </Image.Effect>
+                                            <Image.LayoutTransform>
+                                                <RotateTransform  Angle="{Binding RotationAngle}" />
+                                            </Image.LayoutTransform>
+                                        </Image>
+                                        <Rectangle Stroke="Transparent" Margin="1" Name="_Rectangle"/>
+                                        <CheckBox IsChecked="{Binding Path=IsChecked}" Margin="3,3,3,5" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="10" />
+                                        <Label Content="RAW" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsRaw, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Label Content="VIDEO" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsMovie, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <controls:ProgressRing IsActive="{Binding Loading}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" Height="40" Width="40" />
+                                        <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                   AncestorType=Window}}" CommandParameter="{Binding}" Opacity="0.5"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+                                <DataTrigger Binding="{Binding Path=IsUnLiked}" Value="true">
+                                    <Setter TargetName="_Rectangle" Property="Fill" Value="Black" />
+                                    <Setter TargetName="_Rectangle" Property="Opacity" Value="0.7" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Setter Property="ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
             <!-- The IconButtonStyle -->
             <Style x:Key="IconButtonStyle"
@@ -232,15 +290,14 @@
         </Grid.ColumnDefinitions>
 
         <GroupBox Header="File List" 
-                Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                Height="190" MinWidth="300" >
+                Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="300" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
-                <ListBox ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFileItem}" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+
+                <!--ListBox ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="classes:FileItem">
                             <Grid Margin="-5,0,0,0" >
@@ -258,6 +315,16 @@
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+                </ListBox-->
+
+
+                <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
+                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
                 </ListBox>
 
 
@@ -276,8 +343,7 @@
         </GroupBox>
         
         <GroupBox Header="SubStacking" 
-                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                Height="190" MinWidth="200" >
+                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -339,8 +405,7 @@
         </GroupBox>
 
         <GroupBox Header="Process" 
-                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                Height="190" MinWidth="200" >
+                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
