@@ -489,6 +489,9 @@
                 <TabItem Header="CombineZP">                   
                     <local:CombineZP/>
                 </TabItem>
+                <TabItem Header="Zerene">
+                    <local:Zerene/>
+                </TabItem>
             </controls:MetroAnimatedTabControl>
 
 

@@ -151,14 +151,16 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CameraControl.Core">
-      <HintPath>..\..\..\digiCamControl-acfb051b07573c745a69575fd3dc9178a4cd3a04\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
+    <Reference Include="CameraControl.Core, Version=2.0.21.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Core.dll</HintPath>
     </Reference>
     <Reference Include="CameraControl.Devices, Version=2.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\digiCamControl-acfb051b07573c745a69575fd3dc9178a4cd3a04\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
+      <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\CameraControl.Devices.dll</HintPath>
     </Reference>
-    <Reference Include="CameraControl.Plugins">
+    <Reference Include="CameraControl.Plugins, Version=2.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\digiCamControl\CameraControl\bin\Debug\Plugins\CameraControl.Plugins\CameraControl.Plugins.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight">
@@ -173,10 +175,9 @@
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.2.4.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\MahApps.Metro.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="MahApps.Metro, Version=1.3.0.34, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.3.0-ALPHA034\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -207,8 +208,8 @@
     <Reference Include="System.Management.Instrumentation" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\MahApps.Metro.1.3.0-ALPHA034\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -234,6 +235,7 @@
     <Compile Include="Classes\RoundPolyline.cs" />
     <Compile Include="Classes\Sensor.cs" />
     <Compile Include="Classes\SettingsDB.cs" />
+    <Compile Include="Classes\ZereneLaunchProof.cs" />
     <Compile Include="controls\CombineZP.xaml.cs">
       <DependentUpon>CombineZP.xaml</DependentUpon>
     </Compile>
@@ -255,6 +257,9 @@
     <Compile Include="controls\Stepper.xaml.cs">
       <DependentUpon>Stepper.xaml</DependentUpon>
     </Compile>
+    <Compile Include="controls\Zerene.xaml.cs">
+      <DependentUpon>Zerene.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LiveView.xaml.cs">
       <DependentUpon>LiveView.xaml</DependentUpon>
     </Compile>
@@ -271,6 +276,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="StepperManager.cs" />
+    <Compile Include="ViewModel\MacroCombineZpViewModel.cs" />
+    <Compile Include="ViewModel\MacroStackViewModel.cs" />
+    <Compile Include="ViewModel\ZereneBatchViewModel.cs" />
     <Compile Include="Windows\MagniWin.xaml.cs">
       <DependentUpon>MagniWin.xaml</DependentUpon>
     </Compile>
@@ -301,6 +309,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="controls\Stepper.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="controls\Zerene.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -391,14 +403,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Settings.mdf</DependentUpon>
     </Content>
-    <Resource Include="Resources\appbar.flip.left.png" />
-    <Resource Include="Resources\appbar.flip.right.png" />
     <Resource Include="Resources\Entypo-license.txt" />
     <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Resource Include="Resources\appbar.flip.left.png" />
+    <Resource Include="Resources\appbar.flip.right.png" />
     <Resource Include="Resources\appbar.edit.png" />
     <Resource Include="Resources\appbar.delete.png" />
     <Resource Include="Resources\appbar.disk.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

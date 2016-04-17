@@ -12,22 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.IO.Ports;
-using System.Threading;
-using Macrophotography.controls;
-using Macrophotography;
-using CameraControl.Core;
-using CameraControl.Core.Classes;
-using CameraControl.Devices;
 
 namespace Macrophotography.controls
 {
     /// <summary>
-    /// Interaction logic for CombineZP.xaml
+    /// Interaction logic for Zerene.xaml
     /// </summary>
-    public partial class CombineZP : UserControl
+    public partial class Zerene : UserControl
     {
-        public CombineZP()
+        public Zerene()
         {
             InitializeComponent();
         }

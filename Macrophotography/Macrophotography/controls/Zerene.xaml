@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Macrophotography.controls.CombineZP"
+﻿<UserControl x:Class="Macrophotography.controls.Zerene"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,9 +15,8 @@
              d:DesignHeight="200" d:DesignWidth="2000">
 
     <UserControl.DataContext>
-        <viewModel:MacroCombineZpViewModel/>
+        <viewModel:ZereneBatchViewModel/>
     </UserControl.DataContext>
-
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,62 +30,6 @@
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <!-- Iamge ListBox Template-->
-
-            <!--<Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
-                <Setter Property="ItemTemplate">
-                    <Setter.Value>
-                        <DataTemplate DataType="classes:FileItem">
-                            <Grid Margin="-5,0,0,0" >
-                                <StackPanel Orientation="Horizontal">
-                                    <Grid Height="125" Margin="4,4,4,4">
-                                        <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5"  Height="125">
-                                            <Image.Effect>
-                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
-                                            </Image.Effect>
-                                            <Image.LayoutTransform>
-                                                <RotateTransform  Angle="{Binding RotationAngle}" />
-                                            </Image.LayoutTransform>
-                                        </Image>
-                                        <Image Source="{Binding Path=ThumbnailMarks}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" RenderTransformOrigin="0.5,0.5" Height="125"
-                                       Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=EnhancedThumbs, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <Image.Effect>
-                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
-                                            </Image.Effect>
-                                            <Image.LayoutTransform>
-                                                <RotateTransform  Angle="{Binding RotationAngle}" />
-                                            </Image.LayoutTransform>
-                                        </Image>
-                                        <Rectangle Stroke="Transparent" Margin="1" Name="_Rectangle"/>
-                                        <CheckBox IsChecked="{Binding Path=IsChecked}" Margin="3,3,3,5" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="10" />
-                                        <Label Content="RAW" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsRaw, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        <Label Content="VIDEO" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsMovie, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        <controls:ProgressRing IsActive="{Binding Loading}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" Height="40" Width="40" />
-                                        <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, 
-                                                   AncestorType=Window}}" CommandParameter="{Binding}" Opacity="0.5"/>
-                                    </Grid>
-                                </StackPanel>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
-                                <DataTrigger Binding="{Binding Path=IsUnLiked}" Value="true">
-                                    <Setter TargetName="_Rectangle" Property="Fill" Value="Black" />
-                                    <Setter TargetName="_Rectangle" Property="Opacity" Value="0.7" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-
-                <Setter Property="ItemsPanel">
-                    <Setter.Value>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
-                        </ItemsPanelTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>-->
 
             <!-- The IconButtonStyle -->
             <Style x:Key="IconButtonStyle"
@@ -190,96 +133,9 @@
                 </Setter>
             </Style>
 
-            <!-- This is what Expression Blend creates as default Template -->
-            <Style x:Key="ButtonFocusVisual">
-                <Setter Property="Control.Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <Rectangle SnapsToDevicePixels="true"
-                                   Margin="2"
-                                   Stroke="Black"
-                                   StrokeDashArray="1 2"
-                                   StrokeThickness="1" />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <LinearGradientBrush x:Key="ButtonNormalBackground"
-                             EndPoint="0,1"
-                             StartPoint="0,0">
-                <GradientStop Color="#F3F3F3"
-                          Offset="0" />
-                <GradientStop Color="#EBEBEB"
-                          Offset="0.5" />
-                <GradientStop Color="#DDDDDD"
-                          Offset="0.5" />
-                <GradientStop Color="#CDCDCD"
-                          Offset="1" />
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="ButtonNormalBorder"
-                         Color="#FF707070" />
-            <Style x:Key="DefaultButtonStyle"
-               TargetType="{x:Type Button}">
-                <Setter Property="FocusVisualStyle"
-                    Value="{StaticResource ButtonFocusVisual}" />
-                <Setter Property="Background"
-                    Value="{StaticResource ButtonNormalBackground}" />
-                <Setter Property="BorderBrush"
-                    Value="{StaticResource ButtonNormalBorder}" />
-                <Setter Property="BorderThickness"
-                    Value="1" />
-                <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                <Setter Property="HorizontalContentAlignment"
-                    Value="Center" />
-                <Setter Property="VerticalContentAlignment"
-                    Value="Center" />
-                <Setter Property="Padding"
-                    Value="1" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Microsoft_Windows_Themes:ButtonChrome SnapsToDevicePixels="true"
-                                                               x:Name="Chrome"
-                                                               Background="{TemplateBinding Background}"
-                                                               BorderBrush="{TemplateBinding BorderBrush}"
-                                                               RenderDefaulted="{TemplateBinding IsDefaulted}"
-                                                               RenderMouseOver="{TemplateBinding IsMouseOver}"
-                                                               RenderPressed="{TemplateBinding IsPressed}">
-                                <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              Margin="{TemplateBinding Padding}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              RecognizesAccessKey="True" />
-                            </Microsoft_Windows_Themes:ButtonChrome>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsKeyboardFocused"
-                                     Value="true">
-                                    <Setter Property="RenderDefaulted"
-                                        TargetName="Chrome"
-                                        Value="true" />
-                                </Trigger>
-                                <Trigger Property="ToggleButton.IsChecked"
-                                     Value="true">
-                                    <Setter Property="RenderPressed"
-                                        TargetName="Chrome"
-                                        Value="true" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled"
-                                     Value="false">
-                                    <Setter Property="Foreground"
-                                        Value="#ADADAD" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <QuadraticEase x:Key="EasingIn" EasingMode="EaseIn" />
-
         </ResourceDictionary>
     </UserControl.Resources>
+
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -296,18 +152,6 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
-
-                <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFileItem}"
-                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
-                    <ListBox.ItemsPanel>
-                        
-                        <ItemsPanelTemplate>
-                            
-                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
 
                 <ListBox VirtualizingStackPanel.IsVirtualizing="True"  ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFileItem}"
                              BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
@@ -368,13 +212,13 @@
                         <Rectangle.Fill>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
                         </Rectangle.Fill>
-                    </Rectangle>                  
+                    </Rectangle>
                 </Button>
 
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="CombineZP" 
+        <GroupBox Header="SubStacking" 
                 Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
@@ -393,7 +237,7 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Label Content="Macro" 
+                <Label Content="SubStacks" 
                         Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" 
                         HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
@@ -416,7 +260,7 @@
                        Margin="3"
                        Grid.Column="0" Grid.Row="2"                                           
                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox ItemsSource="{Binding Macros}" SelectedItem="{Binding Macro}"
+                <ComboBox Name="StackingMode_cmb"
                         Margin="3"
                         Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
@@ -425,7 +269,7 @@
                        Margin="3"
                        Grid.Column="0" Grid.Row="3"                                           
                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox 
+                <ComboBox Name="SubStackingMode_cmb"
                         Margin="3"
                         Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
@@ -436,7 +280,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="SubStacking" 
+        <GroupBox Header="Prueba" 
                 Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
@@ -463,11 +307,11 @@
                         Minimum="0"                                      
                         Width="120" Margin="3"
                         Grid.Row="0" Grid.Column="2"/>
-               
+
                 <Label Content="Overlap SubStack" 
                        Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"                                           
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
-       
+
 
                 <controls:NumericUpDown controls:TextBoxHelper.Watermark="Nº Shots"   
                         Minimum="0"                 
@@ -478,7 +322,7 @@
                        Margin="3"
                        Grid.Column="0" Grid.Row="2"                                           
                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox Name="StackingMode_cmb"
+                <ComboBox ItemsSource="{Binding TaskIndicatorCodes}" DisplayMemberPath="Text"
                         Margin="3"
                         Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
@@ -487,7 +331,7 @@
                        Margin="3"
                        Grid.Column="0" Grid.Row="3"                                           
                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox Name="SubStackingMode_cmb"
+                <ComboBox 
                         Margin="3"
                         Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
@@ -524,9 +368,8 @@
                 <CheckBox Grid.Row="2" Content="Auto preview when new image captured" Margin="3"  Width="250" IsChecked="{Binding AutoPreview}"/>
                 <CheckBox Grid.Row="3" Content="Stack SubStacks" Margin="3"  Width="250" />
 
-            </Grid>                       
+            </Grid>
         </GroupBox>
-
 
 
     </Grid>
