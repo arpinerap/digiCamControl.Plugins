@@ -41,6 +41,12 @@ namespace Macrophotography.ViewModel
         private ObservableCollection<ProjectDispositionCodeValues> _ProjectDispositionCodes = new ObservableCollection<ProjectDispositionCodeValues>();
 
 
+        private int _EstimatedRadius;
+        private int _SmoothingRadius;
+        private int _ContrastThreshold;
+        private bool _IsDMap;
+
+
         private string _OutputImagesDesignatedFolder;
 
 
@@ -48,20 +54,14 @@ namespace Macrophotography.ViewModel
         public int stack_items;
         public int stack_item;
         public int stack_overlap;
-        public int tasknumber;       
+        public int tasknumber;
+
         public int item = 0;
+        
 
         #region RaisePropertyChanged
 
-        public string OutputImagesDesignatedFolder
-        {
-            get { return _OutputImagesDesignatedFolder; }
-            set
-            {
-                _OutputImagesDesignatedFolder = value;
-                RaisePropertyChanged(() => OutputImagesDesignatedFolder);
-            }
-        }
+        
 
         public ObservableCollection<Prop> Props
         {
@@ -72,7 +72,6 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => Props);
             }
         }
-
         public ObservableCollection<StackTask> StackTasks
         {
             get { return _StackTasks; }
@@ -82,7 +81,6 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => StackTasks);
             }
         }
-
         public ObservableCollection<TaskIndicatorCodeValues> TaskIndicatorCodes // populate combos with
         {
             get { return _TaskIndicatorCodes; }
@@ -90,9 +88,9 @@ namespace Macrophotography.ViewModel
             {
                 _TaskIndicatorCodes = value;
                 RaisePropertyChanged(() => TaskIndicatorCodes);
+                //IsDMap = _TaskIndicatorCodes. % 90 <= 1 ? true : false;
             }
         } 
-
         public ObservableCollection<OutputImageDispositionCodeValues> OutputImageDispositionCodes // populate combos with
         {
             get { return _OutputImageDispositionCodes; }
@@ -102,7 +100,6 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => OutputImageDispositionCodes);
             }
         } 
-
         public ObservableCollection<ProjectDispositionCodeValues> ProjectDispositionCodes // populate combos with
         {
             get { return _ProjectDispositionCodes; }
@@ -111,7 +108,59 @@ namespace Macrophotography.ViewModel
                 _ProjectDispositionCodes = value;
                 RaisePropertyChanged(() => ProjectDispositionCodes);
             }
-        } 
+        }
+
+
+        public int EstimatedRadius
+        {
+            get { return _EstimatedRadius; }
+            set
+            {
+                _EstimatedRadius = value;
+                RaisePropertyChanged(() => EstimatedRadius);
+                
+            }
+        }
+        public int SmoothingRadius
+        {
+            get { return _SmoothingRadius; }
+            set
+            {
+                _SmoothingRadius = value;
+                RaisePropertyChanged(() => SmoothingRadius);
+
+            }
+        }
+        public int ContrastThreshold
+        {
+            get { return _ContrastThreshold; }
+            set
+            {
+                _ContrastThreshold = value;
+                RaisePropertyChanged(() => ContrastThreshold);
+
+            }
+        }
+        public bool IsDMap
+        {
+            get { return _IsDMap; }
+            set
+            {
+                _IsDMap = value;
+                RaisePropertyChanged(() => IsDMap);
+            }
+        }
+
+
+        public string OutputImagesDesignatedFolder
+        {
+            get { return _OutputImagesDesignatedFolder; }
+            set
+            {
+                _OutputImagesDesignatedFolder = value;
+                RaisePropertyChanged(() => OutputImagesDesignatedFolder);
+            }
+        }
 
         #endregion
 
@@ -338,6 +387,46 @@ namespace Macrophotography.ViewModel
             writer.WriteEndElement();
         }
 
+        private void StackTaskWrite(XmlTextWriter writer, OutputImageDispositionCodeValues outputImageDispositionCode, TaskIndicatorCodeValues taskIndicatorCode, int number, bool Is_substack)
+        {
+            int item = 0;
+
+            writer.WriteStartElement("Task");
+            writer.WriteStartElement("OutputImageDispositionCode");
+            writer.WriteAttributeString("value", outputImageDispositionCode.Value.ToString());
+            writer.WriteEndElement();
+
+            if (outputImageDispositionCode.Value == 5)
+            {
+                writer.WriteStartElement("OutputImagesDesignatedFolder");
+                writer.WriteAttributeString("value", OutputImagesDesignatedFolder);
+                writer.WriteEndElement();
+            }
+
+            PreferenceWrite(writer);
+
+            writer.WriteStartElement("TaskIndicatorCode");
+            writer.WriteAttributeString("value", taskIndicatorCode.Value.ToString());
+            writer.WriteEndElement();
+            if (Is_substack == true)
+            {
+                writer.WriteStartElement("SelectedInputIndices");
+                writer.WriteAttributeString("length", number.ToString());
+                for (int i = 0; i < number; i++)
+                {
+                    writer.WriteStartElement("SelectedInputIndex");
+                    writer.WriteAttributeString("value", item.ToString());
+                    writer.WriteEndElement();
+                    item++;
+
+                }
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+        }
+
+
 
         private void PreferenceWrite(XmlTextWriter writer)
         {
@@ -355,7 +444,7 @@ namespace Macrophotography.ViewModel
             writer.WriteEndElement();
         }
 
-        private void TaskWrite(XmlTextWriter writer)
+        private void TaskWrite2(XmlTextWriter writer)
         {
             writer.WriteStartElement("Task");
             if (StackTasks != null)
