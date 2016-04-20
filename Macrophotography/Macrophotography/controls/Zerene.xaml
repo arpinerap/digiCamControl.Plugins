@@ -290,7 +290,7 @@
 
                 </Grid.ColumnDefinitions>
 
-                <ListBox x:Name="StackTasks_lbx" ItemsSource="{Binding TaskIndicatorCodes}" DisplayMemberPath="Text"
+                <ListBox x:Name="StackTasks_lbx" ItemsSource="{Binding StackTasks}" DisplayMemberPath="Text"
                     Grid.Column="1" Grid.ColumnSpan="2"
                     BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                     <ListBox.ItemsPanel>

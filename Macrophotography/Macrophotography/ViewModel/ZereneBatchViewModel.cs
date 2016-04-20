@@ -33,7 +33,7 @@ namespace Macrophotography.ViewModel
 {
     public class ZereneBatchViewModel : MacroStackViewModel
     {
-
+        #region Variables
         private ObservableCollection<Prop> _Props = new ObservableCollection<Prop>();
         private ObservableCollection<StackTask> _StackTasks = new ObservableCollection<StackTask>();
         private ObservableCollection<TaskIndicatorCodeValues> _TaskIndicatorCodes = new ObservableCollection<TaskIndicatorCodeValues>();
@@ -44,10 +44,16 @@ namespace Macrophotography.ViewModel
         private int _EstimatedRadius;
         private int _SmoothingRadius;
         private int _ContrastThreshold;
+
         private bool _IsDMap;
+        private bool _IsJpeg;
 
 
+        private string _OutputImageNames;
         private string _OutputImagesDesignatedFolder;
+        private string _OutputSessionFolder;
+        private string _OutputSessionSlabsFolder;
+        private string _SubSlabsSessionFolder;
 
 
         public int items;
@@ -57,11 +63,9 @@ namespace Macrophotography.ViewModel
         public int tasknumber;
 
         public int item = 0;
-        
+        #endregion
 
         #region RaisePropertyChanged
-
-        
 
         public ObservableCollection<Prop> Props
         {
@@ -141,6 +145,7 @@ namespace Macrophotography.ViewModel
 
             }
         }
+
         public bool IsDMap
         {
             get { return _IsDMap; }
@@ -150,8 +155,25 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => IsDMap);
             }
         }
+        public bool IsJpeg
+        {
+            get { return _IsJpeg; }
+            set
+            {
+                _IsJpeg = value;
+                RaisePropertyChanged(() => IsJpeg);
+            }
+        }
 
-
+        public string OutputImageNames
+        {
+            get { return _OutputImageNames; }
+            set
+            {
+                _OutputImageNames = value;
+                RaisePropertyChanged(() => OutputImageNames);
+            }
+        }
         public string OutputImagesDesignatedFolder
         {
             get { return _OutputImagesDesignatedFolder; }
@@ -159,6 +181,33 @@ namespace Macrophotography.ViewModel
             {
                 _OutputImagesDesignatedFolder = value;
                 RaisePropertyChanged(() => OutputImagesDesignatedFolder);
+            }
+        }
+        public string OutputSessionFolder
+        {
+            get { return _OutputSessionFolder; }
+            set
+            {
+                _OutputSessionFolder = value;
+                RaisePropertyChanged(() => OutputSessionFolder);
+            }
+        }
+        public string OutputSessionSlabsFolder
+        {
+            get { return _OutputSessionSlabsFolder; }
+            set
+            {
+                _OutputSessionSlabsFolder = value;
+                RaisePropertyChanged(() => OutputSessionSlabsFolder);
+            }
+        }
+        public string SubSlabsSessionFolder
+        {
+            get { return _SubSlabsSessionFolder; }
+            set
+            {
+                _SubSlabsSessionFolder = value;
+                RaisePropertyChanged(() => SubSlabsSessionFolder);
             }
         }
 
@@ -175,10 +224,12 @@ namespace Macrophotography.ViewModel
 
         public class StackTask
         {
+            public string TaskName { get; set; }
             public int OutputImageDispositionCodeValue { get; set; }
             public int TaskIndicatorCodeValue { get; set; }
             public int Number { get; set; }
             public int Overlap { get; set; }
+            public bool Substack { get; set; }
         }
 
         public class TaskIndicatorCodeValues
@@ -300,6 +351,17 @@ namespace Macrophotography.ViewModel
                 Overlap = 2
             });
 
+            StackTasks.Add(new StackTask
+            {
+                TaskName = "incremental",
+                OutputImageDispositionCodeValue = OutputImageDispositionCodeValue_combo.Value,
+                TaskIndicatorCodeValue = TaskIndicatorCodeValue_combo.Value,
+                Number = Number_nud.Value,
+                Overlap = Overlap_nud.Value,
+                EstimatedRadius = EstimatedRadius_nud.Value,
+                SmoothingRadius = SmoothingRadius_nud.Value,
+                ContrastThreshold = ContrastThreshold_nud.Value,
+            });
         }
 
 
