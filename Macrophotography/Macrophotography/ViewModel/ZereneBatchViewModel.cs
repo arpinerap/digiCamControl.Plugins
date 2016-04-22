@@ -33,20 +33,33 @@ namespace Macrophotography.ViewModel
 {
     public class ZereneBatchViewModel : MacroStackViewModel
     {
+                       
         #region Variables
         private ObservableCollection<Prop> _Props = new ObservableCollection<Prop>();
         private ObservableCollection<StackTask> _StackTasks = new ObservableCollection<StackTask>();
-        private ObservableCollection<TaskIndicatorCodeValues> _TaskIndicatorCodes = new ObservableCollection<TaskIndicatorCodeValues>();
-        private ObservableCollection<OutputImageDispositionCodeValues> _OutputImageDispositionCodes = new ObservableCollection<OutputImageDispositionCodeValues>();
-        private ObservableCollection<ProjectDispositionCodeValues> _ProjectDispositionCodes = new ObservableCollection<ProjectDispositionCodeValues>();
+        private ObservableCollection<TaskIndicatorCodeValues> _TaskIndicatorCodes = new ObservableCollection<TaskIndicatorCodeValues>(); // populate combos with
+        private ObservableCollection<OutputImageDispositionCodeValues> _OutputImageDispositionCodes = new ObservableCollection<OutputImageDispositionCodeValues>(); // populate combos with
+        private ObservableCollection<ProjectDispositionCodeValues> _ProjectDispositionCodes = new ObservableCollection<ProjectDispositionCodeValues>(); // populate combos with
 
+        private TaskIndicatorCodeValues _ActualTaskIndicatorCodeValue = new TaskIndicatorCodeValues();
+        private TaskIndicatorCodeValues _ActualTaskIndicatorCodeValueSlab = new TaskIndicatorCodeValues();
+        private OutputImageDispositionCodeValues _ActualOutputImageDispositionCodeValue = new OutputImageDispositionCodeValues();
+        private ProjectDispositionCodeValues _ActualProjectDispositionCodeValue = new ProjectDispositionCodeValues();
+        private StackTask _ActualStackTask = new StackTask();
 
+        private PluginSetting _pluginSetting;
+        
         private int _EstimatedRadius;
         private int _SmoothingRadius;
         private int _ContrastThreshold;
 
         private bool _IsDMap;
+        private bool _IsSubStack;
+        private bool _IsNotSubStack = true;
+        private bool _IsStackSlabs;
         private bool _IsJpeg;
+        private bool _IsTiff = true;
+        private bool _IsSlabbing;
 
 
         private string _OutputImageNames;
@@ -55,18 +68,21 @@ namespace Macrophotography.ViewModel
         private string _OutputSessionSlabsFolder;
         private string _SubSlabsSessionFolder;
 
+        private StringBuilder _taskName = new StringBuilder();
 
-        public int items;
-        public int stack_items;
-        public int stack_item;
-        public int stack_overlap;
+        private int _Items;
+        private int _Stack_items;       
+        private int _Stack_overlap;
+        
+
+        public int stack_item = 0;
         public int tasknumber;
 
-        public int item = 0;
+        //public int item = 0;
         #endregion
 
+        
         #region RaisePropertyChanged
-
         public ObservableCollection<Prop> Props
         {
             get { return _Props; }
@@ -91,10 +107,9 @@ namespace Macrophotography.ViewModel
             set
             {
                 _TaskIndicatorCodes = value;
-                RaisePropertyChanged(() => TaskIndicatorCodes);
-                //IsDMap = _TaskIndicatorCodes. % 90 <= 1 ? true : false;
+                RaisePropertyChanged(() => TaskIndicatorCodes);              
             }
-        } 
+        }
         public ObservableCollection<OutputImageDispositionCodeValues> OutputImageDispositionCodes // populate combos with
         {
             get { return _OutputImageDispositionCodes; }
@@ -103,7 +118,7 @@ namespace Macrophotography.ViewModel
                 _OutputImageDispositionCodes = value;
                 RaisePropertyChanged(() => OutputImageDispositionCodes);
             }
-        } 
+        }
         public ObservableCollection<ProjectDispositionCodeValues> ProjectDispositionCodes // populate combos with
         {
             get { return _ProjectDispositionCodes; }
@@ -111,6 +126,74 @@ namespace Macrophotography.ViewModel
             {
                 _ProjectDispositionCodes = value;
                 RaisePropertyChanged(() => ProjectDispositionCodes);
+            }
+        }
+
+        public TaskIndicatorCodeValues ActualTaskIndicatorCodeValue
+        {
+            get { return _ActualTaskIndicatorCodeValue; }
+            set
+            {
+                _ActualTaskIndicatorCodeValue = value;
+                RaisePropertyChanged(() => ActualTaskIndicatorCodeValue);
+            }
+        }
+        public TaskIndicatorCodeValues ActualTaskIndicatorCodeValueSlab
+        {
+            get { return _ActualTaskIndicatorCodeValueSlab; }
+            set
+            {
+                _ActualTaskIndicatorCodeValueSlab = value;
+                RaisePropertyChanged(() => ActualTaskIndicatorCodeValueSlab);
+            }
+        }
+        public OutputImageDispositionCodeValues ActualOutputImageDispositionCodeValue
+        {
+            get { return _ActualOutputImageDispositionCodeValue; }
+            set
+            {
+                _ActualOutputImageDispositionCodeValue = value;
+                RaisePropertyChanged(() => ActualOutputImageDispositionCodeValue);
+            }
+        }
+        public ProjectDispositionCodeValues ActualProjectDispositionCodeValue
+        {
+            get { return _ActualProjectDispositionCodeValue; }
+            set
+            {
+                _ActualProjectDispositionCodeValue = value;
+                RaisePropertyChanged(() => ActualProjectDispositionCodeValue);
+            }
+        }
+        public StackTask ActualStackTask
+        {
+            get { return _ActualStackTask; }
+            set
+            {
+                _ActualStackTask = value;
+                RaisePropertyChanged(() => ActualStackTask);
+            }
+        }
+
+        public PluginSetting PluginSetting
+        {
+            get
+            {
+                if (_pluginSetting == null)
+                {
+                    _pluginSetting = ServiceProvider.Settings["CombineZp"];
+                }
+                return _pluginSetting;
+            }
+        }
+
+        public bool UseSmallThumb
+        {
+            get { return PluginSetting.GetBool("UseSmallThumb"); }
+            set
+            {
+                PluginSetting["UseSmallThumb"] = value;
+                RaisePropertyChanged(() => UseSmallThumb);
             }
         }
 
@@ -145,15 +228,49 @@ namespace Macrophotography.ViewModel
 
             }
         }
-
+        
         public bool IsDMap
         {
             get { return _IsDMap; }
             set
             {
                 _IsDMap = value;
-                RaisePropertyChanged(() => IsDMap);
+                RaisePropertyChanged(() => IsDMap);                
             }
+        }
+        public bool IsSubStack
+        {
+            get { return _IsSubStack; }
+            set
+            {
+                _IsSubStack = value;
+                RaisePropertyChanged(() => IsSubStack);
+                RaisePropertyChanged(() => IsNotSubStack);
+            }
+        }
+        public bool IsNotSubStack
+        {
+            get { return _IsNotSubStack; }
+            set
+            {
+                _IsNotSubStack = value;
+                RaisePropertyChanged(() => IsNotSubStack);
+                RaisePropertyChanged(() => IsSubStack);
+            }
+        }
+        public bool IsStackSlabs
+        {
+            get { return _IsStackSlabs; }
+            set
+            {
+                _IsStackSlabs = value;
+                RaisePropertyChanged(() => IsStackSlabs);
+                RaisePropertyChanged(() => IsNotStackSlabs);
+            }
+        }
+        public bool IsNotStackSlabs
+        {
+            get { return !IsStackSlabs; }
         }
         public bool IsJpeg
         {
@@ -162,6 +279,26 @@ namespace Macrophotography.ViewModel
             {
                 _IsJpeg = value;
                 RaisePropertyChanged(() => IsJpeg);
+                RaisePropertyChanged(() => IsTiff);
+            }
+        }
+        public bool IsTiff
+        {
+            get { return _IsTiff; }
+            set
+            {
+                _IsTiff = value;
+                RaisePropertyChanged(() => IsTiff);
+                RaisePropertyChanged(() => IsJpeg);
+            }
+        }
+        public bool IsSlabbing
+        {
+            get { return _IsSlabbing; }
+            set
+            {
+                _IsSlabbing = value;
+                RaisePropertyChanged(() => IsSlabbing);
             }
         }
 
@@ -211,7 +348,46 @@ namespace Macrophotography.ViewModel
             }
         }
 
+        public StringBuilder taskName
+        {
+            get { return _taskName; }
+            set
+            {
+                _taskName = value;
+                RaisePropertyChanged(() => taskName);
+            }
+        }
+
+        public int Stack_items
+        {
+            get { return _Stack_items; }
+            set
+            {
+                _Stack_items = value;
+                RaisePropertyChanged(() => Stack_items);
+            }
+        }
+        public int Stack_overlap
+        {
+            get { return _Stack_overlap; }
+            set
+            {
+                _Stack_overlap = value;
+                RaisePropertyChanged(() => Stack_overlap);
+            }
+        }
+        public int Items
+        {
+            get { return _Items; }
+            set
+            {
+                _Items = value;
+                RaisePropertyChanged(() => Items);
+            }
+        }
+
         #endregion
+
 
         #region Classes
         public class Prop
@@ -221,7 +397,6 @@ namespace Macrophotography.ViewModel
             public bool substack { get; set; }
             public string Subpropertyvalue { get; set; }
         }
-
         public class StackTask
         {
             public string TaskName { get; set; }
@@ -229,44 +404,52 @@ namespace Macrophotography.ViewModel
             public int TaskIndicatorCodeValue { get; set; }
             public int Number { get; set; }
             public int Overlap { get; set; }
-            public bool Substack { get; set; }
+            public int EstimatedRadius { get; set; }
+            public int SmoothingRadius { get; set; }
+            public int ContrastThreshold { get; set; }
+                     
         }
 
         public class TaskIndicatorCodeValues
         {
             public String Text { get; set; }
             public int Value { get; set; }
+            public String Name { get; set; }
         }
-
         public class OutputImageDispositionCodeValues
         {
             public String Text { get; set; }
             public int Value { get; set; }
         }
-
         public class ProjectDispositionCodeValues
         {
             public String Text { get; set; }
             public int Value { get; set; }
         }
 
+        public RelayCommand UpDateDMapCommand { get; set; }
+        public RelayCommand AddTaskCommand { get; set; }
+
         #endregion
 
         public ZereneBatchViewModel()
         {
             InitCommands();
+            LoadData();
             PopulateCombos();
+            UpDateDMapCommand = new RelayCommand(UpDateDMap);
+            AddTaskCommand = new RelayCommand(AddTask);
         }
 
         public void PopulateCombos()
         {
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (PMax)", Value = 1 });
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (DMax)", Value = 2 });
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align All Frames", Value = 3 });
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Stack Selected (PMax)", Value = 4 });
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Stack Selected (DMax)", Value = 5 });
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Make Stereo Pair(s)", Value = 6 });
-            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Mark Project as Demo", Value = 7 });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (PMax)", Value = 1, Name = "Ali&PMax" });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (DMap)", Value = 2, Name = "Ali&DMap" });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align All Frames", Value = 3, Name = "Ali" });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Stack Selected (PMax)", Value = 4, Name = "SelecPMax" });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Stack Selected (DMap)", Value = 5, Name = "SelecDMap" });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Make Stereo Pair(s)", Value = 6, Name = "Stereo" });
+            TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Mark Project as Demo", Value = 7, Name = "Demo" });
 
             OutputImageDispositionCodes.Add(new OutputImageDispositionCodeValues { Text = "Do not save images separately (keep only in projects)", Value = 1 });
             OutputImageDispositionCodes.Add(new OutputImageDispositionCodeValues { Text = "Save in source folders", Value = 2 });
@@ -280,7 +463,231 @@ namespace Macrophotography.ViewModel
 
         }
 
+        public void UpDateDMap()
+        {
+            if (ActualTaskIndicatorCodeValue.Value == 2 || ActualTaskIndicatorCodeValue.Value == 5 || ActualTaskIndicatorCodeValueSlab.Value == 2 || ActualTaskIndicatorCodeValueSlab.Value == 5)
+            {
+                IsDMap = true;
+            }
+            else
+                IsDMap = false;
+        }
 
+        public void NamingTask()
+        {
+            taskName.Clear();
+            
+            string taskSubs = _IsNotSubStack == true ? "SimpleStack" : "SubStacks";
+            
+            taskName.Append("Work");
+            taskName.Append(StackTasks.Count + 1);
+            taskName.Append(".- " + taskSubs + "_");
+            taskName.Append(ActualTaskIndicatorCodeValue.Name);
+            
+        }
+
+        private void AddTask()
+        {
+            NamingTask();
+            StackTasks.Add(new StackTask
+            {
+                TaskName = taskName.ToString(),
+                OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
+                Number = Stack_items,
+                Overlap = Stack_overlap,
+                EstimatedRadius = EstimatedRadius,
+                SmoothingRadius = SmoothingRadius,
+                ContrastThreshold = ContrastThreshold
+            });
+        }
+
+
+        public void CopyFiles(bool preview)
+        {
+            int counter = 0;
+            try
+            {
+                _filenames.Clear();
+                OnProgressChange("Copying files");
+                _tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                Directory.CreateDirectory(_tempdir);
+                foreach (FileItem fileItem in Files)
+                {
+                    string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".jpg");
+                    OnProgressChange("Copying file " + fileItem.Name);
+                    string source = preview
+                        ? (UseSmallThumb ? fileItem.SmallThumb : fileItem.LargeThumb)
+                        : fileItem.FileName;
+
+                    AutoExportPluginHelper.ExecuteTransformPlugins(fileItem, PluginSetting.AutoExportPluginConfig,
+                        source, randomFile);
+
+                    _filenames.Add(randomFile);
+                    counter++;
+                    if (_shouldStop)
+                    {
+                        OnActionDone();
+                        return;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                OnProgressChange("Error copy files " + exception.Message);
+                Log.Error("Error copy files ", exception);
+                _shouldStop = true;
+            }
+        }
+        /*
+        private void GenerateTask()
+        {
+            IsBusy = true;
+            CopyFiles(false);
+            if (!_shouldStop)
+                ZereneStack();
+            if (File.Exists(_resulfile))
+            {
+                string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName),
+                    Path.GetFileNameWithoutExtension(Files[0].FileName) + "_enfuse" + ".jpg");
+                newFile = PhotoUtils.GetNextFileName(newFile);
+
+                File.Copy(_resulfile, newFile, true);
+
+                if (ServiceProvider.Settings.DefaultSession.GetFile(newFile) == null)
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        FileItem im = new FileItem(newFile);
+                        im.Transformed = true;
+                        ServiceProvider.Settings.DefaultSession.Files.Add(im);
+                    }));
+                }
+            }
+            OnActionDone();
+            IsBusy = false;
+        }
+        
+        void PreviewTask()
+        {
+            IsBusy = true;
+            CopyFiles(true);
+            if (!_shouldStop)
+                ZereneStack();
+            OnActionDone();
+            IsBusy = false;
+        }
+        
+        public void Combine()
+        {
+            try
+            {
+                OnProgressChange("Enfuse images ..");
+                OnProgressChange("This may take few minutes too");
+                _resulfile = Path.Combine(_tempdir, Path.GetFileNameWithoutExtension(Files[0].FileName) + Files.Count + ".jpg");
+                _resulfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(_resulfile));
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("\"" + Path.GetDirectoryName(_filenames[0]) + "\" ");
+                stringBuilder.Append("\"" + Macro + "\" ");
+                stringBuilder.Append(_resulfile + " ");
+                stringBuilder.Append("-q -k +j100");
+
+                Process newprocess = new Process();
+                newprocess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = _pathtoenfuse,
+                    Arguments = stringBuilder.ToString().Replace(",", "."),
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Minimized,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    WorkingDirectory = Path.GetDirectoryName(_filenames[0])
+                };
+                newprocess.Start();
+                _enfuseProcess = newprocess;
+                newprocess.OutputDataReceived += newprocess_OutputDataReceived;
+                newprocess.ErrorDataReceived += newprocess_OutputDataReceived;
+                newprocess.BeginOutputReadLine();
+                newprocess.BeginErrorReadLine();
+                newprocess.WaitForExit();
+                if (File.Exists(_resulfile))
+                {
+                    //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
+                    //                                Path.GetFileName(_resulfile));
+                    //File.Copy(_resulfile, localfile, true);
+                    //ServiceProvider.Settings.DefaultSession.AddFile(localfile);
+                    PreviewBitmap = BitmapLoader.Instance.LoadImage(_resulfile);
+                }
+                else
+                {
+                    OnProgressChange("No output file something went wrong !");
+                }
+                _enfuseProcess = null;
+            }
+            catch (Exception exception)
+            {
+                OnProgressChange("Error copy files " + exception.Message);
+                Log.Error("Error copy files ", exception);
+                _shouldStop = true;
+            }
+        }
+
+        public void ZereneStack()
+        {
+            try
+            {
+                OnProgressChange("Zerene is stacking images ..");
+                OnProgressChange("This may take few minutes too");
+                _resulfile = Path.Combine(_tempdir, Path.GetFileNameWithoutExtension(Files[0].FileName) + Files.Count + ".jpg");
+                _resulfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(_resulfile));
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("\"" + Path.GetDirectoryName(_filenames[0]) + "\" ");
+                stringBuilder.Append("\"" + Macro + "\" ");
+                stringBuilder.Append(_resulfile + " ");
+                stringBuilder.Append("-q -k +j100");
+
+                Process newprocess = new Process();
+                newprocess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = _pathtoenfuse,
+                    Arguments = stringBuilder.ToString().Replace(",", "."),
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Minimized,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    WorkingDirectory = Path.GetDirectoryName(_filenames[0])
+                };
+                newprocess.Start();
+                _enfuseProcess = newprocess;
+                newprocess.OutputDataReceived += newprocess_OutputDataReceived;
+                newprocess.ErrorDataReceived += newprocess_OutputDataReceived;
+                newprocess.BeginOutputReadLine();
+                newprocess.BeginErrorReadLine();
+                newprocess.WaitForExit();
+                if (File.Exists(_resulfile))
+                {
+                    //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
+                    //                                Path.GetFileName(_resulfile));
+                    //File.Copy(_resulfile, localfile, true);
+                    //ServiceProvider.Settings.DefaultSession.AddFile(localfile);
+                    PreviewBitmap = BitmapLoader.Instance.LoadImage(_resulfile);
+                }
+                else
+                {
+                    OnProgressChange("No output file something went wrong !");
+                }
+                _enfuseProcess = null;
+            }
+            catch (Exception exception)
+            {
+                OnProgressChange("Error copy files " + exception.Message);
+                Log.Error("Error copy files ", exception);
+                _shouldStop = true;
+            }
+        }
+        */
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
@@ -319,7 +726,7 @@ namespace Macrophotography.ViewModel
             writer.WriteAttributeString("length", tasknumber.ToString());
             AlignTask(writer);
             PMaxTask(writer);
-            DMaxTask(writer);
+            DMapTask(writer);
             foreach (var stackTask in StackTasks)
             {
                 //writer.WriteStartElement(property.PropertyName + "." + property.SubpropertyName);
@@ -340,29 +747,7 @@ namespace Macrophotography.ViewModel
             MessageBox.Show("XML File created ! ");
         }
 
-        private void AddTask_Click(object sender, RoutedEventArgs e)
-        {
-
-            StackTasks.Add(new StackTask
-            {
-                OutputImageDispositionCodeValue = 5,
-                TaskIndicatorCodeValue = 1,
-                Number = 10,
-                Overlap = 2
-            });
-
-            StackTasks.Add(new StackTask
-            {
-                TaskName = "incremental",
-                OutputImageDispositionCodeValue = OutputImageDispositionCodeValue_combo.Value,
-                TaskIndicatorCodeValue = TaskIndicatorCodeValue_combo.Value,
-                Number = Number_nud.Value,
-                Overlap = Overlap_nud.Value,
-                EstimatedRadius = EstimatedRadius_nud.Value,
-                SmoothingRadius = SmoothingRadius_nud.Value,
-                ContrastThreshold = ContrastThreshold_nud.Value,
-            });
-        }
+       
 
 
         private void AlignTask(XmlTextWriter writer)
@@ -395,7 +780,7 @@ namespace Macrophotography.ViewModel
             writer.WriteEndElement();
         }
 
-        private void DMaxTask(XmlTextWriter writer)
+        private void DMapTask(XmlTextWriter writer)
         {
             writer.WriteStartElement("Task");
             writer.WriteStartElement("OutputImageDispositionCode");
@@ -438,9 +823,9 @@ namespace Macrophotography.ViewModel
                 for (int i = 0; i < number; i++)
                 {
                     writer.WriteStartElement("SelectedInputIndex");
-                    writer.WriteAttributeString("value", item.ToString());
+                    writer.WriteAttributeString("value", stack_item.ToString());
                     writer.WriteEndElement();
-                    item++;
+                    stack_item++;
 
                 }
                 writer.WriteEndElement();
