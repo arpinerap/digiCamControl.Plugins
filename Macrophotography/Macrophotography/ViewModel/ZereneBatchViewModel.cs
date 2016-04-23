@@ -49,6 +49,10 @@ namespace Macrophotography.ViewModel
 
         private PluginSetting _pluginSetting;
         
+        private Process _ZereneProcess;
+        private string launchCommand = "";
+
+
         private int _EstimatedRadius;
         private int _SmoothingRadius;
         private int _ContrastThreshold;
@@ -63,7 +67,7 @@ namespace Macrophotography.ViewModel
 
 
         private string _OutputImageNames;
-        private string _OutputImagesDesignatedFolder;
+        private string _OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
         private string _OutputSessionFolder;
         private string _OutputSessionSlabsFolder;
         private string _SubSlabsSessionFolder;
@@ -184,16 +188,6 @@ namespace Macrophotography.ViewModel
                     _pluginSetting = ServiceProvider.Settings["CombineZp"];
                 }
                 return _pluginSetting;
-            }
-        }
-
-        public bool UseSmallThumb
-        {
-            get { return PluginSetting.GetBool("UseSmallThumb"); }
-            set
-            {
-                PluginSetting["UseSmallThumb"] = value;
-                RaisePropertyChanged(() => UseSmallThumb);
             }
         }
 
@@ -393,9 +387,9 @@ namespace Macrophotography.ViewModel
         public class Prop
         {
             public string PropertyName { get; set; }
-            public string SubpropertyName { get; set; }
-            public bool substack { get; set; }
+            public string SubpropertyName { get; set; }            
             public string Subpropertyvalue { get; set; }
+            //public bool substack { get; set; }
         }
         public class StackTask
         {
@@ -437,11 +431,13 @@ namespace Macrophotography.ViewModel
             InitCommands();
             LoadData();
             PopulateCombos();
+            CreateTempDir();
+            MakeZereneLaunchCommand();
             UpDateDMapCommand = new RelayCommand(UpDateDMap);
             AddTaskCommand = new RelayCommand(AddTask);
         }
 
-        public void PopulateCombos()
+        private void PopulateCombos()
         {
             TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (PMax)", Value = 1, Name = "Ali&PMax" });
             TaskIndicatorCodes.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (DMap)", Value = 2, Name = "Ali&DMap" });
@@ -462,7 +458,125 @@ namespace Macrophotography.ViewModel
             ProjectDispositionCodes.Add(new ProjectDispositionCodeValues { Text = "Save new projects in designated folder", Value = 103 });
 
         }
+        private void PopulatePreferences()
+        {
+            PreferenceAdd("AlignmentControl", "AlignmentSettingsChanged", "false");
+            PreferenceAdd("AlignmentControl", "AllowRotation", "true");
+            PreferenceAdd("AlignmentControl", "AllowScale", "true");
+            PreferenceAdd("AlignmentControl", "AllowShiftX", "true");
+            PreferenceAdd("AlignmentControl", "AllowShiftY", "true");
+            PreferenceAdd("AlignmentControl", "BrightnessSettingsChanged", "false");
+            PreferenceAdd("AlignmentControl", "CorrectBrightness", "true");
+            PreferenceAdd("AlignmentControl", "MaxRelDegRotation", "20");
+            PreferenceAdd("AlignmentControl", "MaxRelPctScale", "20");
+            PreferenceAdd("AlignmentControl", "MaxRelPctShiftX", "20");
+            PreferenceAdd("AlignmentControl", "MaxRelPctShiftY", "20");
+            PreferenceAdd("AlignmentControl", "Order.Automatic", "false");
+            PreferenceAdd("AlignmentControl", "Order.NarrowFirst", "true");
 
+            PreferenceAdd("AllowReporting", "UsageStatistics", "false");
+
+            PreferenceAdd("BatchFileChooser", "LastDirectory", "");
+
+            PreferenceAdd("ColorManagement", "DebugPrintProfile", "false");
+            PreferenceAdd("ColorManagement", "InputOption", "Use_EXIF_and_DCF_rul");
+            PreferenceAdd("ColorManagement", "InputOption.AssumedProfile", "sRGB IEC61966-2.1");
+            PreferenceAdd("ColorManagement", "OutputOption", "CopyInput");
+
+            PreferenceAdd("DepthMapControl", "AlgorithmIdentifier", "1");
+            PreferenceAdd("DepthMapControl", "ContrastThresholdLevel", "0.0"); // Contrast Threshold
+            PreferenceAdd("DepthMapControl", "ContrastThresholdPercentile", "90.0");
+            PreferenceAdd("DepthMapControl", "EstimationRadius", "8"); //Estimation Radius
+            PreferenceAdd("DepthMapControl", "SaveDepthMapImage", "");
+            PreferenceAdd("DepthMapControl", "SaveDepthMapImageDirector", "");
+            PreferenceAdd("DepthMapControl", "SaveUsedPixelImages", "false");
+            PreferenceAdd("DepthMapControl", "SmoothingRadius", "4");  //Smoothing Radius
+            PreferenceAdd("DepthMapControl", "UseFixedContrastThresholdLevel", "true");
+            PreferenceAdd("DepthMapControl", "UseFixedContrastThresholdPercentile", "true");
+            PreferenceAdd("DepthMapControl", "UsedPixelFractionThreshold", "0.5");
+
+            PreferenceAdd("FileIO", "UseExternalTIFFReader", "false");
+
+            PreferenceAdd("Interpolator", "RenderingSelection", "Interpolator.Spline4x4");
+            PreferenceAdd("Interpolator", "ShowAdvanced", "false");
+
+            PreferenceAdd("OutputImageNaming", "Template", "Slab {outseq} {method}");
+
+            PreferenceAdd("Prerotation", "Degrees", "0");
+            PreferenceAdd("Prerotation", "Selected", "false");
+
+            PreferenceAdd("Presize", "UserSetting.Scale", "1.0");
+            PreferenceAdd("Presize", "UserSetting.Selected", "false");
+            PreferenceAdd("Presize", "Working.Scale", "1.0");
+
+            PreferenceAdd("PyramidControl", "GritSuppressionMethod", "1");
+            PreferenceAdd("PyramidControl", "RetainUDRImage", "false");
+
+            PreferenceAdd("SaveImage", "BitsPerColor", "16");
+            PreferenceAdd("SaveImage", "CompressionQuality", "0.75");
+            string FileType = IsTiff ? "tif" : "jpeg";
+            PreferenceAdd("SaveImage", "FileType", FileType);
+            PreferenceAdd("SaveImage", "RescaleImageToAvoidOverflow", "true");
+
+            PreferenceAdd("SkewSequence", "FirstImage.MaximumShiftXPct", "-3.0");
+            PreferenceAdd("SkewSequence", "FirstImage.MaximumShiftYPct", "0.0");
+            PreferenceAdd("SkewSequence", "LastImage.MaximumShiftXPct", "3.0");
+            PreferenceAdd("SkewSequence", "LastImage.MaximumShiftYPct", "0.0");
+            PreferenceAdd("SkewSequence", "NumberOfOutputImages", "3");
+            PreferenceAdd("SkewSequence", "Selected", "false");
+
+            PreferenceAdd("StackingControl", "FrameSkipFactor", "1");
+            PreferenceAdd("StackingControl", "FrameSkipSelected", "false");
+            PreferenceAdd("StereoOrdering", "LeftRightIndexSeparation", "1");
+
+            
+        }
+        private void CreateTempDir()
+        {            
+            _tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(_tempdir);
+        }
+        private async void MakeZereneLaunchCommand()
+        {
+            string userName = Environment.UserName;
+            string mLaunchCmdDir = "C:\\Users\\" + userName + "\\AppData\\Roaming\\ZereneStacker";
+            string fileName = "zerenstk.launchcmd";
+            string mLaunchCmdFile = Path.Combine(mLaunchCmdDir, fileName);
+            launchCommand = null;
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(mLaunchCmdFile))
+                {
+                    String line = await sr.ReadToEndAsync();
+                    launchCommand = line;
+                }
+            }
+            catch (Exception ex)
+            {
+                OnProgressChange("Could not read the Zerene Command File");
+            }
+
+            try
+            {
+                launchCommand = launchCommand.Replace("javaw.exe", "java.exe");  // to make SHOWPROGRESS lines available 
+                launchCommand += " -noSplashScreen";
+                launchCommand += " -exitOnBatchScriptCompletion";
+                launchCommand += " -runMinimized";
+                launchCommand += " ";
+                launchCommand += _tempdir;
+            }
+            catch (Exception ex)
+            {
+                OnProgressChange("Could not change Zerene Command File");
+            }
+        }
+        
+        
+        private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            OnProgressChange(e.Data);
+        }
         public void UpDateDMap()
         {
             if (ActualTaskIndicatorCodeValue.Value == 2 || ActualTaskIndicatorCodeValue.Value == 5 || ActualTaskIndicatorCodeValueSlab.Value == 2 || ActualTaskIndicatorCodeValueSlab.Value == 5)
@@ -485,7 +599,6 @@ namespace Macrophotography.ViewModel
             taskName.Append(ActualTaskIndicatorCodeValue.Name);
             
         }
-
         private void AddTask()
         {
             NamingTask();
@@ -509,19 +622,16 @@ namespace Macrophotography.ViewModel
             try
             {
                 _filenames.Clear();
+                
                 OnProgressChange("Copying files");
-                _tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-                Directory.CreateDirectory(_tempdir);
+                
                 foreach (FileItem fileItem in Files)
                 {
                     string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".jpg");
                     OnProgressChange("Copying file " + fileItem.Name);
-                    string source = preview
-                        ? (UseSmallThumb ? fileItem.SmallThumb : fileItem.LargeThumb)
-                        : fileItem.FileName;
+                    string source = preview ? fileItem.LargeThumb : fileItem.FileName;
 
-                    AutoExportPluginHelper.ExecuteTransformPlugins(fileItem, PluginSetting.AutoExportPluginConfig,
-                        source, randomFile);
+                    AutoExportPluginHelper.ExecuteTransformPlugins(fileItem, PluginSetting.AutoExportPluginConfig, source, randomFile);
 
                     _filenames.Add(randomFile);
                     counter++;
@@ -539,165 +649,17 @@ namespace Macrophotography.ViewModel
                 _shouldStop = true;
             }
         }
-        /*
-        private void GenerateTask()
+        private void MakeZereneBatchFile()
         {
-            IsBusy = true;
-            CopyFiles(false);
-            if (!_shouldStop)
-                ZereneStack();
-            if (File.Exists(_resulfile))
-            {
-                string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName),
-                    Path.GetFileNameWithoutExtension(Files[0].FileName) + "_enfuse" + ".jpg");
-                newFile = PhotoUtils.GetNextFileName(newFile);
-
-                File.Copy(_resulfile, newFile, true);
-
-                if (ServiceProvider.Settings.DefaultSession.GetFile(newFile) == null)
-                {
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        FileItem im = new FileItem(newFile);
-                        im.Transformed = true;
-                        ServiceProvider.Settings.DefaultSession.Files.Add(im);
-                    }));
-                }
-            }
-            OnActionDone();
-            IsBusy = false;
-        }
-        
-        void PreviewTask()
-        {
-            IsBusy = true;
-            CopyFiles(true);
-            if (!_shouldStop)
-                ZereneStack();
-            OnActionDone();
-            IsBusy = false;
-        }
-        
-        public void Combine()
-        {
-            try
-            {
-                OnProgressChange("Enfuse images ..");
-                OnProgressChange("This may take few minutes too");
-                _resulfile = Path.Combine(_tempdir, Path.GetFileNameWithoutExtension(Files[0].FileName) + Files.Count + ".jpg");
-                _resulfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(_resulfile));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("\"" + Path.GetDirectoryName(_filenames[0]) + "\" ");
-                stringBuilder.Append("\"" + Macro + "\" ");
-                stringBuilder.Append(_resulfile + " ");
-                stringBuilder.Append("-q -k +j100");
-
-                Process newprocess = new Process();
-                newprocess.StartInfo = new ProcessStartInfo()
-                {
-                    FileName = _pathtoenfuse,
-                    Arguments = stringBuilder.ToString().Replace(",", "."),
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Minimized,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    WorkingDirectory = Path.GetDirectoryName(_filenames[0])
-                };
-                newprocess.Start();
-                _enfuseProcess = newprocess;
-                newprocess.OutputDataReceived += newprocess_OutputDataReceived;
-                newprocess.ErrorDataReceived += newprocess_OutputDataReceived;
-                newprocess.BeginOutputReadLine();
-                newprocess.BeginErrorReadLine();
-                newprocess.WaitForExit();
-                if (File.Exists(_resulfile))
-                {
-                    //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
-                    //                                Path.GetFileName(_resulfile));
-                    //File.Copy(_resulfile, localfile, true);
-                    //ServiceProvider.Settings.DefaultSession.AddFile(localfile);
-                    PreviewBitmap = BitmapLoader.Instance.LoadImage(_resulfile);
-                }
-                else
-                {
-                    OnProgressChange("No output file something went wrong !");
-                }
-                _enfuseProcess = null;
-            }
-            catch (Exception exception)
-            {
-                OnProgressChange("Error copy files " + exception.Message);
-                Log.Error("Error copy files ", exception);
-                _shouldStop = true;
-            }
-        }
-
-        public void ZereneStack()
-        {
-            try
-            {
-                OnProgressChange("Zerene is stacking images ..");
-                OnProgressChange("This may take few minutes too");
-                _resulfile = Path.Combine(_tempdir, Path.GetFileNameWithoutExtension(Files[0].FileName) + Files.Count + ".jpg");
-                _resulfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(_resulfile));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("\"" + Path.GetDirectoryName(_filenames[0]) + "\" ");
-                stringBuilder.Append("\"" + Macro + "\" ");
-                stringBuilder.Append(_resulfile + " ");
-                stringBuilder.Append("-q -k +j100");
-
-                Process newprocess = new Process();
-                newprocess.StartInfo = new ProcessStartInfo()
-                {
-                    FileName = _pathtoenfuse,
-                    Arguments = stringBuilder.ToString().Replace(",", "."),
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Minimized,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    WorkingDirectory = Path.GetDirectoryName(_filenames[0])
-                };
-                newprocess.Start();
-                _enfuseProcess = newprocess;
-                newprocess.OutputDataReceived += newprocess_OutputDataReceived;
-                newprocess.ErrorDataReceived += newprocess_OutputDataReceived;
-                newprocess.BeginOutputReadLine();
-                newprocess.BeginErrorReadLine();
-                newprocess.WaitForExit();
-                if (File.Exists(_resulfile))
-                {
-                    //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
-                    //                                Path.GetFileName(_resulfile));
-                    //File.Copy(_resulfile, localfile, true);
-                    //ServiceProvider.Settings.DefaultSession.AddFile(localfile);
-                    PreviewBitmap = BitmapLoader.Instance.LoadImage(_resulfile);
-                }
-                else
-                {
-                    OnProgressChange("No output file something went wrong !");
-                }
-                _enfuseProcess = null;
-            }
-            catch (Exception exception)
-            {
-                OnProgressChange("Error copy files " + exception.Message);
-                Log.Error("Error copy files ", exception);
-                _shouldStop = true;
-            }
-        }
-        */
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
+            //OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
+            //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
             //OutputImagesDesignatedFolder = Environment.GetEnvironmentVariable("userprofile") + "\\SubStacks";
 
 
             tasknumber = 3;
             if (StackTasks.Count != 0) { tasknumber += StackTasks.Count; }
 
-            XmlTextWriter writer = new XmlTextWriter("ZereneBatch.xml", System.Text.Encoding.UTF8);
+            XmlTextWriter writer = new XmlTextWriter(_tempdir + "ZereneBatch.xml", System.Text.Encoding.UTF8);
             writer.WriteStartDocument(false);
             writer.Formatting = System.Xml.Formatting.Indented;
             writer.Indentation = 2;
@@ -746,9 +708,100 @@ namespace Macrophotography.ViewModel
             writer.Close();
             MessageBox.Show("XML File created ! ");
         }
+        public void ZereneStack()
+        {
+            try
+            {
+                OnProgressChange("Zerene is stacking images ..");
+                OnProgressChange("This may take few minutes too");
 
-       
+                _resulfile = Path.Combine(_tempdir, Path.GetFileNameWithoutExtension(Files[0].FileName) + Files.Count + ".jpg");
+                _resulfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(_resulfile));
 
+
+                Process newprocess = new Process();
+                newprocess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = launchCommand,
+                    //Arguments = stringBuilder.ToString().Replace(",", "."),
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Minimized,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    WorkingDirectory = Path.GetDirectoryName(_filenames[0])
+                };
+                newprocess.Start();
+                _ZereneProcess = newprocess;
+                newprocess.OutputDataReceived += newprocess_OutputDataReceived;
+                newprocess.ErrorDataReceived += newprocess_OutputDataReceived;
+                newprocess.BeginOutputReadLine();
+                newprocess.BeginErrorReadLine();
+                newprocess.WaitForExit();
+                if (File.Exists(_resulfile))
+                {
+                    //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
+                    //                                Path.GetFileName(_resulfile));
+                    //File.Copy(_resulfile, localfile, true);
+                    //ServiceProvider.Settings.DefaultSession.AddFile(localfile);
+                    PreviewBitmap = BitmapLoader.Instance.LoadImage(_resulfile);
+                }
+                else
+                {
+                    OnProgressChange("No output file something went wrong !");
+                }
+                _ZereneProcess = null;
+            }
+            catch (Exception exception)
+            {
+                OnProgressChange("Error copy files " + exception.Message);
+                Log.Error("Error copy files ", exception);
+                _shouldStop = true;
+            }
+        }
+        
+        
+        
+        private void GenerateTask()
+        {
+            IsBusy = true;
+            CopyFiles(false);
+            if (!_shouldStop)
+                MakeZereneBatchFile();
+                ZereneStack();
+            if (File.Exists(_resulfile))
+            {
+                string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName),
+                    Path.GetFileNameWithoutExtension(Files[0].FileName) + "_enfuse" + ".jpg");
+                newFile = PhotoUtils.GetNextFileName(newFile);
+
+                File.Copy(_resulfile, newFile, true);
+
+                if (ServiceProvider.Settings.DefaultSession.GetFile(newFile) == null)
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        FileItem im = new FileItem(newFile);
+                        im.Transformed = true;
+                        ServiceProvider.Settings.DefaultSession.Files.Add(im);
+                    }));
+                }
+            }
+            OnActionDone();
+            IsBusy = false;
+        }       
+        void PreviewTask()
+        {
+            IsBusy = true;
+            CopyFiles(true);
+            if (!_shouldStop)
+                MakeZereneBatchFile();
+                ZereneStack();
+            OnActionDone();
+            IsBusy = false;
+        }
+         
+     
 
         private void AlignTask(XmlTextWriter writer)
         {
@@ -796,9 +849,7 @@ namespace Macrophotography.ViewModel
         }
 
         private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, int taskIndicatorCodeValue, bool substack, int number, int overlap)
-        {
-
-
+        {            
             writer.WriteStartElement("Task");
             writer.WriteStartElement("OutputImageDispositionCode");
             writer.WriteAttributeString("value", outputImageDispositionCodeValue.ToString());
@@ -826,17 +877,19 @@ namespace Macrophotography.ViewModel
                     writer.WriteAttributeString("value", stack_item.ToString());
                     writer.WriteEndElement();
                     stack_item++;
-
                 }
                 writer.WriteEndElement();
             }
-
             writer.WriteEndElement();
         }
 
         private void StackTaskWrite(XmlTextWriter writer, OutputImageDispositionCodeValues outputImageDispositionCode, TaskIndicatorCodeValues taskIndicatorCode, int number, bool Is_substack)
         {
             int item = 0;
+            _Items = _filenames.Count;
+     
+
+            for (int i = 0; i < _Items; i++)
 
             writer.WriteStartElement("Task");
             writer.WriteStartElement("OutputImageDispositionCode");
@@ -859,7 +912,7 @@ namespace Macrophotography.ViewModel
             {
                 writer.WriteStartElement("SelectedInputIndices");
                 writer.WriteAttributeString("length", number.ToString());
-                for (int i = 0; i < number; i++)
+                for (int j = 0; j < number; j++)
                 {
                     writer.WriteStartElement("SelectedInputIndex");
                     writer.WriteAttributeString("value", item.ToString());
@@ -873,8 +926,11 @@ namespace Macrophotography.ViewModel
             writer.WriteEndElement();
         }
 
-
-
+        private void PreferenceAdd(string propertyName, string subpropertyName, string subpropertyValue)
+        {
+            Props.Add(new Prop { PropertyName = propertyName, SubpropertyName = subpropertyName, Subpropertyvalue = subpropertyValue });
+        }
+        
         private void PreferenceWrite(XmlTextWriter writer)
         {
             writer.WriteStartElement("Preferences");
