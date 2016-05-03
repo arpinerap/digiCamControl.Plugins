@@ -411,7 +411,7 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
-                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding DeleteTaskCommand}"
                         Margin="5" 
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
@@ -420,7 +420,7 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
-                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MoveUpTaskCommand}"
                         Margin="5" 
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
@@ -429,7 +429,7 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
-                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MoveDownTaskCommand}"
                         Margin="5" 
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
@@ -439,6 +439,27 @@
                         </Rectangle>
                     </Button>
                 </StackPanel>
+                
+                <WrapPanel Grid.Column="1" Grid.Row="1">
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
+                        Margin="5" 
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MakeBatchCommand}"
+                        Margin="5" 
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_word}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                </WrapPanel>
                 
 
 

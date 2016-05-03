@@ -80,13 +80,11 @@ namespace Macrophotography.ViewModel
 
         private StringBuilder _taskName = new StringBuilder();
 
-        private int _Items;
+        private int _Items ;
         private int _Stack_items;       
         private int _Stack_overlap;
-        
-
-        public int stack_item = 0;
-        public int tasknumber;
+        private int _Stack_item = 0;
+        private int _Tasknumber = 0;
 
         //public int item = 0;
         #endregion
@@ -397,7 +395,7 @@ namespace Macrophotography.ViewModel
             }
         }
 
-        public int Stack_items
+        public int Stack_items // Number of Photos in each SubSlab
         {
             get { return _Stack_items; }
             set
@@ -405,8 +403,17 @@ namespace Macrophotography.ViewModel
                 _Stack_items = value;
                 RaisePropertyChanged(() => Stack_items);
             }
-        }
-        public int Stack_overlap
+        } 
+        public int Stack_item // Actual Photo in the SubSlab
+        {
+            get { return _Stack_item; }
+            set
+            {
+                _Stack_item = value;
+                RaisePropertyChanged(() => Stack_item);
+            }
+        } 
+        public int Stack_overlap // Number of Photos of overlap
         {
             get { return _Stack_overlap; }
             set
@@ -414,8 +421,8 @@ namespace Macrophotography.ViewModel
                 _Stack_overlap = value;
                 RaisePropertyChanged(() => Stack_overlap);
             }
-        }
-        public int Items
+        }  
+        public int Items // Total Number of Photos to Stack ("Files" Collection)
         {
             get { return _Items; }
             set
@@ -424,6 +431,15 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => Items);
             }
         }
+        public int Tasknumber // Total Number of SubSlabTasks
+        {
+            get { return _Tasknumber; }
+            set
+            {
+                _Tasknumber = value;
+                RaisePropertyChanged(() => Tasknumber);
+            }
+        } 
 
         #endregion
 
@@ -443,6 +459,7 @@ namespace Macrophotography.ViewModel
             public string OutputImagesDesignatedFolder { get; set; }
             public int TaskIndicatorCodeValue { get; set; }
             public bool Substack { get; set; }
+            public string FileType { get; set; }
             public int Number { get; set; }
             public int Overlap { get; set; }
             public int EstimatedRadius { get; set; }
@@ -473,8 +490,10 @@ namespace Macrophotography.ViewModel
         public RelayCommand DeleteTaskCommand { get; set; }
         public RelayCommand MoveUpTaskCommand { get; set; }
         public RelayCommand MoveDownTaskCommand { get; set; }
+        public RelayCommand MakeBatchCommand { get; set; }
 
         #endregion
+
 
         #region Task ListBox Management
 
@@ -500,6 +519,7 @@ namespace Macrophotography.ViewModel
                 OutputImagesDesignatedFolder = OutputImagesDesignatedFolder,
                 TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
                 Substack = IsSubStack,
+                FileType = FileType,
                 Number = Stack_items,
                 Overlap = Stack_overlap,
                 EstimatedRadius = EstimatedRadius,
@@ -538,6 +558,7 @@ namespace Macrophotography.ViewModel
             DeleteTaskCommand = new RelayCommand(DeleteTask);
             MoveUpTaskCommand = new RelayCommand(MoveUpTask);
             MoveDownTaskCommand = new RelayCommand(MoveDownTask);
+            MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
             
         }
 
@@ -761,12 +782,9 @@ namespace Macrophotography.ViewModel
             //OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
             //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
             //OutputImagesDesignatedFolder = Environment.GetEnvironmentVariable("userprofile") + "\\SubStacks";
+            _Items = _filenames.Count;
 
-
-            tasknumber = 3;
-            if (StackTasks.Count != 0) { tasknumber += StackTasks.Count; }
-
-            XmlTextWriter writer = new XmlTextWriter(_tempdir + "ZereneBatch.xml", System.Text.Encoding.UTF8);
+            XmlTextWriter writer = new XmlTextWriter(_tempdir + "\\ZereneBatch.xml", System.Text.Encoding.UTF8);
             writer.WriteStartDocument(false);
             writer.Formatting = System.Xml.Formatting.Indented;
             writer.Indentation = 2;
@@ -778,6 +796,9 @@ namespace Macrophotography.ViewModel
                 writer.WriteStartElement("BatchQueue");
                 foreach (var stackTask in StackTasks)
                 {
+                    //Items = Files.Count;   
+                    
+
                     writer.WriteStartElement("Batches");
                     writer.WriteAttributeString("length", StackTasks.Count.ToString());
                         writer.WriteStartElement("Batch");
@@ -790,11 +811,11 @@ namespace Macrophotography.ViewModel
 
 
                             writer.WriteStartElement("ProjectDispositionCode");
-                            writer.WriteAttributeString("value", "102");
+                            writer.WriteAttributeString("value", ActualProjectDispositionCodeValue.ToString()); //quedaria añadir carpeta si se selecciona la 3º opcion.
                             writer.WriteEndElement();
 
-                            
-                            GenericTask(writer, stackTask.OutputImageDispositionCodeValue, stackTask.OutputImagesDesignatedFolder, stackTask.TaskIndicatorCodeValue, stackTask.Substack, stackTask.Number);                            
+                            PopulatePreferences(stackTask.ContrastThreshold, stackTask.EstimatedRadius, stackTask.SmoothingRadius, stackTask.FileType);
+                            GenericTask(writer, stackTask.OutputImageDispositionCodeValue, stackTask.OutputImagesDesignatedFolder, stackTask.TaskIndicatorCodeValue, stackTask.Substack, stackTask.Number, stackTask.Overlap);                           
 
                         writer.WriteEndElement();
                     writer.WriteEndElement();
@@ -806,11 +827,17 @@ namespace Macrophotography.ViewModel
             writer.Close();
             MessageBox.Show("XML File created ! ");
         }
-        private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, string outputImagesDesignatedFolder, int taskIndicatorCodeValue, bool substack, int number)
+        private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, string outputImagesDesignatedFolder, int taskIndicatorCodeValue, bool substack, int number, int overlap)
         {
-            writer.WriteStartElement("Tasks");
-            writer.WriteAttributeString("length", tasknumber.ToString());
+            Tasknumber = !substack ? 1 : (Items / (number - overlap));
+            Stack_item = 0;
             
+            writer.WriteStartElement("Tasks");
+            writer.WriteAttributeString("length", Tasknumber.ToString());
+
+            for (int j = 0; j < Tasknumber; j++)
+            {
+                
                 writer.WriteStartElement("Task");
                     writer.WriteStartElement("OutputImageDispositionCode");
                     writer.WriteAttributeString("value", outputImageDispositionCodeValue.ToString());
@@ -822,7 +849,7 @@ namespace Macrophotography.ViewModel
                         writer.WriteAttributeString("value", outputImagesDesignatedFolder);
                         writer.WriteEndElement();
                     }
-
+                                
                     PreferenceWrite(writer);
 
                     writer.WriteStartElement("TaskIndicatorCode");
@@ -835,13 +862,16 @@ namespace Macrophotography.ViewModel
                         for (int i = 0; i < number; i++)
                         {
                             writer.WriteStartElement("SelectedInputIndex");
-                            writer.WriteAttributeString("value", stack_item.ToString());
+                            writer.WriteAttributeString("value", Stack_item.ToString());
                             writer.WriteEndElement();
-                            stack_item++;
+                            Stack_item++;
+                            if (Stack_item == Items) return;
                         }
                         writer.WriteEndElement();
                     }
                 writer.WriteEndElement();
+                Stack_item -= overlap;
+            }
 
             writer.WriteEndElement(); 
         }
