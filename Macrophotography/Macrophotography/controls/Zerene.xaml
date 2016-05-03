@@ -147,6 +147,7 @@
             <ColumnDefinition Width="280"/>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
 
         <GroupBox Header="File List" 
@@ -483,6 +484,11 @@
                 
 
             </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Log" 
+                Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200">
+            <ListBox ItemsSource="{Binding Output}"/>
         </GroupBox>
 
 
