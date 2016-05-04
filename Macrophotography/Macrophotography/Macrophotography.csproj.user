@@ -5,7 +5,7 @@
     <StartProgram>C:\Users\Luis Alvarez\Desktop\Carril\vs2010\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartProgram>C:\Users\Luis Alvarez\Documents\GitHub\digiCamControl-master\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
+    <StartProgram>N:\GitHub\digiCamControl\CameraControl\bin\Debug\CameraControl.exe</StartProgram>
     <StartAction>Program</StartAction>
     <StartWorkingDirectory>
     </StartWorkingDirectory>

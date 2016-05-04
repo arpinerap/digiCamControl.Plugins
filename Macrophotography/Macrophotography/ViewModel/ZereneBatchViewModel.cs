@@ -55,9 +55,9 @@ namespace Macrophotography.ViewModel
         private Process _ZereneProcess;        
 
 
-        private int _EstimatedRadius;
-        private int _SmoothingRadius;
-        private int _ContrastThreshold;
+        private int _EstimatedRadius = 10;
+        private int _SmoothingRadius = 5;
+        private int _ContrastThreshold = 90;
 
         private bool _IsDMap;
         private bool _IsSubStack;
@@ -81,9 +81,9 @@ namespace Macrophotography.ViewModel
 
         private StringBuilder _taskName = new StringBuilder();
 
-        private int _Items ;
-        private int _Stack_items;       
-        private int _Stack_overlap;
+        private int _Items;
+        private int _Stack_items = 20;       
+        private int _Stack_overlap = 10;
         private int _Stack_item = 0;
         private int _Tasknumber = 0;
 
@@ -479,6 +479,7 @@ namespace Macrophotography.ViewModel
         public class StackTask
         {
             public string TaskName { get; set; }
+            public int TaskNumber { get; set; }
             public int OutputImageDispositionCodeValue { get; set; }
             public string SourceFolder { get; set; }            
             public string OutputImagesDesignatedFolder { get; set; }
@@ -538,17 +539,19 @@ namespace Macrophotography.ViewModel
         {
             if (IsSubStack)
             {
-                if (!IsStackSlabs)
+                if (IsJustStackSlabs)
                 {
                     NamingTask();
+                    taskName.Append("--Stack Slabs--");
                     StackTasks.Add(new StackTask
                     {
                         TaskName = taskName.ToString(),
+                        TaskNumber = StackTasks.Count,
                         OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                        OutputImagesDesignatedFolder = OutputImagesDesignatedFolder,
-                        SourceFolder = "%CurrentProject%",
-                        TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
-                        Substack = true,
+                        OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
+                        SourceFolder = OutputImagesDesignatedFolder,
+                        TaskIndicatorCodeValue = ActualTaskIndicatorCodeValueSlab.Value,
+                        Substack = false,
                         FileType = FileType,
                         Number = Stack_items,
                         Overlap = Stack_overlap,
@@ -557,6 +560,8 @@ namespace Macrophotography.ViewModel
                         ContrastThreshold = ContrastThreshold
                     });
                 }
+                
+                
                 if (IsStackSlabs)
                 {
                     NamingTask();
@@ -582,10 +587,29 @@ namespace Macrophotography.ViewModel
                     {
                         TaskName = taskName.ToString(),
                         OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                        OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput",
+                        OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
                         SourceFolder = OutputImagesDesignatedFolder,
                         TaskIndicatorCodeValue = ActualTaskIndicatorCodeValueSlab.Value,
                         Substack = false,
+                        FileType = FileType,
+                        Number = Stack_items,
+                        Overlap = Stack_overlap,
+                        EstimatedRadius = EstimatedRadius,
+                        SmoothingRadius = SmoothingRadius,
+                        ContrastThreshold = ContrastThreshold
+                    });
+                }
+                else
+                {
+                    NamingTask();
+                    StackTasks.Add(new StackTask
+                    {
+                        TaskName = taskName.ToString(),
+                        OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                        OutputImagesDesignatedFolder = OutputImagesDesignatedFolder,
+                        SourceFolder = "%CurrentProject%",
+                        TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
+                        Substack = true,
                         FileType = FileType,
                         Number = Stack_items,
                         Overlap = Stack_overlap,
@@ -639,16 +663,20 @@ namespace Macrophotography.ViewModel
         {
             Output = new AsyncObservableCollection<string>();
             InitCommands();
-            LoadData();
+            LoadZereneData();
             PopulateCombos();
             CreateTempDir();
             MakeZereneLaunchCommand();
+            ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
+            ServiceProvider.WindowsManager.Event += WindowsManager_Event;
             UpDateDMapCommand = new RelayCommand(UpDateDMap);
             AddTaskCommand = new RelayCommand(AddTask);
             DeleteTaskCommand = new RelayCommand(DeleteTask);
             MoveUpTaskCommand = new RelayCommand(MoveUpTask);
             MoveDownTaskCommand = new RelayCommand(MoveDownTask);
             MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
+            ReloadCommand = new RelayCommand(LoadZereneData);
+
             
         }
 
@@ -774,6 +802,36 @@ namespace Macrophotography.ViewModel
             OnProgressChange("Temporal Folder: " + _tempdir);
 
         }
+        public void LoadZereneData()
+        {
+            if (Session.Files.Count == 0 || ServiceProvider.Settings.SelectedBitmap.FileItem == null)
+                return;
+            var files = Session.GetSelectedFiles();
+            if (files.Count > 0)
+            {
+                Files = files;
+            }
+            else
+            {
+                Files = Session.GetSeries(ServiceProvider.Settings.SelectedBitmap.FileItem.Series);
+            }
+            Items = Files.Count;
+        }
+        private void ServiceProvider_FileTransfered(object sender, FileItem fileItem)
+        {
+            if (Files.Count > 0)
+            {
+                if (Files[0].Series != fileItem.Series)
+                {
+                    Files.Clear();
+                }
+            }
+            Files.Add(fileItem);
+        }
+        private void WindowsManager_Event(string cmd, object o)
+        {
+
+        }
         private async void MakeZereneLaunchCommand()
         {
             string userName = Environment.UserName;
@@ -872,7 +930,7 @@ namespace Macrophotography.ViewModel
             //OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
             //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
             //OutputImagesDesignatedFolder = Environment.GetEnvironmentVariable("userprofile") + "\\SubStacks";
-            Items = _filenames.Count;
+            Items = Files.Count();
 
             XmlTextWriter writer = new XmlTextWriter(_tempdir + "\\ZereneBatch.xml", System.Text.Encoding.UTF8);
             writer.WriteStartDocument(false);
@@ -883,13 +941,11 @@ namespace Macrophotography.ViewModel
                 writer.WriteAttributeString("value", "Zerene Stacker 1.04 Build T201412212230");
                 writer.WriteEndElement();
 
-                writer.WriteStartElement("BatchQueue");
-                foreach (var stackTask in StackTasks)
-                {
-                    //Items = Files.Count;                       
-
+                writer.WriteStartElement("BatchQueue");  
                     writer.WriteStartElement("Batches");
                     writer.WriteAttributeString("length", StackTasks.Count.ToString());
+                        foreach (var stackTask in StackTasks)
+                        {
                         writer.WriteStartElement("Batch");
                             writer.WriteStartElement("Sources");
                             writer.WriteAttributeString("length", "1");
@@ -900,15 +956,16 @@ namespace Macrophotography.ViewModel
                             writer.WriteEndElement();
 
                             writer.WriteStartElement("ProjectDispositionCode");
-                            writer.WriteAttributeString("value", ActualProjectDispositionCodeValue.ToString()); //quedaria añadir carpeta si se selecciona la 3º opcion.
+                            writer.WriteAttributeString("value", ActualProjectDispositionCodeValue.Value.ToString()); //quedaria añadir carpeta si se selecciona la 3º opcion.
                             writer.WriteEndElement();
 
                             PopulatePreferences(stackTask.ContrastThreshold, stackTask.EstimatedRadius, stackTask.SmoothingRadius, stackTask.FileType);
                             GenericTask(writer, stackTask.OutputImageDispositionCodeValue, stackTask.OutputImagesDesignatedFolder, stackTask.TaskIndicatorCodeValue, stackTask.Substack, stackTask.Number, stackTask.Overlap);                           
 
                         writer.WriteEndElement();
+                        }
                     writer.WriteEndElement();
-                }
+                
                 writer.WriteEndElement();
 
             writer.WriteEndElement();
@@ -918,17 +975,25 @@ namespace Macrophotography.ViewModel
         }
         private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, string outputImagesDesignatedFolder, int taskIndicatorCodeValue, bool substack, int number, int overlap)
         {
-            Items = _filenames.Count;            
+                       
             Stack_item = 0;
-            
-            writer.WriteStartElement("Tasks");
-            writer.WriteAttributeString("length", Tasknumber.ToString());
 
-            Tasknumber = !substack ? 1 : (Items / (number - overlap));
+            //Tasknumber = !substack ? 1 : (Items / (number - overlap));
 
-            for (int j = 0; j < Tasknumber; j++)
+            if (!substack)
             {
-                
+                Tasknumber = 1;
+            }
+            else
+            {
+                Tasknumber = Items / (number - overlap);
+            }
+
+            writer.WriteStartElement("Tasks");
+            writer.WriteAttributeString("length", Tasknumber.ToString());                    
+            
+            for (int j = 0; j < Tasknumber; j++)
+            {                
                 writer.WriteStartElement("Task");
                     writer.WriteStartElement("OutputImageDispositionCode");
                     writer.WriteAttributeString("value", outputImageDispositionCodeValue.ToString());
@@ -952,19 +1017,25 @@ namespace Macrophotography.ViewModel
                         writer.WriteAttributeString("length", number.ToString());
                         for (int i = 0; i < number; i++)
                         {
+                            if (Stack_item == Items)
+                            {
+                                break;
+                            }
+                            
                             writer.WriteStartElement("SelectedInputIndex");
                             writer.WriteAttributeString("value", Stack_item.ToString());
                             writer.WriteEndElement();
                             Stack_item++;
-                            if (Stack_item == Items) return;
+                            //if (Stack_item == Items) return;
                         }
                         writer.WriteEndElement();
                     }
                 writer.WriteEndElement();
                 Stack_item -= overlap;
             }
-
-            writer.WriteEndElement(); 
+            writer.WriteEndElement();
+            
+            
         }
 
         private void StackTaskWrite(XmlTextWriter writer, OutputImageDispositionCodeValues outputImageDispositionCode, TaskIndicatorCodeValues taskIndicatorCode, int number, bool Is_substack)

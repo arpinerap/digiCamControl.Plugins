@@ -143,8 +143,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="800*"/>
-            <ColumnDefinition Width="290"/>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="270"/>
             <ColumnDefinition Width="300"/>
@@ -340,14 +340,14 @@
                 <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" IsEnabled="{Binding IsSubStack}">
                     <Label Content="SubStacks" VerticalAlignment="Center"/>
 
-                    <controls:NumericUpDown Value="{Binding Stack_items}" 
+                    <controls:NumericUpDown Value="{Binding Stack_items}"  HideUpDownButtons="True"
                         Minimum="0"                                      
                         Width="70" Margin="3"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2" IsEnabled="{Binding IsSubStack}">
                     <Label Content="Overlap" VerticalAlignment="Center"/>
 
-                    <controls:NumericUpDown Value="{Binding Stack_overlap}"   
+                    <controls:NumericUpDown Value="{Binding Stack_overlap}" HideUpDownButtons="True"  
                         Minimum="0"                 
                         Grid.Column="2" Grid.Row="1"
                         Width="70" Margin="3"/>
@@ -363,7 +363,7 @@
                        Grid.Column="0" Grid.Row="4"                                           
                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
-                <ComboBox ItemsSource="{Binding TaskIndicatorCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualTaskIndicatorCodeValueSlab}" IsEnabled="{Binding IsStackSlabs}"
+                <ComboBox ItemsSource="{Binding TaskIndicatorCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualTaskIndicatorCodeValueSlab}" IsEnabled="{Binding IsStackSlabs}" SelectedIndex="1"
                         Margin="3"
                         Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center" >
@@ -445,8 +445,8 @@
                 
                 <WrapPanel Grid.Column="1" Grid.Row="1">
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
-                        Margin="5" 
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        Margin="5" ToolTip="Refresh Files"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
                         <Rectangle Width="20" Height="20">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
@@ -454,8 +454,8 @@
                         </Rectangle>
                     </Button>
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MakeBatchCommand}"
-                        Margin="5" 
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        Margin="5" ToolTip="Make Zerene Batch XML File in Working Folder"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
                         <Rectangle Width="20" Height="20">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_word}"/>
@@ -494,8 +494,8 @@
                     <Button Width="60" Grid.Row="1" Content="Stop"  Margin="3" Command="{Binding StopCommand}" IsEnabled="{Binding IsBusy}"/>
                     <ProgressBar Height="20" Width="160" Margin="10,0,0,0" HorizontalAlignment="Right"/>
                 </StackPanel>
-                
-                <ComboBox ItemsSource="{Binding OutputImageDispositionCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualOutputImageDispositionCodeValue}" 
+
+                <ComboBox ItemsSource="{Binding OutputImageDispositionCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualOutputImageDispositionCodeValue}" SelectedIndex="4"
                         Margin="5"
                         Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
@@ -504,6 +504,7 @@
                         HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     <RadioButton Content="Tiff" IsChecked="{Binding IsTiff}" Padding="5"/>
                     <RadioButton Content="Jpeg" IsChecked="{Binding IsJpeg}" Padding="5"/>
+                    <TextBox Width="100" Text="{Binding Items}"/>
                 </StackPanel>
                 
 
