@@ -330,8 +330,11 @@
                 <RadioButton Content="Make Slabs" IsChecked="{Binding IsSubStack}" 
                               Padding="5" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="5"/>
                 
-                <CheckBox Content="Process All SubStacks" IsChecked="{Binding IsStackSlabs}" IsEnabled="{Binding IsSubStack}" 
+                <CheckBox Content="Process SubStacks" IsChecked="{Binding IsStackSlabs}" IsEnabled="{Binding IsSubStack}" 
                               Padding="5" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="30,0,0,0"/>
+
+                <CheckBox Content="Process Just SubStacks" IsChecked="{Binding IsJustStackSlabs}" IsEnabled="{Binding IsSubStack}" 
+                              Padding="5" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="30,0,0,0"/>
 
 
                 <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" IsEnabled="{Binding IsSubStack}">
@@ -389,7 +392,7 @@
                 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
 
                 <ListBox x:Name="StackTasks_lbx" ItemsSource="{Binding StackTasks}" DisplayMemberPath="TaskName"
