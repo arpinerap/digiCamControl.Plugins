@@ -647,13 +647,12 @@ namespace Macrophotography.ViewModel
         }
         private void MoveUpTask()
         {
-            var pos = StackTasks.IndexOf(ActualStackTask);
+            int pos = StackTasks.IndexOf(ActualStackTask);
             StackTasks.Move(pos, pos--);
-
         }
         private void MoveDownTask()
         {
-            var pos = StackTasks.IndexOf(ActualStackTask);
+            int pos = StackTasks.IndexOf(ActualStackTask);
             StackTasks.Move(pos, pos++);
         }
 
@@ -676,6 +675,9 @@ namespace Macrophotography.ViewModel
             MoveDownTaskCommand = new RelayCommand(MoveDownTask);
             MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
             ReloadCommand = new RelayCommand(LoadZereneData);
+            PreviewCommand = new RelayCommand(Preview);
+            GenerateCommand = new RelayCommand(Generate);
+            StopCommand = new RelayCommand(Stop);
 
             
         }
@@ -1081,8 +1083,36 @@ namespace Macrophotography.ViewModel
             writer.WriteEndElement();
         }
 
+        private void Stop()
+        {
+            _shouldStop = true;
+            try
+            {
+                if (_ZereneProcess != null)
+                    _ZereneProcess.Kill();
+            }
+            catch (Exception)
+            {
 
+            }
+        }
+        private void Preview()
+        {
+            Output.Clear();
+            _shouldStop = false;
+            Task.Factory.StartNew(PreviewTask);
+        }
+        private void Generate()
+        {
+            Init();
+            Task.Factory.StartNew(GenerateTask);
+        }
+        public void Init()
+        {
+            Output.Clear();
+            _shouldStop = false;
 
+        }
 
         public void ZereneStack()
         {
@@ -1134,10 +1164,7 @@ namespace Macrophotography.ViewModel
                 Log.Error("Error copy files ", exception);
                 _shouldStop = true;
             }
-        }
-        
-        
-        
+        }        
         private void GenerateTask()
         {
             IsBusy = true;
