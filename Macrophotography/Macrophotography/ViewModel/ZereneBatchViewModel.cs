@@ -28,6 +28,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Xml;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Macrophotography.ViewModel
 {
@@ -70,6 +71,10 @@ namespace Macrophotography.ViewModel
         private bool _IsSlabbing;
 
         private string _SourceFolder;
+        private string _ProyectFolder;
+        private string _StacksFolder;
+        private string _SubStacksFolder;
+        private string _ProjetFolder;
         private string _OutputImageNames;
         private string _OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
         private string _OutputSessionFolder;
@@ -344,6 +349,42 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => SourceFolder);
             }
         }
+        public string ProyectFolder
+        {
+            get { return _ProyectFolder; }
+            set
+            {
+                _ProyectFolder = value;
+                RaisePropertyChanged(() => ProyectFolder);
+            }
+        }
+        public string StacksFolder
+        {
+            get { return _StacksFolder; }
+            set
+            {
+                _StacksFolder = value;
+                RaisePropertyChanged(() => StacksFolder);
+            }
+        }
+        public string SubStacksFolder
+        {
+            get { return _SubStacksFolder; }
+            set
+            {
+                _SubStacksFolder = value;
+                RaisePropertyChanged(() => SubStacksFolder);
+            }
+        }
+        public string ProjetFolder
+        {
+            get { return _ProjetFolder; }
+            set
+            {
+                _ProjetFolder = value;
+                RaisePropertyChanged(() => ProjetFolder);
+            }
+        }
         public string OutputImageNames
         {
             get { return _OutputImageNames; }
@@ -517,6 +558,11 @@ namespace Macrophotography.ViewModel
         public RelayCommand MoveUpTaskCommand { get; set; }
         public RelayCommand MoveDownTaskCommand { get; set; }
         public RelayCommand MakeBatchCommand { get; set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
+        public RelayCommand SetStacksFolderCommand { get; set; }
+        public RelayCommand SetSubStacksFolderCommand { get; set; }
+        public RelayCommand SetProjetFolderCommand { get; set; }
 
         #endregion
 
@@ -648,12 +694,12 @@ namespace Macrophotography.ViewModel
         private void MoveUpTask()
         {
             int pos = StackTasks.IndexOf(ActualStackTask);
-            StackTasks.Move(pos, pos--);
+            if (pos != 0) StackTasks.Move(pos, --pos);
         }
         private void MoveDownTask()
         {
             int pos = StackTasks.IndexOf(ActualStackTask);
-            StackTasks.Move(pos, pos++);
+            if (pos != StackTasks.Count -1) StackTasks.Move(pos, ++pos);
         }
 
         #endregion
@@ -678,6 +724,11 @@ namespace Macrophotography.ViewModel
             PreviewCommand = new RelayCommand(Preview);
             GenerateCommand = new RelayCommand(Generate);
             StopCommand = new RelayCommand(Stop);
+            SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
+            SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
+            SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
+            SetSubStacksFolderCommand = new RelayCommand(SetSubStacksFolder);
+            SetProjetFolderCommand = new RelayCommand(SetProjetFolder);
 
             
         }
@@ -794,7 +845,60 @@ namespace Macrophotography.ViewModel
             }
             writer.WriteEndElement();
         }
-
+        private void SetStacksFolder()
+        {
+            try
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                StacksFolder = ServiceProvider.Settings.DefaultSession.Folder + "\\Stacks";
+                Directory.CreateDirectory(StacksFolder);
+                dialog.SelectedPath = ServiceProvider.Settings.DefaultSession.Folder + "\\Stacks";
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    StacksFolder = dialog.SelectedPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error set folder ", ex);
+            }
+        }
+        private void SetSubStacksFolder()
+        {
+            try
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                SubStacksFolder = ServiceProvider.Settings.DefaultSession.Folder + "\\SubStacks";
+                Directory.CreateDirectory(SubStacksFolder);
+                dialog.SelectedPath = ServiceProvider.Settings.DefaultSession.Folder + "\\SubStacks";
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    SubStacksFolder = dialog.SelectedPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error set folder ", ex);
+            }
+        }
+        private void SetProjetFolder()
+        {
+            try
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                ProjetFolder = ServiceProvider.Settings.DefaultSession.Folder + "\\ZereneProjet";
+                Directory.CreateDirectory(ProjetFolder);
+                dialog.SelectedPath = ServiceProvider.Settings.DefaultSession.Folder + "\\ZereneProjet";
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    ProjetFolder = dialog.SelectedPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error set folder ", ex);
+            }
+        }
 
 
         private void CreateTempDir()
