@@ -61,10 +61,13 @@ namespace Macrophotography.ViewModel
         private int _ContrastThreshold = 90;
 
         private bool _IsDMap;
+        private bool _IsDMap2;
         private bool _IsSubStack;
         private bool _IsNotSubStack = true;
         private bool _IsStackSlabs;
         private bool _IsJustStackSlabs;
+        private bool _IsNotJustStackSlabs;
+        private bool _ProcessSubStacks;
         private bool _IsJpeg;
         private bool _IsTiff = true;
         private string _FileType;
@@ -252,6 +255,15 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => IsDMap);                
             }
         }
+        public bool IsDMap2
+        {
+            get { return _IsDMap2; }
+            set
+            {
+                _IsDMap2 = value;
+                RaisePropertyChanged(() => IsDMap2);
+            }
+        }
         public bool IsSubStack
         {
             get { return _IsSubStack; }
@@ -280,6 +292,7 @@ namespace Macrophotography.ViewModel
                 _IsStackSlabs = value;
                 RaisePropertyChanged(() => IsStackSlabs);
                 RaisePropertyChanged(() => IsNotStackSlabs);
+                ProcessSubStacks = IsJustStackSlabs | IsStackSlabs ? true : false;
             }
         }
         public bool IsNotStackSlabs
@@ -294,11 +307,29 @@ namespace Macrophotography.ViewModel
                 _IsJustStackSlabs = value;
                 RaisePropertyChanged(() => IsJustStackSlabs);
                 RaisePropertyChanged(() => IsNotJustStackSlabs);
+                ProcessSubStacks = IsJustStackSlabs | IsStackSlabs ? true : false;
+                IsNotSubStack = IsJustStackSlabs ? true : false;
+                IsStackSlabs = IsJustStackSlabs ? false: false;
             }
         }
         public bool IsNotJustStackSlabs
         {
-            get { return !IsJustStackSlabs; }
+            get { return _IsNotJustStackSlabs; }
+            set
+            {
+                _IsNotJustStackSlabs = value;
+                RaisePropertyChanged(() => IsNotJustStackSlabs);
+                RaisePropertyChanged(() => IsJustStackSlabs);
+            }
+        }
+        public bool ProcessSubStacks
+        {
+            get { return _ProcessSubStacks; }
+            set
+            {
+                _ProcessSubStacks = value;
+                RaisePropertyChanged(() => ProcessSubStacks);
+            }
         }
         public bool IsJpeg
         {
@@ -553,6 +584,7 @@ namespace Macrophotography.ViewModel
         }
 
         public RelayCommand UpDateDMapCommand { get; set; }
+        public RelayCommand UpDateDMap2Command { get; set; }
         public RelayCommand AddTaskCommand { get; set; }
         public RelayCommand DeleteTaskCommand { get; set; }
         public RelayCommand MoveUpTaskCommand { get; set; }
@@ -704,34 +736,8 @@ namespace Macrophotography.ViewModel
 
         #endregion
 
-        public ZereneBatchViewModel()
-        {
-            Output = new AsyncObservableCollection<string>();
-            InitCommands();
-            LoadZereneData();
-            PopulateCombos();
-            CreateTempDir();
-            MakeZereneLaunchCommand();
-            ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
-            ServiceProvider.WindowsManager.Event += WindowsManager_Event;
-            UpDateDMapCommand = new RelayCommand(UpDateDMap);
-            AddTaskCommand = new RelayCommand(AddTask);
-            DeleteTaskCommand = new RelayCommand(DeleteTask);
-            MoveUpTaskCommand = new RelayCommand(MoveUpTask);
-            MoveDownTaskCommand = new RelayCommand(MoveDownTask);
-            MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
-            ReloadCommand = new RelayCommand(LoadZereneData);
-            PreviewCommand = new RelayCommand(Preview);
-            GenerateCommand = new RelayCommand(Generate);
-            StopCommand = new RelayCommand(Stop);
-            SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
-            SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
-            SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
-            SetSubStacksFolderCommand = new RelayCommand(SetSubStacksFolder);
-            SetProjetFolderCommand = new RelayCommand(SetProjetFolder);
 
-            
-        }
+        #region Make Zerene Batch XML File
 
         private void PopulateCombos()
         {
@@ -780,7 +786,7 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("ColorManagement", "OutputOption", "CopyInput");
 
             PreferenceAdd("DepthMapControl", "AlgorithmIdentifier", "1");
-            PreferenceAdd("DepthMapControl", "ContrastThresholdLevel", "0.0"); 
+            PreferenceAdd("DepthMapControl", "ContrastThresholdLevel", "0.0");
             PreferenceAdd("DepthMapControl", "ContrastThresholdPercentile", contrastThreshold.ToString()); // Contrast Threshold
             PreferenceAdd("DepthMapControl", "EstimationRadius", estimatedRadius.ToString()); //Estimation Radius
             PreferenceAdd("DepthMapControl", "SaveDepthMapImage", "");
@@ -810,7 +816,7 @@ namespace Macrophotography.ViewModel
 
             PreferenceAdd("SaveImage", "BitsPerColor", "16");
             PreferenceAdd("SaveImage", "CompressionQuality", "0.75");
-            
+
             PreferenceAdd("SaveImage", "FileType", fileType); //Output File Type
             PreferenceAdd("SaveImage", "RescaleImageToAvoidOverflow", "true");
 
@@ -824,8 +830,6 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("StackingControl", "FrameSkipFactor", "1");
             PreferenceAdd("StackingControl", "FrameSkipSelected", "false");
             PreferenceAdd("StereoOrdering", "LeftRightIndexSeparation", "1");
-
-            
         }
         private void PreferenceAdd(string propertyName, string subpropertyName, string subpropertyValue)
         {
@@ -899,6 +903,152 @@ namespace Macrophotography.ViewModel
                 Log.Error("Error set folder ", ex);
             }
         }
+        private void MakeZereneBatchFile()
+        {
+            //OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
+            //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
+            //OutputImagesDesignatedFolder = Environment.GetEnvironmentVariable("userprofile") + "\\SubStacks";
+            Items = Files.Count();
+
+            XmlTextWriter writer = new XmlTextWriter(_tempdir + "\\ZereneBatch.xml", System.Text.Encoding.UTF8);
+            writer.WriteStartDocument(false);
+            writer.Formatting = System.Xml.Formatting.Indented;
+            writer.Indentation = 2;
+            writer.WriteStartElement("ZereneStackerBatchScript");
+            writer.WriteStartElement("WrittenBy");
+            writer.WriteAttributeString("value", "Zerene Stacker 1.04 Build T201412212230");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("BatchQueue");
+            writer.WriteStartElement("Batches");
+            writer.WriteAttributeString("length", StackTasks.Count.ToString());
+            foreach (var stackTask in StackTasks)
+            {
+                writer.WriteStartElement("Batch");
+                writer.WriteStartElement("Sources");
+                writer.WriteAttributeString("length", "1");
+                writer.WriteStartElement("Source");
+                //writer.WriteAttributeString("value", "%CurrentProject%");
+                writer.WriteAttributeString("value", stackTask.SourceFolder);
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("ProjectDispositionCode");
+                writer.WriteAttributeString("value", ActualProjectDispositionCodeValue.Value.ToString()); //quedaria añadir carpeta si se selecciona la 3º opcion.
+                writer.WriteEndElement();
+
+                PopulatePreferences(stackTask.ContrastThreshold, stackTask.EstimatedRadius, stackTask.SmoothingRadius, stackTask.FileType);
+                GenericTask(writer, stackTask.OutputImageDispositionCodeValue, stackTask.OutputImagesDesignatedFolder, stackTask.TaskIndicatorCodeValue, stackTask.Substack, stackTask.Number, stackTask.Overlap);
+
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Close();
+            MessageBox.Show("XML File created ! ");
+        }
+        private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, string outputImagesDesignatedFolder, int taskIndicatorCodeValue, bool substack, int number, int overlap)
+        {
+
+            Stack_item = 0;
+
+            //Tasknumber = !substack ? 1 : (Items / (number - overlap));
+
+            if (!substack)
+            {
+                Tasknumber = 1;
+            }
+            else
+            {
+                Tasknumber = Items / (number - overlap);
+            }
+
+            writer.WriteStartElement("Tasks");
+            writer.WriteAttributeString("length", Tasknumber.ToString());
+
+            for (int j = 0; j < Tasknumber; j++)
+            {
+                writer.WriteStartElement("Task");
+                writer.WriteStartElement("OutputImageDispositionCode");
+                writer.WriteAttributeString("value", outputImageDispositionCodeValue.ToString());
+                writer.WriteEndElement();
+
+                if (outputImageDispositionCodeValue == 5)
+                {
+                    writer.WriteStartElement("OutputImagesDesignatedFolder");
+                    writer.WriteAttributeString("value", outputImagesDesignatedFolder);
+                    writer.WriteEndElement();
+                }
+
+                PreferenceWrite(writer);
+
+                writer.WriteStartElement("TaskIndicatorCode");
+                writer.WriteAttributeString("value", taskIndicatorCodeValue.ToString());
+                writer.WriteEndElement();
+                if (substack == true)
+                {
+                    writer.WriteStartElement("SelectedInputIndices");
+                    writer.WriteAttributeString("length", number.ToString());
+                    for (int i = 0; i < number; i++)
+                    {
+                        if (Stack_item == Items)
+                        {
+                            break;
+                        }
+
+                        writer.WriteStartElement("SelectedInputIndex");
+                        writer.WriteAttributeString("value", Stack_item.ToString());
+                        writer.WriteEndElement();
+                        Stack_item++;
+                        //if (Stack_item == Items) return;
+                    }
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+                Stack_item -= overlap;
+            }
+            writer.WriteEndElement();
+
+
+        }
+
+        #endregion
+
+
+        public ZereneBatchViewModel()
+        {
+            Output = new AsyncObservableCollection<string>();
+            InitCommands();
+            LoadZereneData();
+            PopulateCombos();
+            CreateTempDir();
+            MakeZereneLaunchCommand();
+            ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
+            ServiceProvider.WindowsManager.Event += WindowsManager_Event;
+            UpDateDMapCommand = new RelayCommand(UpDateDMap);
+            UpDateDMap2Command = new RelayCommand(UpDateDMap2);
+            AddTaskCommand = new RelayCommand(AddTask);
+            DeleteTaskCommand = new RelayCommand(DeleteTask);
+            MoveUpTaskCommand = new RelayCommand(MoveUpTask);
+            MoveDownTaskCommand = new RelayCommand(MoveDownTask);
+            MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
+            ReloadCommand = new RelayCommand(LoadZereneData);
+            PreviewCommand = new RelayCommand(Preview);
+            GenerateCommand = new RelayCommand(Generate);
+            StopCommand = new RelayCommand(Stop);
+            SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
+            SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
+            SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
+            SetSubStacksFolderCommand = new RelayCommand(SetSubStacksFolder);
+            SetProjetFolderCommand = new RelayCommand(SetProjetFolder);
+
+            
+        }
+
 
 
         private void CreateTempDir()
@@ -907,6 +1057,47 @@ namespace Macrophotography.ViewModel
             Directory.CreateDirectory(_tempdir);
             OnProgressChange("Temporal Folder: " + _tempdir);
 
+        }
+        
+        private void ServiceProvider_FileTransfered(object sender, FileItem fileItem)
+        {
+            if (Files.Count > 0)
+            {
+                if (Files[0].Series != fileItem.Series)
+                {
+                    Files.Clear();
+                }
+            }
+            Files.Add(fileItem);
+        }
+        private void WindowsManager_Event(string cmd, object o)
+        {
+
+        }
+        
+        
+        
+        private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            OnProgressChange(e.Data);
+        }
+        public void UpDateDMap()
+        {
+            if (ActualTaskIndicatorCodeValue.Value == 2 || ActualTaskIndicatorCodeValue.Value == 5)
+            {
+                IsDMap = true;
+            }
+            else
+                IsDMap = false;
+        }
+        public void UpDateDMap2()
+        {
+            if (ActualTaskIndicatorCodeValueSlab.Value == 2 || ActualTaskIndicatorCodeValueSlab.Value == 5)
+            {
+                IsDMap2 = true;
+            }
+            else
+                IsDMap2 = false;
         }
         public void LoadZereneData()
         {
@@ -923,77 +1114,6 @@ namespace Macrophotography.ViewModel
             }
             Items = Files.Count;
         }
-        private void ServiceProvider_FileTransfered(object sender, FileItem fileItem)
-        {
-            if (Files.Count > 0)
-            {
-                if (Files[0].Series != fileItem.Series)
-                {
-                    Files.Clear();
-                }
-            }
-            Files.Add(fileItem);
-        }
-        private void WindowsManager_Event(string cmd, object o)
-        {
-
-        }
-        private async void MakeZereneLaunchCommand()
-        {
-            string userName = Environment.UserName;
-            string mLaunchCmdDir = "C:\\Users\\" + userName + "\\AppData\\Roaming\\ZereneStacker";
-            string fileName = "zerenstk.launchcmd";
-            string mLaunchCmdFile = Path.Combine(mLaunchCmdDir, fileName);
-            launchCommand = null;
-
-            try
-            {
-                using (StreamReader sr = new StreamReader(mLaunchCmdFile))
-                {
-                    String line = await sr.ReadToEndAsync();
-                    launchCommand = line;
-                }
-            }
-            catch (Exception ex)
-            {
-                OnProgressChange("Could not read the Zerene Command File");
-            }
-
-            try
-            {
-                ZereneCommand = @"C:\Program Files\ZereneStacker\jre\bin\java.exe";
-                OnProgressChange("Zerene Command: " + ZereneCommand);
-                
-                launchCommand = launchCommand.Replace(@"""C:\Program Files\ZereneStacker\jre\bin\javaw.exe""" , "");  // to make SHOWPROGRESS lines available 
-                launchCommand += " -noSplashScreen";
-                launchCommand += " -exitOnBatchScriptCompletion";
-                launchCommand += " -runMinimized";
-                launchCommand += " ";
-                launchCommand += _tempdir;
-
-                OnProgressChange("Launch Command: " + launchCommand);
-            }
-            catch (Exception ex)
-            {
-                OnProgressChange("Could not change Zerene Command File");
-            }
-        }
-        
-        
-        private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            OnProgressChange(e.Data);
-        }
-        public void UpDateDMap()
-        {
-            if (ActualTaskIndicatorCodeValue.Value == 2 || ActualTaskIndicatorCodeValue.Value == 5 || ActualTaskIndicatorCodeValueSlab.Value == 2 || ActualTaskIndicatorCodeValueSlab.Value == 5)
-            {
-                IsDMap = true;
-            }
-            else
-                IsDMap = false;
-        }
-
         
 
         public void CopyFiles(bool preview)
@@ -1029,163 +1149,50 @@ namespace Macrophotography.ViewModel
                 _shouldStop = true;
             }
         }
-
-
-        private void MakeZereneBatchFile()
+        private async void MakeZereneLaunchCommand()
         {
-            //OutputImagesDesignatedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SubStacks";
-            //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
-            //OutputImagesDesignatedFolder = Environment.GetEnvironmentVariable("userprofile") + "\\SubStacks";
-            Items = Files.Count();
+            string userName = Environment.UserName;
+            string mLaunchCmdDir = "C:\\Users\\" + userName + "\\AppData\\Roaming\\ZereneStacker";
+            string fileName = "zerenstk.launchcmd";
+            string mLaunchCmdFile = Path.Combine(mLaunchCmdDir, fileName);
+            launchCommand = null;
 
-            XmlTextWriter writer = new XmlTextWriter(_tempdir + "\\ZereneBatch.xml", System.Text.Encoding.UTF8);
-            writer.WriteStartDocument(false);
-            writer.Formatting = System.Xml.Formatting.Indented;
-            writer.Indentation = 2;
-            writer.WriteStartElement("ZereneStackerBatchScript");
-                writer.WriteStartElement("WrittenBy");
-                writer.WriteAttributeString("value", "Zerene Stacker 1.04 Build T201412212230");
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("BatchQueue");  
-                    writer.WriteStartElement("Batches");
-                    writer.WriteAttributeString("length", StackTasks.Count.ToString());
-                        foreach (var stackTask in StackTasks)
-                        {
-                        writer.WriteStartElement("Batch");
-                            writer.WriteStartElement("Sources");
-                            writer.WriteAttributeString("length", "1");
-                                writer.WriteStartElement("Source");
-                                //writer.WriteAttributeString("value", "%CurrentProject%");
-                                writer.WriteAttributeString("value",stackTask.SourceFolder);
-                                writer.WriteEndElement();
-                            writer.WriteEndElement();
-
-                            writer.WriteStartElement("ProjectDispositionCode");
-                            writer.WriteAttributeString("value", ActualProjectDispositionCodeValue.Value.ToString()); //quedaria añadir carpeta si se selecciona la 3º opcion.
-                            writer.WriteEndElement();
-
-                            PopulatePreferences(stackTask.ContrastThreshold, stackTask.EstimatedRadius, stackTask.SmoothingRadius, stackTask.FileType);
-                            GenericTask(writer, stackTask.OutputImageDispositionCodeValue, stackTask.OutputImagesDesignatedFolder, stackTask.TaskIndicatorCodeValue, stackTask.Substack, stackTask.Number, stackTask.Overlap);                           
-
-                        writer.WriteEndElement();
-                        }
-                    writer.WriteEndElement();
-                
-                writer.WriteEndElement();
-
-            writer.WriteEndElement();
-            writer.WriteEndDocument();
-            writer.Close();
-            MessageBox.Show("XML File created ! ");
-        }
-        private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, string outputImagesDesignatedFolder, int taskIndicatorCodeValue, bool substack, int number, int overlap)
-        {
-                       
-            Stack_item = 0;
-
-            //Tasknumber = !substack ? 1 : (Items / (number - overlap));
-
-            if (!substack)
+            try
             {
-                Tasknumber = 1;
-            }
-            else
-            {
-                Tasknumber = Items / (number - overlap);
-            }
-
-            writer.WriteStartElement("Tasks");
-            writer.WriteAttributeString("length", Tasknumber.ToString());                    
-            
-            for (int j = 0; j < Tasknumber; j++)
-            {                
-                writer.WriteStartElement("Task");
-                    writer.WriteStartElement("OutputImageDispositionCode");
-                    writer.WriteAttributeString("value", outputImageDispositionCodeValue.ToString());
-                    writer.WriteEndElement();
-
-                    if (outputImageDispositionCodeValue == 5)
-                    {
-                        writer.WriteStartElement("OutputImagesDesignatedFolder");
-                        writer.WriteAttributeString("value", outputImagesDesignatedFolder);
-                        writer.WriteEndElement();
-                    }
-                                
-                    PreferenceWrite(writer);
-
-                    writer.WriteStartElement("TaskIndicatorCode");
-                    writer.WriteAttributeString("value", taskIndicatorCodeValue.ToString());
-                    writer.WriteEndElement();
-                    if (substack == true)
-                    {
-                        writer.WriteStartElement("SelectedInputIndices");
-                        writer.WriteAttributeString("length", number.ToString());
-                        for (int i = 0; i < number; i++)
-                        {
-                            if (Stack_item == Items)
-                            {
-                                break;
-                            }
-                            
-                            writer.WriteStartElement("SelectedInputIndex");
-                            writer.WriteAttributeString("value", Stack_item.ToString());
-                            writer.WriteEndElement();
-                            Stack_item++;
-                            //if (Stack_item == Items) return;
-                        }
-                        writer.WriteEndElement();
-                    }
-                writer.WriteEndElement();
-                Stack_item -= overlap;
-            }
-            writer.WriteEndElement();
-            
-            
-        }
-
-        private void StackTaskWrite(XmlTextWriter writer, OutputImageDispositionCodeValues outputImageDispositionCode, TaskIndicatorCodeValues taskIndicatorCode, int number, bool Is_substack)
-        {
-            int item = 0;
-            _Items = _filenames.Count;
-
-
-            for (int i = 0; i < _Items; i++)
-
-                writer.WriteStartElement("Task");
-            writer.WriteStartElement("OutputImageDispositionCode");
-            writer.WriteAttributeString("value", outputImageDispositionCode.Value.ToString());
-            writer.WriteEndElement();
-
-            if (outputImageDispositionCode.Value == 5)
-            {
-                writer.WriteStartElement("OutputImagesDesignatedFolder");
-                writer.WriteAttributeString("value", OutputImagesDesignatedFolder);
-                writer.WriteEndElement();
-            }
-
-            PreferenceWrite(writer);
-
-            writer.WriteStartElement("TaskIndicatorCode");
-            writer.WriteAttributeString("value", taskIndicatorCode.Value.ToString());
-            writer.WriteEndElement();
-            if (Is_substack == true)
-            {
-                writer.WriteStartElement("SelectedInputIndices");
-                writer.WriteAttributeString("length", number.ToString());
-                for (int j = 0; j < number; j++)
+                using (StreamReader sr = new StreamReader(mLaunchCmdFile))
                 {
-                    writer.WriteStartElement("SelectedInputIndex");
-                    writer.WriteAttributeString("value", item.ToString());
-                    writer.WriteEndElement();
-                    item++;
-
+                    String line = await sr.ReadToEndAsync();
+                    launchCommand = line;
                 }
-                writer.WriteEndElement();
+            }
+            catch (Exception ex)
+            {
+                OnProgressChange("Could not read the Zerene Command File");
             }
 
-            writer.WriteEndElement();
+            try
+            {
+                ZereneCommand = @"C:\Program Files\ZereneStacker\jre\bin\java.exe";
+                OnProgressChange("Zerene Command: " + ZereneCommand);
+
+                launchCommand = launchCommand.Replace(@"""C:\Program Files\ZereneStacker\jre\bin\javaw.exe""", "");  // to make SHOWPROGRESS lines available 
+                launchCommand += " -noSplashScreen";
+                launchCommand += " -exitOnBatchScriptCompletion";
+                launchCommand += " -runMinimized";
+                launchCommand += " ";
+                launchCommand += _tempdir;
+
+                OnProgressChange("Launch Command: " + launchCommand);
+            }
+            catch (Exception ex)
+            {
+                OnProgressChange("Could not change Zerene Command File");
+            }
         }
+
+        
+
+        
 
         private void Stop()
         {
@@ -1311,6 +1318,49 @@ namespace Macrophotography.ViewModel
 
         #region Specific Tasks --- OLD ---
 
+        private void StackTaskWrite(XmlTextWriter writer, OutputImageDispositionCodeValues outputImageDispositionCode, TaskIndicatorCodeValues taskIndicatorCode, int number, bool Is_substack)
+        {
+            int item = 0;
+            _Items = _filenames.Count;
+
+
+            for (int i = 0; i < _Items; i++)
+
+                writer.WriteStartElement("Task");
+            writer.WriteStartElement("OutputImageDispositionCode");
+            writer.WriteAttributeString("value", outputImageDispositionCode.Value.ToString());
+            writer.WriteEndElement();
+
+            if (outputImageDispositionCode.Value == 5)
+            {
+                writer.WriteStartElement("OutputImagesDesignatedFolder");
+                writer.WriteAttributeString("value", OutputImagesDesignatedFolder);
+                writer.WriteEndElement();
+            }
+
+            PreferenceWrite(writer);
+
+            writer.WriteStartElement("TaskIndicatorCode");
+            writer.WriteAttributeString("value", taskIndicatorCode.Value.ToString());
+            writer.WriteEndElement();
+            if (Is_substack == true)
+            {
+                writer.WriteStartElement("SelectedInputIndices");
+                writer.WriteAttributeString("length", number.ToString());
+                for (int j = 0; j < number; j++)
+                {
+                    writer.WriteStartElement("SelectedInputIndex");
+                    writer.WriteAttributeString("value", item.ToString());
+                    writer.WriteEndElement();
+                    item++;
+
+                }
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+        }
+
         private void AlignTask(XmlTextWriter writer)
         {
             writer.WriteStartElement("Task");
@@ -1354,10 +1404,7 @@ namespace Macrophotography.ViewModel
             writer.WriteAttributeString("value", "2");
             writer.WriteEndElement();
             writer.WriteEndElement();
-        }
-
-        
-        
+        }               
 
         private void TaskWrite2(XmlTextWriter writer)
         {
