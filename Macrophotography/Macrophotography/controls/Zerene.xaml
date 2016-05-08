@@ -210,8 +210,15 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="4" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="Stacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=StacksFolder}"
-                         Margin="2" IsReadOnly="True" Width="120"/>
-                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetStacksFolderCommand}"/>
+                         Margin="2" IsReadOnly="True" Width="140"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetStacksFolder}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="4" Visibility="{Binding SinglePassStack, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <Label Content="Single Folder" HorizontalContentAlignment="Right" FontSize="12"/>
+                    <TextBox Text="{Binding Path=SingleFolder}"
+                         Margin="2" IsReadOnly="True" Width="140"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSingleFolder}"/>
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -239,7 +246,7 @@
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding ProcessSubStacks, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="SubMode" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding TaskIndicatorCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualTaskIndicatorCodeValueSlab}" SelectedIndex="1"
+                    <ComboBox ItemsSource="{Binding TaskIndicatorCodesSubs}" DisplayMemberPath="Text" SelectedItem="{Binding ActualTaskIndicatorCodeValueSlab}" SelectedIndex="1"
                         Margin="3" Width="200"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center" >
                         <i:Interaction.Triggers>
@@ -252,22 +259,22 @@
 
 
                 <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" Visibility="{Binding IsDMap2, Converter={StaticResource BooleanToVisibilityConverter1}}">
-                    <Label Content="Est Radius" IsEnabled="{Binding IsDMap}" FontSize="12" Width="70"/>
-                    <controls:NumericUpDown Value="{Binding EstimatedRadius}" IsEnabled="{Binding IsDMap}" Minimum="0" Width="70" HideUpDownButtons="False" BorderThickness="0" TextAlignment="Left"/>
-                    <Label Content="Sm Radius" IsEnabled="{Binding IsDMap}" FontSize="12" Width="70"/>
-                    <controls:NumericUpDown Value="{Binding SmoothingRadius}" IsEnabled="{Binding IsDMap}" Minimum="0" Width="70" HideUpDownButtons="False" BorderThickness="0" TextAlignment="Left"/>
+                    <Label Content="Est Radius" FontSize="12" Width="70"/>
+                    <controls:NumericUpDown Value="{Binding EstimatedRadius}" Minimum="0" Width="70" HideUpDownButtons="False" BorderThickness="0" TextAlignment="Left"/>
+                    <Label Content="Sm Radius" FontSize="12" Width="70"/>
+                    <controls:NumericUpDown Value="{Binding SmoothingRadius}" Minimum="0" Width="70" HideUpDownButtons="False" BorderThickness="0" TextAlignment="Left"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="2" HorizontalAlignment="Center" Visibility="{Binding IsDMap2, Converter={StaticResource BooleanToVisibilityConverter1}}">
-                    <Label Content="Contrast Threshold" IsEnabled="{Binding IsDMap}" FontSize="12" Width="120"/>
-                    <controls:NumericUpDown Value="{Binding ContrastThreshold}" IsEnabled="{Binding IsDMap}" Maximum="99" Minimum="0" Width="70" HideUpDownButtons="False" BorderThickness="0" TextAlignment="Left"/>
+                    <Label Content="Contrast Threshold" FontSize="12" Width="120"/>
+                    <controls:NumericUpDown Value="{Binding ContrastThreshold}" Maximum="99" Minimum="0" Width="70" HideUpDownButtons="False" BorderThickness="0" TextAlignment="Left"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="4" Margin="0,10,0,0" Visibility="{Binding ProcessSubStacks, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="SubStacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=SubStacksFolder}"
-                         Margin="2" IsReadOnly="True" Width="120"/>
-                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSubStacksFolderCommand}"/>
+                         Margin="2" IsReadOnly="True" Width="140"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSubStacksFolder}"/>
                 </StackPanel>
 
 
@@ -426,26 +433,32 @@
                     <Label Content="New Projects" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12"/>
                     <ComboBox ItemsSource="{Binding ProjectDispositionCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualProjectDispositionCodeValue}" SelectedIndex="1"
                         Margin="3" Width="200"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                </StackPanel>                
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding UpDateIsNotProjetFolderFixed}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding IsNotProjetFolderFixed, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="Proyect Folder" HorizontalContentAlignment="Right" FontSize="12" />
                     <TextBox Text="{Binding Path=ProjetFolder}" Width="150" Margin="2" IsReadOnly="True"/>
-                    <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolderCommand}"/>
+                    <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolder}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
-                    <RadioButton Content="Make Stack" IsChecked="{Binding IsNotJustStackSlabs}" HorizontalAlignment="Stretch" Margin="5"/>
-                    <RadioButton Content="Just Process SubStacks" IsChecked="{Binding IsJustStackSlabs}" HorizontalAlignment="Stretch" Margin="5"/>
+                    <RadioButton Content="Make Stack" IsChecked="{Binding IsNotJustStackSubs}" HorizontalAlignment="Stretch" Margin="5"/>
+                    <RadioButton Content="Just Process SubStacks" IsChecked="{Binding IsJustStackSubs}" HorizontalAlignment="Stretch" Margin="5"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSlabs, Converter={StaticResource BooleanToVisibilityConverter1}}">
-                    <RadioButton Content="Just Stack" IsChecked="{Binding IsNotSubStack}" HorizontalAlignment="Stretch" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <RadioButton Content="Just Stack" IsChecked="{Binding SinglePassStack}" HorizontalAlignment="Stretch" Margin="5"/>
                     <RadioButton Content="Make SubStacks" IsChecked="{Binding IsSubStack}" HorizontalAlignment="Stretch" Margin="5"/>
                 </StackPanel>
 
-                <CheckBox Content="Process SubStacks" IsChecked="{Binding IsStackSlabs}" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="10,0,0,0"
+                <CheckBox Content="Process SubStacks" IsChecked="{Binding IsStackSubs}" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="10,0,0,0"
                               Padding="5" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"/>
 
 
@@ -472,10 +485,10 @@
 
         <Expander 
             IsExpanded="False" 
-            Grid.Column="0" Grid.ColumnSpan="6" MinWidth="30" MaxWidth="1200" HorizontalAlignment="Left"
+            Grid.Column="0" Grid.ColumnSpan="6" MinWidth="30" MaxWidth="1400" HorizontalAlignment="Left"
             ExpandDirection="Right" Margin="5" >
             <Expander.Header>
-                <TextBlock Text="File List" TextAlignment="Right" FontSize="12">
+                <TextBlock Text="FILE LIST" TextAlignment="Right" FontSize="12">
                     <TextBlock.LayoutTransform>
                         <RotateTransform Angle="-90"/>
                     </TextBlock.LayoutTransform>
