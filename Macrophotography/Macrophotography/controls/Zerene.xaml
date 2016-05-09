@@ -211,14 +211,14 @@
                     <Label Content="Stacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=StacksFolder}"
                          Margin="2" IsReadOnly="True" Width="140"/>
-                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetStacksFolder}"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetStacksFolderCommand}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="4" Visibility="{Binding SinglePassStack, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="Single Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=SingleFolder}"
                          Margin="2" IsReadOnly="True" Width="140"/>
-                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSingleFolder}"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSingleFolderCommand}"/>
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -274,7 +274,7 @@
                     <Label Content="SubStacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=SubStacksFolder}"
                          Margin="2" IsReadOnly="True" Width="140"/>
-                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSubStacksFolder}"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSubStacksFolderCommand}"/>
                 </StackPanel>
 
 
@@ -445,7 +445,7 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding IsNotProjetFolderFixed, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="Proyect Folder" HorizontalContentAlignment="Right" FontSize="12" />
                     <TextBox Text="{Binding Path=ProjetFolder}" Width="150" Margin="2" IsReadOnly="True"/>
-                    <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolder}"/>
+                    <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolderCommand}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">

@@ -75,7 +75,7 @@ namespace Macrophotography.ViewModel
 
         private bool _IsJpeg;
         private bool _IsTiff = true;
-        private string _FileType;
+        private string _FileType = "tif";
 
         private string _SourceFolder = "";
         private string _ProjetFolder = "";
@@ -588,6 +588,10 @@ namespace Macrophotography.ViewModel
         public RelayCommand MakeBatchCommand { get; set; }
         public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
         public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
+        public RelayCommand SetProjetFolderCommand { get; set; }
+        public RelayCommand SetSingleFolderCommand { get; set; }
+        public RelayCommand SetStacksFolderCommand { get; set; }
+        public RelayCommand SetSubStacksFolderCommand { get; set; }
 
         #endregion
 
@@ -616,6 +620,7 @@ namespace Macrophotography.ViewModel
                 {
                     TaskName = taskName.ToString(),
                     TaskNumber = StackTasks.Count,
+                    ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
                     OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
                     //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
                     SourceFolder = StacksFolder,
@@ -642,8 +647,9 @@ namespace Macrophotography.ViewModel
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
+                            ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
                             OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                            SourceFolder = "%CurrentProject%",
+                            SourceFolder = _tempdir,
                             OutputImagesDesignatedFolder = StacksFolder,
                             TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
                             Substack = true,
@@ -661,6 +667,7 @@ namespace Macrophotography.ViewModel
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
+                            ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
                             OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
                             SourceFolder = StacksFolder,
                             OutputImagesDesignatedFolder = SubStacksFolder,
@@ -682,8 +689,9 @@ namespace Macrophotography.ViewModel
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
+                            ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
                             OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                            SourceFolder = "%CurrentProject%",
+                            SourceFolder = _tempdir,
                             OutputImagesDesignatedFolder = StacksFolder,
                             TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
                             Substack = true,
@@ -702,8 +710,10 @@ namespace Macrophotography.ViewModel
                     StackTasks.Add(new StackTask
                     {
                         TaskName = taskName.ToString(),
+                        TaskNumber = StackTasks.Count,
+                        ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
                         OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                        SourceFolder = "%CurrentProject%",
+                        SourceFolder = _tempdir,
                         OutputImagesDesignatedFolder = SingleFolder,
                         TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
                         Substack = false,
@@ -945,19 +955,19 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("BatchFileChooser", "LastDirectory", "");
 
             PreferenceAdd("ColorManagement", "DebugPrintProfile", "false");
-            PreferenceAdd("ColorManagement", "InputOption", "Use_EXIF_and_DCF_rul");
-            PreferenceAdd("ColorManagement", "InputOption.AssumedProfile", "sRGB IEC61966-2.1");
+            PreferenceAdd("ColorManagement", "InputOption", "UseAssumedProfile");
+            PreferenceAdd("ColorManagement", "InputOption.AssumedProfile", "Adobe RGB(1998)");
             PreferenceAdd("ColorManagement", "OutputOption", "CopyInput");
 
             PreferenceAdd("DepthMapControl", "AlgorithmIdentifier", "1");
-            PreferenceAdd("DepthMapControl", "ContrastThresholdLevel", "0.0");
+            PreferenceAdd("DepthMapControl", "ContrastThresholdLevel", "90.0");
             PreferenceAdd("DepthMapControl", "ContrastThresholdPercentile", contrastThreshold.ToString()); // Contrast Threshold
             PreferenceAdd("DepthMapControl", "EstimationRadius", estimatedRadius.ToString()); //Estimation Radius
             PreferenceAdd("DepthMapControl", "SaveDepthMapImage", "");
             PreferenceAdd("DepthMapControl", "SaveDepthMapImageDirector", "");
             PreferenceAdd("DepthMapControl", "SaveUsedPixelImages", "false");
             PreferenceAdd("DepthMapControl", "SmoothingRadius", smoothingRadius.ToString());  //Smoothing Radius
-            PreferenceAdd("DepthMapControl", "UseFixedContrastThresholdLevel", "true");
+            PreferenceAdd("DepthMapControl", "UseFixedContrastThresholdLevel", "false");
             PreferenceAdd("DepthMapControl", "UseFixedContrastThresholdPercentile", "true");
             PreferenceAdd("DepthMapControl", "UsedPixelFractionThreshold", "0.5");
 
@@ -1069,7 +1079,7 @@ namespace Macrophotography.ViewModel
             InitCommands();
             LoadZereneData();
             PopulateCombos();
-            CreateTempDir();
+            CreateTempDir(true);
             MakeZereneLaunchCommand();
             ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
             ServiceProvider.WindowsManager.Event += WindowsManager_Event;
@@ -1085,19 +1095,29 @@ namespace Macrophotography.ViewModel
             GenerateCommand = new RelayCommand(Generate);
             StopCommand = new RelayCommand(Stop);
             SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
-            SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });            
-        }
-
-
-
-        private void CreateTempDir()
-        {            
-            _tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(_tempdir);
-            OnProgressChange("Temporal Folder: " + _tempdir);
-
+            SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
+            SetProjetFolderCommand = new RelayCommand(SetProjetFolder);
+            SetSingleFolderCommand = new RelayCommand(SetSingleFolder);
+            SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
+            SetSubStacksFolderCommand = new RelayCommand(Generate);         
         }
         
+        
+        public void LoadZereneData()
+        {
+            if (Session.Files.Count == 0 || ServiceProvider.Settings.SelectedBitmap.FileItem == null)
+                return;
+            var files = Session.GetSelectedFiles();
+            if (files.Count > 0)
+            {
+                Files = files;
+            }
+            else
+            {
+                Files = Session.GetSeries(ServiceProvider.Settings.SelectedBitmap.FileItem.Series);
+            }
+            Items = Files.Count;
+        }
         private void ServiceProvider_FileTransfered(object sender, FileItem fileItem)
         {
             if (Files.Count > 0)
@@ -1112,14 +1132,8 @@ namespace Macrophotography.ViewModel
         private void WindowsManager_Event(string cmd, object o)
         {
 
-        }
+        }         
         
-        
-        
-        private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            OnProgressChange(e.Data);
-        }
         public void UpDateDMap()
         {
             if (ActualTaskIndicatorCodeValue.Value == 2 || ActualTaskIndicatorCodeValue.Value == 5)
@@ -1147,23 +1161,16 @@ namespace Macrophotography.ViewModel
             else
                 IsNotProjetFolderFixed = false;
         }        
-        public void LoadZereneData()
-        {
-            if (Session.Files.Count == 0 || ServiceProvider.Settings.SelectedBitmap.FileItem == null)
-                return;
-            var files = Session.GetSelectedFiles();
-            if (files.Count > 0)
-            {
-                Files = files;
-            }
-            else
-            {
-                Files = Session.GetSeries(ServiceProvider.Settings.SelectedBitmap.FileItem.Series);
-            }
-            Items = Files.Count;
-        }
-        
 
+        #region Run Zerene Process
+
+        private void CreateTempDir(bool folder)
+        {
+            _tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            if (folder == true) { Directory.CreateDirectory(_tempdir); }
+            OnProgressChange("Temporal Folder: " + _tempdir);
+
+        }
         public void CopyFiles(bool preview)
         {
             int counter = 0;
@@ -1237,42 +1244,6 @@ namespace Macrophotography.ViewModel
                 OnProgressChange("Could not change Zerene Command File");
             }
         }
-
-        
-
-        
-
-        private void Stop()
-        {
-            _shouldStop = true;
-            try
-            {
-                if (_ZereneProcess != null)
-                    _ZereneProcess.Kill();
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        private void Preview()
-        {
-            Output.Clear();
-            _shouldStop = false;
-            Task.Factory.StartNew(PreviewTask);
-        }
-        private void Generate()
-        {
-            Init();
-            Task.Factory.StartNew(GenerateTask);
-        }
-        public void Init()
-        {
-            Output.Clear();
-            _shouldStop = false;
-
-        }
-
         public void ZereneStack()
         {
             try
@@ -1323,7 +1294,35 @@ namespace Macrophotography.ViewModel
                 Log.Error("Error copy files ", exception);
                 _shouldStop = true;
             }
-        }        
+        }
+
+        public void Init()
+        {
+            Output.Clear();
+            _shouldStop = false;
+
+        }
+        private void Preview()
+        {
+            Init();
+            Task.Factory.StartNew(PreviewTask);
+        }
+        private void Generate()
+        {
+            Init();
+            Task.Factory.StartNew(GenerateTask);
+        }
+        
+        void PreviewTask()
+        {
+            IsBusy = true;
+            CopyFiles(true);
+            if (!_shouldStop)
+                MakeZereneBatchFile();
+            ZereneStack();
+            OnActionDone();
+            IsBusy = false;
+        }
         private void GenerateTask()
         {
             IsBusy = true;
@@ -1351,18 +1350,26 @@ namespace Macrophotography.ViewModel
             }
             OnActionDone();
             IsBusy = false;
-        }       
-        void PreviewTask()
+        }
+        private void Stop()
         {
-            IsBusy = true;
-            CopyFiles(true);
-            if (!_shouldStop)
-                MakeZereneBatchFile();
-                ZereneStack();
-            OnActionDone();
-            IsBusy = false;
+            _shouldStop = true;
+            try
+            {
+                if (_ZereneProcess != null)
+                    _ZereneProcess.Kill();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+        private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            OnProgressChange(e.Data);
         }
 
+        #endregion
 
         #region Specific Tasks --- OLD ---
 
