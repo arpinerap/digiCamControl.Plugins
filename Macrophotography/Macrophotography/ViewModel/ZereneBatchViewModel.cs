@@ -29,6 +29,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Xml;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using ImageMagick;
 
 namespace Macrophotography.ViewModel
 {
@@ -63,7 +64,7 @@ namespace Macrophotography.ViewModel
 
         private bool _IsDMap;
         private bool _IsDMap2 = true;
-        private bool _IsNotProjetFolderFixed;
+        private bool _IsProjetFolder;
 
         private bool _IsSubStack;
         private bool _IsNotSubStack;
@@ -95,6 +96,8 @@ namespace Macrophotography.ViewModel
         private int _Stack_overlap = 10;
         private int _Stack_item = 0;
         private int _Tasknumber = 0;
+        private int _ProgressBarValue = 0;
+        private int _ProgressBarMaxValue = 100;
 
         //public int item = 0;
         #endregion
@@ -274,13 +277,13 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => IsDMap2);
             }
         }
-        public bool IsNotProjetFolderFixed
+        public bool IsProjetFolder
         {
-            get { return _IsNotProjetFolderFixed; }
+            get { return _IsProjetFolder; }
             set
             {
-                _IsNotProjetFolderFixed = value;
-                RaisePropertyChanged(() => IsNotProjetFolderFixed);
+                _IsProjetFolder = value;
+                RaisePropertyChanged(() => IsProjetFolder);
             }
         }
 
@@ -529,6 +532,24 @@ namespace Macrophotography.ViewModel
                 _Tasknumber = value;
                 RaisePropertyChanged(() => Tasknumber);
             }
+        }
+        public int ProgressBarValue 
+        {
+            get { return _ProgressBarValue; }
+            set
+            {
+                _ProgressBarValue = value;
+                RaisePropertyChanged(() => ProgressBarValue);
+            }
+        }
+        public int ProgressBarMaxValue
+        {
+            get { return _ProgressBarMaxValue; }
+            set
+            {
+                _ProgressBarMaxValue = value;
+                RaisePropertyChanged(() => ProgressBarMaxValue);
+            }
         } 
 
         #endregion
@@ -581,6 +602,7 @@ namespace Macrophotography.ViewModel
 
         public RelayCommand UpDateDMapCommand { get; set; }
         public RelayCommand UpDateDMap2Command { get; set; }
+        public RelayCommand UpDateIsProjetFolderCommand { get; set; }
         public RelayCommand AddTaskCommand { get; set; }
         public RelayCommand DeleteTaskCommand { get; set; }
         public RelayCommand MoveUpTaskCommand { get; set; }
@@ -592,6 +614,7 @@ namespace Macrophotography.ViewModel
         public RelayCommand SetSingleFolderCommand { get; set; }
         public RelayCommand SetStacksFolderCommand { get; set; }
         public RelayCommand SetSubStacksFolderCommand { get; set; }
+        public RelayCommand GetFileItemFormatCommand { get; set; }
 
         #endregion
 
@@ -1085,6 +1108,7 @@ namespace Macrophotography.ViewModel
             ServiceProvider.WindowsManager.Event += WindowsManager_Event;
             UpDateDMapCommand = new RelayCommand(UpDateDMap);
             UpDateDMap2Command = new RelayCommand(UpDateDMap2);
+            UpDateIsProjetFolderCommand = new RelayCommand(UpDateIsProjetFolder);
             AddTaskCommand = new RelayCommand(AddTask);
             DeleteTaskCommand = new RelayCommand(DeleteTask);
             MoveUpTaskCommand = new RelayCommand(MoveUpTask);
@@ -1099,7 +1123,8 @@ namespace Macrophotography.ViewModel
             SetProjetFolderCommand = new RelayCommand(SetProjetFolder);
             SetSingleFolderCommand = new RelayCommand(SetSingleFolder);
             SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
-            SetSubStacksFolderCommand = new RelayCommand(Generate);         
+            SetSubStacksFolderCommand = new RelayCommand(SetSubStacksFolder);
+            GetFileItemFormatCommand = new RelayCommand(GetFileItemFormat);
         }
         
         
@@ -1152,14 +1177,14 @@ namespace Macrophotography.ViewModel
             else
                 IsDMap2 = false;
         }
-        public void UpDateIsNotProjetFolderFixed()
+        public void UpDateIsProjetFolder()
         {
             if (ActualProjectDispositionCodeValue.Value == 103)
             {
-                IsNotProjetFolderFixed = true;
+                IsProjetFolder = true;
             }
             else
-                IsNotProjetFolderFixed = false;
+                IsProjetFolder = false;
         }        
 
         #region Run Zerene Process
@@ -1171,6 +1196,22 @@ namespace Macrophotography.ViewModel
             OnProgressChange("Temporal Folder: " + _tempdir);
 
         }
+
+        private void GetFileItemFormat()
+        {
+            foreach (FileItem fileItem in Files)
+            {
+                string source = fileItem.FileName;
+                MagickImageInfo info = new MagickImageInfo();
+                info.Read(source);
+                string format = info.Format.ToString();
+                string format2 = info.CompressionMethod.ToString();
+
+
+                OnProgressChange(fileItem.Name + " format is:  " + format + "____" + format2);
+            }
+        }
+
         public void CopyFiles(bool preview)
         {
             int counter = 0;
@@ -1182,14 +1223,38 @@ namespace Macrophotography.ViewModel
                 
                 foreach (FileItem fileItem in Files)
                 {
-                    string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".jpg");
                     OnProgressChange("Copying file " + fileItem.Name);
                     string source = preview ? fileItem.LargeThumb : fileItem.FileName;
+                    
+                    MagickImageInfo info = new MagickImageInfo();
+                    info.Read(source);
+                    string format = info.Format.ToString();
 
-                    AutoExportPluginHelper.ExecuteTransformPlugins(fileItem, PluginSetting.AutoExportPluginConfig, source, randomFile);
+                    if (format == "Jpeg")
+                    {
+                        string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".jpg");
+                        AutoExportPluginHelper.ExecuteTransformPlugins(fileItem, PluginSetting.AutoExportPluginConfig, source, randomFile);
+                        _filenames.Add(randomFile);
+                        counter++;
+                    }
 
-                    _filenames.Add(randomFile);
-                    counter++;
+                    if (format == "Tiff")
+                    {
+                        string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".tif");
+                        using (MagickImage image = new MagickImage(source))
+                        {
+                            image.Format = MagickFormat.Tiff;
+                            image.Write(randomFile);
+                        }
+                        _filenames.Add(randomFile);
+                        counter++;
+                    }
+                    if (format != "Jpeg" && format != "Tiff")
+                    {
+                        OnProgressChange(fileItem.Name + "has invalid format, will not be copied");
+                    }                  
+
+                    
                     if (_shouldStop)
                     {
                         OnActionDone();
@@ -1204,6 +1269,8 @@ namespace Macrophotography.ViewModel
                 _shouldStop = true;
             }
         }
+
+
         private async void MakeZereneLaunchCommand()
         {
             string userName = Environment.UserName;
@@ -1264,7 +1331,7 @@ namespace Macrophotography.ViewModel
                     WindowStyle = ProcessWindowStyle.Minimized,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    RedirectStandardError = true,                   
                     WorkingDirectory = Path.GetDirectoryName(_filenames[0])
                 };
                 newprocess.Start();
@@ -1367,7 +1434,44 @@ namespace Macrophotography.ViewModel
         private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             OnProgressChange(e.Data);
+
+            if (e.Data.Contains("SHOWPROGRESS: Done")) 
+            {
+				//mProgressBar.setVisible(false);
+			} 
+            else if (e.Data.Contains("SHOWPROGRESS: Show")) 
+            {
+				//mProgressBar.setVisible(true);
+			} 
+            else if (e.Data.Contains("SHOWPROGRESS: Indeterminate")) 
+            {
+				//mProgressBar.setIndeterminate(true);
+				//mProgressBar.setStringPainted(false);  // do not show progress as percent
+			} 
+            else if (e.Data.Contains("SHOWPROGRESS: Max")) 
+            {
+                string data = e.Data;
+                string lastFragment = data.Split('=').Last();
+                int val = int.Parse(lastFragment);
+                ProgressBarMaxValue = val;                                
+				//int max = int.Parse(e.Data.Replace("^.*=",""));
+				//mProgressBar.setMaximum(max);
+				//mProgressBar.setIndeterminate(false);
+				//mProgressBar.setStringPainted(true);  // show progress as percent
+			} 
+            else if (e.Data.Contains("SHOWPROGRESS: Current")) 
+            {
+                string data = e.Data;
+                string lastFragment = data.Split('=').Last();
+                int val = int.Parse(lastFragment);
+                //int val = int.Parse(e.Data.Replace("^.*=", ""));
+				//mProgressBar.setValue(val);
+				//mProgressBar.setIndeterminate(false);
+                ProgressBarValue = val;
+            }
         }
+
+     
 
         #endregion
 

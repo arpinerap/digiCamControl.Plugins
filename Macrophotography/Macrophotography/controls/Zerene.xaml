@@ -307,7 +307,7 @@
                 </ListBox>
                 <StackPanel Grid.RowSpan="2">
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding AddTaskCommand}"
-                        Margin="0"
+                        Margin="0" ToolTip="Add Stack Task"
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
                             <Rectangle.Fill>
@@ -316,7 +316,7 @@
                         </Rectangle>
                     </Button>
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding DeleteTaskCommand}"
-                        Margin="0" 
+                        Margin="0" ToolTip="Remove Stack Task"
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
                             <Rectangle.Fill>
@@ -325,7 +325,7 @@
                         </Rectangle>
                     </Button>
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MoveUpTaskCommand}"
-                        Margin="0" 
+                        Margin="0" ToolTip="Move Up Selected Stack Task"
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
                             <Rectangle.Fill>
@@ -334,7 +334,7 @@
                         </Rectangle>
                     </Button>
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MoveDownTaskCommand}"
-                        Margin="0" 
+                        Margin="0" ToolTip="Move Down Selected Stack Task"
                         HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Rectangle Width="20" Height="20">
                             <Rectangle.Fill>
@@ -355,6 +355,15 @@
                         </Rectangle>
                     </Button>
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MakeBatchCommand}"
+                        Margin="0" ToolTip="Make Zerene Batch XML File in Working Folder"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_word}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding GetFileItemFormatCommand}"
                         Margin="0" ToolTip="Make Zerene Batch XML File in Working Folder"
                         HorizontalAlignment="Center" VerticalAlignment="Top">
                         <Rectangle Width="20" Height="20">
@@ -393,7 +402,7 @@
                 <StackPanel Orientation="Horizontal"
                             Margin="0,5,0,0" HorizontalAlignment="Stretch" Grid.Row="1" >
                     <Button Width="60" Grid.Row="1" Content="Stop"  Margin="3" Command="{Binding StopCommand}" IsEnabled="{Binding IsBusy}"/>
-                    <ProgressBar Height="20" Width="160" Margin="10,0,0,0" HorizontalAlignment="Right"/>
+                    <ProgressBar Height="20" Width="160" Margin="10,0,0,0" HorizontalAlignment="Right" Maximum="{Binding ProgressBarMaxValue}" Minimum="0" Value="{Binding ProgressBarValue}"/>
                 </StackPanel>
 
                 <ComboBox ItemsSource="{Binding OutputImageDispositionCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualOutputImageDispositionCodeValue}" SelectedIndex="4"
@@ -436,13 +445,13 @@
                         HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding UpDateIsNotProjetFolderFixed}"/>
+                                <i:InvokeCommandAction Command="{Binding UpDateIsProjetFolderCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding IsNotProjetFolderFixed, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding IsProjetFolder, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="Proyect Folder" HorizontalContentAlignment="Right" FontSize="12" />
                     <TextBox Text="{Binding Path=ProjetFolder}" Width="150" Margin="2" IsReadOnly="True"/>
                     <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolderCommand}"/>
