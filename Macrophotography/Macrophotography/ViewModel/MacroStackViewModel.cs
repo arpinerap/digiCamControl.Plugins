@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Text;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Devices;
@@ -14,6 +15,25 @@ namespace Macrophotography.ViewModel
 {
     public class MacroStackViewModel : ViewModelBase
     {
+        #region Variables
+        private string _SourceFolder = "";
+        private string _SingleFolder = "";
+        private string _StacksFolder = "";
+        private string _SubStacksFolder = "";
+
+        private bool _IsSubStack;
+        private bool _IsNotSubStack;
+        private bool _IsStackSubs;
+        private bool _IsJustStackSubs;
+        private bool _IsNotJustStackSubs = true;
+        private bool _ProcessSubStacks;
+        private bool _SinglePassStack = true;
+
+        private StringBuilder _taskName = new StringBuilder();
+
+        
+
+
         private ObservableCollection<FileItem> _files;
         private BitmapSource _previewBitmap;
         private AsyncObservableCollection<string> _output;
@@ -22,6 +42,203 @@ namespace Macrophotography.ViewModel
         protected bool _shouldStop;
         public string _resulfile = "";
         protected string _tempdir = "";
+
+        #endregion
+
+        #region RaisePropertyChanged
+        public string SourceFolder
+        {
+            get { return _SourceFolder; }
+            set
+            {
+                _SourceFolder = value;
+                RaisePropertyChanged(() => SourceFolder);
+            }
+        }
+        public string SingleFolder
+        {
+            get { return _SingleFolder; }
+            set
+            {
+                _SingleFolder = value;
+                RaisePropertyChanged(() => SingleFolder);
+            }
+        }
+        public string StacksFolder
+        {
+            get { return _StacksFolder; }
+            set
+            {
+                _StacksFolder = value;
+                RaisePropertyChanged(() => StacksFolder);
+            }
+        }
+        public string SubStacksFolder
+        {
+            get { return _SubStacksFolder; }
+            set
+            {
+                _SubStacksFolder = value;
+                RaisePropertyChanged(() => SubStacksFolder);
+            }
+        }
+
+        public bool IsJustStackSubs
+        {
+            get { return _IsJustStackSubs; }
+            set
+            {
+                _IsJustStackSubs = value;
+                RaisePropertyChanged(() => IsJustStackSubs);
+                RaisePropertyChanged(() => IsNotJustStackSubs);
+                SetEnabled();
+            }
+        }
+        public bool IsNotJustStackSubs
+        {
+            get { return _IsNotJustStackSubs; }
+            set
+            {
+                _IsNotJustStackSubs = value;
+                RaisePropertyChanged(() => IsNotJustStackSubs);
+                RaisePropertyChanged(() => IsJustStackSubs);
+                SetEnabled();
+            }
+        }
+        public bool IsSubStack
+        {
+            get { return _IsSubStack; }
+            set
+            {
+                _IsSubStack = value;
+                RaisePropertyChanged(() => IsSubStack);
+                RaisePropertyChanged(() => IsNotSubStack);
+            }
+        }
+        public bool IsNotSubStack
+        {
+            get { return _IsNotSubStack; }
+            set
+            {
+                _IsNotSubStack = value;
+                RaisePropertyChanged(() => IsNotSubStack);
+                RaisePropertyChanged(() => IsSubStack);
+            }
+        }
+        public bool IsStackSubs
+        {
+            get { return _IsStackSubs; }
+            set
+            {
+                _IsStackSubs = value;
+                RaisePropertyChanged(() => IsStackSubs);
+                RaisePropertyChanged(() => IsNotStackSubs);
+                ProcessSubStacks = IsJustStackSubs | IsStackSubs ? true : false;
+            }
+        }
+        public bool IsNotStackSubs
+        {
+            get { return !IsStackSubs; }
+        }
+        public bool ProcessSubStacks
+        {
+            get { return _ProcessSubStacks; }
+            set
+            {
+                _ProcessSubStacks = value;
+                RaisePropertyChanged(() => ProcessSubStacks);
+            }
+        }
+        public bool SinglePassStack
+        {
+            get { return _SinglePassStack; }
+            set
+            {
+                _SinglePassStack = value;
+                RaisePropertyChanged(() => SinglePassStack);
+            }
+        }
+
+        public StringBuilder taskName
+        {
+            get { return _taskName; }
+            set
+            {
+                _taskName = value;
+                RaisePropertyChanged(() => taskName);
+            }
+        }
+
+        #endregion
+
+        #region Folders
+
+        private void SetSingleFolder()
+        {
+            try
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                if (SingleFolder != null | SingleFolder != "")
+                {
+                    SingleFolder = ServiceProvider.Settings.DefaultSession.Folder + "\\SinglePassStacks";
+                    Directory.CreateDirectory(SingleFolder);
+                }
+                dialog.SelectedPath = SingleFolder;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    SingleFolder = dialog.SelectedPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error set SingleFolder ", ex);
+            }
+        }
+        private void SetStacksFolder()
+        {
+            try
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                if (StacksFolder != null | StacksFolder != "")
+                {
+                    StacksFolder = ServiceProvider.Settings.DefaultSession.Folder + "\\SubStacks";
+                    Directory.CreateDirectory(StacksFolder);
+                }
+                dialog.SelectedPath = StacksFolder;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    StacksFolder = dialog.SelectedPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error set StacksFolder ", ex);
+            }
+        }
+        private void SetSubStacksFolder()
+        {
+            try
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                if (SubStacksFolder != null | SubStacksFolder != "")
+                {
+                    SubStacksFolder = ServiceProvider.Settings.DefaultSession.Folder + "\\StackSubStacks";
+                    Directory.CreateDirectory(SubStacksFolder);
+                }
+                dialog.SelectedPath = SubStacksFolder;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    SubStacksFolder = dialog.SelectedPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error set SubStacksFolder ", ex);
+            }
+        }
+
+        #endregion
+
 
         public ObservableCollection<FileItem> Files
         {
@@ -134,6 +351,24 @@ namespace Macrophotography.ViewModel
             {
                 Log.Error("Error  delete temp folder");
                 throw;
+            }
+        }
+
+        public void SetEnabled()
+        {
+            if (IsNotJustStackSubs)
+            {
+                IsSubStack = false;
+                IsStackSubs = false;
+                ProcessSubStacks = false;
+                SinglePassStack = true;
+            }
+            else
+            {
+                IsSubStack = true;
+                IsStackSubs = true;
+                ProcessSubStacks = true;
+                SinglePassStack = false;
             }
         }
 

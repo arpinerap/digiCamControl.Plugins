@@ -10,7 +10,8 @@
              xmlns:local="clr-namespace:Macrophotography.controls"
              xmlns:macrophotography="clr-namespace:Macrophotography"
              xmlns:my="clr-namespace:NMT.Wpf.Controls;assembly=PulseButton"
-             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"             
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="2000">
 
@@ -32,61 +33,7 @@
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Iamge ListBox Template-->
-
-            <!--<Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
-                <Setter Property="ItemTemplate">
-                    <Setter.Value>
-                        <DataTemplate DataType="classes:FileItem">
-                            <Grid Margin="-5,0,0,0" >
-                                <StackPanel Orientation="Horizontal">
-                                    <Grid Height="125" Margin="4,4,4,4">
-                                        <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5"  Height="125">
-                                            <Image.Effect>
-                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
-                                            </Image.Effect>
-                                            <Image.LayoutTransform>
-                                                <RotateTransform  Angle="{Binding RotationAngle}" />
-                                            </Image.LayoutTransform>
-                                        </Image>
-                                        <Image Source="{Binding Path=ThumbnailMarks}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" RenderTransformOrigin="0.5,0.5" Height="125"
-                                       Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=EnhancedThumbs, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <Image.Effect>
-                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
-                                            </Image.Effect>
-                                            <Image.LayoutTransform>
-                                                <RotateTransform  Angle="{Binding RotationAngle}" />
-                                            </Image.LayoutTransform>
-                                        </Image>
-                                        <Rectangle Stroke="Transparent" Margin="1" Name="_Rectangle"/>
-                                        <CheckBox IsChecked="{Binding Path=IsChecked}" Margin="3,3,3,5" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="10" />
-                                        <Label Content="RAW" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsRaw, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        <Label Content="VIDEO" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsMovie, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        <controls:ProgressRing IsActive="{Binding Loading}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" Height="40" Width="40" />
-                                        <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, 
-                                                   AncestorType=Window}}" CommandParameter="{Binding}" Opacity="0.5"/>
-                                    </Grid>
-                                </StackPanel>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
-                                <DataTrigger Binding="{Binding Path=IsUnLiked}" Value="true">
-                                    <Setter TargetName="_Rectangle" Property="Fill" Value="Black" />
-                                    <Setter TargetName="_Rectangle" Property="Opacity" Value="0.7" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-
-                <Setter Property="ItemsPanel">
-                    <Setter.Value>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
-                        </ItemsPanelTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>-->
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
 
             <!-- The IconButtonStyle -->
             <Style x:Key="IconButtonStyle"
@@ -283,212 +230,96 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="800*"/>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
 
-        <GroupBox Header="File List" 
-                Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="300" >
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
 
-
-                <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFileItem}"
-                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
-                    <ListBox.ItemsPanel>
-                        
-                        <ItemsPanelTemplate>
-                            
-                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-
-                <ListBox VirtualizingStackPanel.IsVirtualizing="True"  ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" SelectedItem="{Binding SelectedFileItem}"
-                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="classes:FileItem">
-                            <Grid Margin="-5,0,0,0" >
-                                <StackPanel Orientation="Horizontal">
-                                    <Grid Height="125" Margin="4,4,4,4">
-                                        <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5"  Height="125">
-                                            <Image.Effect>
-                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
-                                            </Image.Effect>
-                                            <Image.LayoutTransform>
-                                                <RotateTransform  Angle="{Binding RotationAngle}" />
-                                            </Image.LayoutTransform>
-                                        </Image>
-                                        <Image Source="{Binding Path=ThumbnailMarks}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" RenderTransformOrigin="0.5,0.5" Height="125"
-                                       Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=EnhancedThumbs, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <Image.Effect>
-                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
-                                            </Image.Effect>
-                                            <Image.LayoutTransform>
-                                                <RotateTransform  Angle="{Binding RotationAngle}" />
-                                            </Image.LayoutTransform>
-                                        </Image>
-                                        <Rectangle Stroke="Transparent" Margin="1" Name="_Rectangle"/>
-                                        <CheckBox IsChecked="{Binding Path=IsChecked}" Margin="3,3,3,5" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="10" />
-                                        <Label Content="RAW" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsRaw, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        <Label Content="VIDEO" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsMovie, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    </Grid>
-                                </StackPanel>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
-                                <DataTrigger Binding="{Binding Path=IsUnLiked}" Value="true">
-                                    <Setter TargetName="_Rectangle" Property="Fill" Value="Black" />
-                                    <Setter TargetName="_Rectangle" Property="Opacity" Value="0.7" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-
-
-                <Button x:Name="Reload_photo_btn" Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
-                        Height="30" Width="30" Padding="-20"
-                        Grid.Column="0" Grid.Row="0" Margin="10" 
-                        HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>                  
-                </Button>
-
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Header="CombineZP" 
+        <GroupBox Header="Stacking" 
                 Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60*"/>
                     <ColumnDefinition Width="50*"/>
-                    <ColumnDefinition Width="120*"/>
-
+                    <ColumnDefinition Width="60*"/>
+                    <ColumnDefinition Width="50*"/>
                 </Grid.ColumnDefinitions>
 
 
-                <Label Content="Macro" 
-                        Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" 
-                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+                    <Label Content="Mode" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Macros}" SelectedItem="{Binding Macro}" SelectedIndex="1" Margin="3" Width="200"                                           
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <controls:NumericUpDown controls:TextBoxHelper.Watermark="Nº Shots"
-                        Minimum="0"                                      
-                        Width="120" Margin="3"
-                        Grid.Row="0" Grid.Column="2"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <Label Content="SubStacks" VerticalAlignment="Center" FontSize="12"/>
+                    <controls:NumericUpDown Value="{Binding Stack_items}"  HideUpDownButtons="False" Minimum="0" Width="70" BorderThickness="0" TextAlignment="Left"/>
 
-                <Label Content="Overlap SubStack" 
-                       Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"                                           
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Label Content="Overlap" VerticalAlignment="Center" FontSize="12"/>
+                    <controls:NumericUpDown Value="{Binding Stack_overlap}" HideUpDownButtons="False" Minimum="0" Width="70" BorderThickness="0" TextAlignment="Left"/>
+                </StackPanel>
 
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="0,10,0,0">
+                    <Label Content="Stacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
+                    <TextBox Text="{Binding Path=StacksFolder}"
+                         Margin="2" IsReadOnly="True" Width="140"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetStacksFolderCommand}"/>
+                </StackPanel>
 
-                <controls:NumericUpDown controls:TextBoxHelper.Watermark="Nº Shots"   
-                        Minimum="0"                 
-                        Grid.Column="2" Grid.Row="1"
-                        Width="120" Margin="3"/>
-
-                <Label Content="Mode" 
-                       Margin="3"
-                       Grid.Column="0" Grid.Row="2"                                           
-                       HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox ItemsSource="{Binding Macros}" SelectedItem="{Binding Macro}"
-                        Margin="3"
-                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
-
-                <Label Content="SubMode" 
-                       Margin="3"
-                       Grid.Column="0" Grid.Row="3"                                           
-                       HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox 
-                        Margin="3"
-                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
-
-
-
-
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4" Visibility="{Binding SinglePassStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="0,10,0,0">
+                    <Label Content="Single Folder" HorizontalContentAlignment="Right" FontSize="12"/>
+                    <TextBox Text="{Binding Path=SingleFolder}"
+                         Margin="2" IsReadOnly="True" Width="140"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSingleFolderCommand}"/>
+                </StackPanel>
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="SubStacking" 
+        <GroupBox Header="SubStacking" Visibility="{Binding ProcessSubStacks, Converter={StaticResource BooleanToVisibilityConverter1}}"
                 Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60*"/>
                     <ColumnDefinition Width="50*"/>
-                    <ColumnDefinition Width="120*"/>
+                    <ColumnDefinition Width="60*"/>
+                    <ColumnDefinition Width="50*"/>
 
                 </Grid.ColumnDefinitions>
 
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding ProcessSubStacks, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <Label Content="SubMode" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding MacrosSub}" SelectedItem="{Binding MacroSub}" SelectedIndex="1" Margin="3" Width="200"                                           
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <Label Content="SubStacks" 
-                        Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" 
-                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-                <controls:NumericUpDown controls:TextBoxHelper.Watermark="Nº Shots"
-                        Minimum="0"                                      
-                        Width="120" Margin="3"
-                        Grid.Row="0" Grid.Column="2"/>
-               
-                <Label Content="Overlap SubStack" 
-                       Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"                                           
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-       
-
-                <controls:NumericUpDown controls:TextBoxHelper.Watermark="Nº Shots"   
-                        Minimum="0"                 
-                        Grid.Column="2" Grid.Row="1"
-                        Width="120" Margin="3"/>
-
-                <Label Content="Mode" 
-                       Margin="3"
-                       Grid.Column="0" Grid.Row="2"                                           
-                       HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox Name="StackingMode_cmb"
-                        Margin="3"
-                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
-
-                <Label Content="SubMode" 
-                       Margin="3"
-                       Grid.Column="0" Grid.Row="3"                                           
-                       HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                <ComboBox Name="SubStackingMode_cmb"
-                        Margin="3"
-                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
-
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="4" Margin="0,10,0,0">
+                    <Label Content="SubStacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
+                    <TextBox Text="{Binding Path=SubStacksFolder}"
+                         Margin="2" IsReadOnly="True" Width="140"/>
+                    <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSubStacksFolderCommand}"/>
+                </StackPanel>
 
 
 
@@ -521,8 +352,162 @@
                 <CheckBox Grid.Row="2" Content="Auto preview when new image captured" Margin="3"  Width="250" IsChecked="{Binding AutoPreview}"/>
                 <CheckBox Grid.Row="3" Content="Stack SubStacks" Margin="3"  Width="250" />
 
-            </Grid>                       
+            </Grid>
         </GroupBox>
+
+        <GroupBox Header="Process" 
+                Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="240" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="80*"/>
+                    <ColumnDefinition Width="30*"/>
+                </Grid.ColumnDefinitions>
+               
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
+                    <RadioButton Content="Make Stack" IsChecked="{Binding IsNotJustStackSubs}" HorizontalAlignment="Stretch" Margin="5"/>
+                    <RadioButton Content="Just Process SubStacks" IsChecked="{Binding IsJustStackSubs}" HorizontalAlignment="Stretch" Margin="5"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <RadioButton Content="Just Stack" IsChecked="{Binding SinglePassStack}" HorizontalAlignment="Stretch" Margin="5"/>
+                    <RadioButton Content="Make SubStacks" IsChecked="{Binding IsSubStack}" HorizontalAlignment="Stretch" Margin="5"/>
+                </StackPanel>
+
+                <CheckBox Content="Process SubStacks" IsChecked="{Binding IsStackSubs}" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="10,0,0,0"
+                              Padding="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"/>
+
+
+
+
+            </Grid>
+        </GroupBox>
+
+        <Expander
+            IsExpanded="False" 
+            Grid.Column="5" MinWidth="30" MaxWidth="800" HorizontalAlignment="Left"
+            ExpandDirection="Left" Margin="5" >
+            <Expander.Header>
+                <TextBlock Text="LOG" TextAlignment="Right" FontSize="12">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
+            <Grid>
+                <ListBox ItemsSource="{Binding Output}" Width="800" Margin="5"/>
+            </Grid>
+        </Expander>
+
+        <Expander 
+            IsExpanded="False" 
+            Grid.Column="0" Grid.ColumnSpan="6" MinWidth="30" MaxWidth="1100" HorizontalAlignment="Left"
+            ExpandDirection="Right" Margin="5" >
+            <Expander.Header>
+                <TextBlock Text="FILE LIST" TextAlignment="Right" FontSize="12">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
+
+            <Grid Background="#FF2F2F2F" Margin="0,-5,-5,-5">
+                <ListBox VirtualizingStackPanel.IsVirtualizing="True" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
+                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Center" ScrollViewer.CanContentScroll="False" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="classes:FileItem">
+                            <Grid Margin="-5,0,0,0" >
+                                <StackPanel Orientation="Horizontal">
+                                    <Grid Height="175" Margin="4,4,4,4">
+                                        <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5">
+                                            <Image.Effect>
+                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
+                                            </Image.Effect>
+                                            <Image.LayoutTransform>
+                                                <RotateTransform  Angle="{Binding RotationAngle}" />
+                                            </Image.LayoutTransform>
+                                        </Image>
+                                        <Image Source="{Binding Path=ThumbnailMarks}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" RenderTransformOrigin="0.5,0.5"
+                                       Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=EnhancedThumbs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Image.Effect>
+                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
+                                            </Image.Effect>
+                                            <Image.LayoutTransform>
+                                                <RotateTransform  Angle="{Binding RotationAngle}" />
+                                            </Image.LayoutTransform>
+                                        </Image>
+                                        <Rectangle Stroke="Transparent" Margin="1" Name="_Rectangle"/>
+                                        <CheckBox IsChecked="{Binding Path=IsChecked}" Margin="3,3,3,5" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="10"/>
+                                        <Label Content="RAW" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsRaw, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Label Content="VIDEO" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsMovie, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+                                <DataTrigger Binding="{Binding Path=IsUnLiked}" Value="true">
+                                    <Setter TargetName="_Rectangle" Property="Fill" Value="Black" />
+                                    <Setter TargetName="_Rectangle" Property="Opacity" Value="0.7" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding ReloadCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseMove">
+                            <i:InvokeCommandAction Command="{Binding ReloadCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ListBox>
+
+                <WrapPanel Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35">
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}" ToolTip="Reload Selected Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectAllCommand}" ToolTip="Select All Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_section_expand_all}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectNoneCommand}" ToolTip="Select None Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_section_collapse_all}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                </WrapPanel>
+            </Grid>
+
+        </Expander>
 
 
 

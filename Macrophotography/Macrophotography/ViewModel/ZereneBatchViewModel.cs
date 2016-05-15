@@ -42,13 +42,15 @@ namespace Macrophotography.ViewModel
         private ObservableCollection<StackTask> _StackTasks = new ObservableCollection<StackTask>();
         private ObservableCollection<TaskIndicatorCodeValues> _TaskIndicatorCodes = new ObservableCollection<TaskIndicatorCodeValues>(); // populate combos with
         private ObservableCollection<TaskIndicatorCodeValues> _TaskIndicatorCodesSubs = new ObservableCollection<TaskIndicatorCodeValues>(); // populate SubStacks combos with
+        private ObservableCollection<TaskIndicatorCodeValues> _TaskIndicatorCodesSubs2 = new ObservableCollection<TaskIndicatorCodeValues>(); // populate SubStacks combos with
         private ObservableCollection<OutputImageDispositionCodeValues> _OutputImageDispositionCodes = new ObservableCollection<OutputImageDispositionCodeValues>(); // populate combos with
         private ObservableCollection<ProjectDispositionCodeValues> _ProjectDispositionCodes = new ObservableCollection<ProjectDispositionCodeValues>(); // populate combos with
 
         private AsyncObservableCollection<string> _output = new AsyncObservableCollection<string>();
 
-        private TaskIndicatorCodeValues _ActualTaskIndicatorCodeValue = new TaskIndicatorCodeValues();
-        private TaskIndicatorCodeValues _ActualTaskIndicatorCodeValueSlab = new TaskIndicatorCodeValues();
+        private TaskIndicatorCodeValues _ActualTaskIndicator = new TaskIndicatorCodeValues();
+        private TaskIndicatorCodeValues _ActualTaskIndicatorSlab = new TaskIndicatorCodeValues();
+        private TaskIndicatorCodeValues _ActualTaskIndicatorStackSlab = new TaskIndicatorCodeValues();
         private OutputImageDispositionCodeValues _ActualOutputImageDispositionCodeValue = new OutputImageDispositionCodeValues();
         private ProjectDispositionCodeValues _ActualProjectDispositionCodeValue = new ProjectDispositionCodeValues();
         private StackTask _ActualStackTask = new StackTask();
@@ -64,25 +66,26 @@ namespace Macrophotography.ViewModel
 
         private bool _IsDMap;
         private bool _IsDMap2 = true;
+        private bool _IsDMap3 = false;
         private bool _IsProjetFolder;
 
-        private bool _IsSubStack;
+        /*private bool _IsSubStack;
         private bool _IsNotSubStack;
         private bool _IsStackSubs;
         private bool _IsJustStackSubs;
         private bool _IsNotJustStackSubs = true;
         private bool _ProcessSubStacks;
-        private bool _SinglePassStack = true;
+        private bool _SinglePassStack = true;*/
 
         private bool _IsJpeg;
         private bool _IsTiff = true;
         private string _FileType = "tif";
 
-        private string _SourceFolder = "";
         private string _ProjetFolder = "";
+        /*private string _SourceFolder = "";
         private string _SingleFolder = "";
         private string _StacksFolder = "";
-        private string _SubStacksFolder = "";
+        private string _SubStacksFolder = "";*/
         //private string _OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacks";
 
         private string _OutputImageNames;
@@ -140,6 +143,15 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => TaskIndicatorCodesSubs);
             }
         }
+        public ObservableCollection<TaskIndicatorCodeValues> TaskIndicatorCodesSubs2 // populate combos with
+        {
+            get { return _TaskIndicatorCodesSubs2; }
+            set
+            {
+                _TaskIndicatorCodesSubs2 = value;
+                RaisePropertyChanged(() => TaskIndicatorCodesSubs2);
+            }
+        }
         public ObservableCollection<OutputImageDispositionCodeValues> OutputImageDispositionCodes // populate combos with
         {
             get { return _OutputImageDispositionCodes; }
@@ -169,22 +181,31 @@ namespace Macrophotography.ViewModel
             }
         }
 
-        public TaskIndicatorCodeValues ActualTaskIndicatorCodeValue
+        public TaskIndicatorCodeValues ActualTaskIndicator
         {
-            get { return _ActualTaskIndicatorCodeValue; }
+            get { return _ActualTaskIndicator; }
             set
             {
-                _ActualTaskIndicatorCodeValue = value;
-                RaisePropertyChanged(() => ActualTaskIndicatorCodeValue);
+                _ActualTaskIndicator = value;
+                RaisePropertyChanged(() => ActualTaskIndicator);
             }
         }
-        public TaskIndicatorCodeValues ActualTaskIndicatorCodeValueSlab
+        public TaskIndicatorCodeValues ActualTaskIndicatorSlab
         {
-            get { return _ActualTaskIndicatorCodeValueSlab; }
+            get { return _ActualTaskIndicatorSlab; }
             set
             {
-                _ActualTaskIndicatorCodeValueSlab = value;
-                RaisePropertyChanged(() => ActualTaskIndicatorCodeValueSlab);
+                _ActualTaskIndicatorSlab = value;
+                RaisePropertyChanged(() => ActualTaskIndicatorSlab);
+            }
+        }
+        public TaskIndicatorCodeValues ActualTaskIndicatorStackSlab
+        {
+            get { return _ActualTaskIndicatorStackSlab; }
+            set
+            {
+                _ActualTaskIndicatorStackSlab = value;
+                RaisePropertyChanged(() => ActualTaskIndicatorStackSlab);
             }
         }
         public OutputImageDispositionCodeValues ActualOutputImageDispositionCodeValue
@@ -255,7 +276,6 @@ namespace Macrophotography.ViewModel
             {
                 _ContrastThreshold = value;
                 RaisePropertyChanged(() => ContrastThreshold);
-
             }
         }
         
@@ -277,6 +297,15 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => IsDMap2);
             }
         }
+        public bool IsDMap3
+        {
+            get { return _IsDMap3; }
+            set
+            {
+                _IsDMap3 = value;
+                RaisePropertyChanged(() => IsDMap3);
+            }
+        }
         public bool IsProjetFolder
         {
             get { return _IsProjetFolder; }
@@ -287,7 +316,7 @@ namespace Macrophotography.ViewModel
             }
         }
 
-        public bool IsJustStackSubs
+        /*public bool IsJustStackSubs
         {
             get { return _IsJustStackSubs; }
             set
@@ -362,7 +391,7 @@ namespace Macrophotography.ViewModel
                 _SinglePassStack = value;
                 RaisePropertyChanged(() => SinglePassStack);
             }
-        }        
+        }        */
 
         public bool IsJpeg
         {
@@ -372,6 +401,7 @@ namespace Macrophotography.ViewModel
                 _IsJpeg = value;
                 RaisePropertyChanged(() => IsJpeg);
                 RaisePropertyChanged(() => IsTiff);
+                UpDateTiff();
             }
         }
         public bool IsTiff
@@ -382,7 +412,7 @@ namespace Macrophotography.ViewModel
                 _IsTiff = value;
                 RaisePropertyChanged(() => IsTiff);
                 RaisePropertyChanged(() => IsJpeg);
-                FileType = _IsTiff ? "tif" : "jpg";
+                UpDateTiff();
             }
         }
         public string FileType
@@ -394,16 +424,7 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => FileType);
             }
         }
-
-        public string SourceFolder
-        {
-            get { return _SourceFolder; }
-            set
-            {
-                _SourceFolder = value;
-                RaisePropertyChanged(() => SourceFolder);
-            }
-        }
+        
         public string ProjetFolder
         {
             get { return _ProjetFolder; }
@@ -411,6 +432,15 @@ namespace Macrophotography.ViewModel
             {
                 _ProjetFolder = value;
                 RaisePropertyChanged(() => ProjetFolder);
+            }
+        }
+        /*public string SourceFolder
+        {
+            get { return _SourceFolder; }
+            set
+            {
+                _SourceFolder = value;
+                RaisePropertyChanged(() => SourceFolder);
             }
         }
         public string SingleFolder
@@ -439,7 +469,7 @@ namespace Macrophotography.ViewModel
                 _SubStacksFolder = value;
                 RaisePropertyChanged(() => SubStacksFolder);
             }
-        }
+        }*/
         /*public string OutputImagesDesignatedFolder
         {
             get { return _OutputImagesDesignatedFolder; }
@@ -478,7 +508,7 @@ namespace Macrophotography.ViewModel
             }
         }
 
-        public StringBuilder taskName
+        /*public StringBuilder taskName
         {
             get { return _taskName; }
             set
@@ -486,7 +516,7 @@ namespace Macrophotography.ViewModel
                 _taskName = value;
                 RaisePropertyChanged(() => taskName);
             }
-        }
+        }*/
 
         public int Stack_items // Number of Photos in each SubSlab
         {
@@ -555,6 +585,30 @@ namespace Macrophotography.ViewModel
         #endregion
 
 
+        #region Commands
+
+        public RelayCommand UpDateDMapCommand { get; set; }
+        public RelayCommand UpDateDMap2Command { get; set; }
+        public RelayCommand UpDateDMap3Command { get; set; }
+        public RelayCommand UpDateIsProjetFolderCommand { get; set; }
+        public RelayCommand UpDateStackItemsCommand { get; set; }
+        public RelayCommand AddTaskCommand { get; set; }
+        public RelayCommand DeleteTaskCommand { get; set; }
+        public RelayCommand MoveUpTaskCommand { get; set; }
+        public RelayCommand MoveDownTaskCommand { get; set; }
+        public RelayCommand MakeBatchCommand { get; set; }
+        public RelayCommand OpenBatchCommand { get; set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
+        public RelayCommand SetProjetFolderCommand { get; set; }
+        public RelayCommand SetSingleFolderCommand { get; set; }
+        public RelayCommand SetStacksFolderCommand { get; set; }
+        public RelayCommand SetSubStacksFolderCommand { get; set; }
+        public RelayCommand GetFileItemFormatCommand { get; set; }
+
+        #endregion
+
+
         #region Classes
         public class Prop
         {
@@ -598,104 +652,56 @@ namespace Macrophotography.ViewModel
         {
             public String Text { get; set; }
             public int Value { get; set; }
-        }
-
-        public RelayCommand UpDateDMapCommand { get; set; }
-        public RelayCommand UpDateDMap2Command { get; set; }
-        public RelayCommand UpDateIsProjetFolderCommand { get; set; }
-        public RelayCommand AddTaskCommand { get; set; }
-        public RelayCommand DeleteTaskCommand { get; set; }
-        public RelayCommand MoveUpTaskCommand { get; set; }
-        public RelayCommand MoveDownTaskCommand { get; set; }
-        public RelayCommand MakeBatchCommand { get; set; }
-        public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
-        public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
-        public RelayCommand SetProjetFolderCommand { get; set; }
-        public RelayCommand SetSingleFolderCommand { get; set; }
-        public RelayCommand SetStacksFolderCommand { get; set; }
-        public RelayCommand SetSubStacksFolderCommand { get; set; }
-        public RelayCommand GetFileItemFormatCommand { get; set; }
+        }        
 
         #endregion
 
 
         #region Task ListBox Management
 
-        public void NamingTask()
+        public void NamingTask(string actualTaskIndicator)
         {
             taskName.Clear();
 
-            string taskSubs = _IsNotSubStack == true ? "SimpleStack" : "SubStacks";
+            string taskSubs = IsNotSubStack == true ? "SimpleStack" : "SubStacks";
 
             taskName.Append("Work");
             taskName.Append(StackTasks.Count + 1);
             taskName.Append(".- " + taskSubs + "_");
-            taskName.Append(ActualTaskIndicatorCodeValue.Name);
+            taskName.Append(actualTaskIndicator);
+
+        }
+        public void NamingSubTask(string actualTaskIndicator)
+        {
+            taskName.Clear();
+
+            taskName.Append("Work");
+            taskName.Append(StackTasks.Count + 1);
+            taskName.Append(".- Process SubStacks_");
+            taskName.Append(actualTaskIndicator);
 
         }
         private void AddTask()
         {
-            if (IsJustStackSubs) // Just Stack SubStaks
+            
+            
+            if (IsProjetFolder == false | ProjetFolder != "")
             {
-                NamingTask();
-                taskName.Append("--Stack Slabs--");
-                StackTasks.Add(new StackTask
+                if (IsJustStackSubs) // Just Stack SubStaks
                 {
-                    TaskName = taskName.ToString(),
-                    TaskNumber = StackTasks.Count,
-                    ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
-                    OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                    //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
-                    SourceFolder = StacksFolder,
-                    OutputImagesDesignatedFolder = SubStacksFolder,
-                    TaskIndicatorCodeValue = ActualTaskIndicatorCodeValueSlab.Value,
-                    Substack = false,
-                    FileType = FileType,
-                    Number = Stack_items,
-                    Overlap = Stack_overlap,
-                    EstimatedRadius = EstimatedRadius,
-                    SmoothingRadius = SmoothingRadius,
-                    ContrastThreshold = ContrastThreshold
-                });
-            }
-
-            else
-            {
-                if (IsSubStack) 
-                {
-                    if (IsStackSubs) // Make SubStacks + Process SubStacks
+                    if (StacksFolder != "" && SubStacksFolder != "" && StackTasks.Any(x => x.TaskName.Contains("SubStacks")))
                     {
-                        NamingTask();
+                        NamingSubTask(ActualTaskIndicatorStackSlab.Name);
                         StackTasks.Add(new StackTask
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
                             ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
                             OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                            SourceFolder = _tempdir,
-                            OutputImagesDesignatedFolder = StacksFolder,
-                            TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
-                            Substack = true,
-                            FileType = FileType,
-                            Number = Stack_items,
-                            Overlap = Stack_overlap,
-                            EstimatedRadius = EstimatedRadius,
-                            SmoothingRadius = SmoothingRadius,
-                            ContrastThreshold = ContrastThreshold
-                        });
-
-                        NamingTask();
-                        taskName.Append("--Stack Slabs--");
-                        StackTasks.Add(new StackTask
-                        {
-                            TaskName = taskName.ToString(),
-                            TaskNumber = StackTasks.Count,
-                            ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
-                            OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                            //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
                             SourceFolder = StacksFolder,
                             OutputImagesDesignatedFolder = SubStacksFolder,
-                            //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
-                            TaskIndicatorCodeValue = ActualTaskIndicatorCodeValueSlab.Value,
+                            TaskIndicatorCodeValue = ActualTaskIndicatorStackSlab.Value,
                             Substack = false,
                             FileType = FileType,
                             Number = Stack_items,
@@ -704,51 +710,130 @@ namespace Macrophotography.ViewModel
                             SmoothingRadius = SmoothingRadius,
                             ContrastThreshold = ContrastThreshold
                         });
+                        InfoAdd(ActualTaskIndicatorStackSlab.Name, FileType, EstimatedRadius, SmoothingRadius, ContrastThreshold);
                     }
-                    else // Just Make SubStacks
+                    else
                     {
-                        NamingTask();
-                        StackTasks.Add(new StackTask
-                        {
-                            TaskName = taskName.ToString(),
-                            TaskNumber = StackTasks.Count,
-                            ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
-                            OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                            SourceFolder = _tempdir,
-                            OutputImagesDesignatedFolder = StacksFolder,
-                            TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
-                            Substack = true,
-                            FileType = FileType,
-                            Number = Stack_items,
-                            Overlap = Stack_overlap,
-                            EstimatedRadius = EstimatedRadius,
-                            SmoothingRadius = SmoothingRadius,
-                            ContrastThreshold = ContrastThreshold
-                        });
+
                     }
                 }
-                else // Make Single Pass Stack
+
+                else
                 {
-                    NamingTask();
-                    StackTasks.Add(new StackTask
+                    if (IsSubStack)
                     {
-                        TaskName = taskName.ToString(),
-                        TaskNumber = StackTasks.Count,
-                        ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
-                        OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
-                        SourceFolder = _tempdir,
-                        OutputImagesDesignatedFolder = SingleFolder,
-                        TaskIndicatorCodeValue = ActualTaskIndicatorCodeValue.Value,
-                        Substack = false,
-                        FileType = FileType,
-                        Number = Stack_items,
-                        Overlap = Stack_overlap,
-                        EstimatedRadius = EstimatedRadius,
-                        SmoothingRadius = SmoothingRadius,
-                        ContrastThreshold = ContrastThreshold
-                    });
-                }
-            }                                 
+                        if (IsStackSubs) // Make SubStacks + Process SubStacks
+                        {
+                            if (StacksFolder != "" && SubStacksFolder != "" && _tempdir != "")
+                            {
+                                NamingTask(ActualTaskIndicatorSlab.Name);
+                                StackTasks.Add(new StackTask
+                                {
+                                    TaskName = taskName.ToString(),
+                                    TaskNumber = StackTasks.Count,
+                                    ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
+                                    OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                                    SourceFolder = _tempdir,
+                                    OutputImagesDesignatedFolder = StacksFolder,
+                                    TaskIndicatorCodeValue = ActualTaskIndicatorSlab.Value,
+                                    Substack = true,
+                                    FileType = FileType,
+                                    Number = Stack_items,
+                                    Overlap = Stack_overlap,
+                                    EstimatedRadius = EstimatedRadius,
+                                    SmoothingRadius = SmoothingRadius,
+                                    ContrastThreshold = ContrastThreshold
+                                });
+                                InfoAdd(ActualTaskIndicatorSlab.Name, FileType, EstimatedRadius, SmoothingRadius, ContrastThreshold);
+
+                                NamingSubTask(ActualTaskIndicatorStackSlab.Name);
+                                StackTasks.Add(new StackTask
+                                {
+                                    TaskName = taskName.ToString(),
+                                    TaskNumber = StackTasks.Count,
+                                    ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
+                                    OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                                    SourceFolder = StacksFolder,
+                                    OutputImagesDesignatedFolder = SubStacksFolder,
+                                    //OutputImagesDesignatedFolder = ServiceProvider.Settings.DefaultSession.Name + "\\SubStacksOutput_" + StackTasks.Count.ToString(),
+                                    TaskIndicatorCodeValue = ActualTaskIndicatorStackSlab.Value,
+                                    Substack = false,
+                                    FileType = FileType,
+                                    Number = Stack_items,
+                                    Overlap = Stack_overlap,
+                                    EstimatedRadius = EstimatedRadius,
+                                    SmoothingRadius = SmoothingRadius,
+                                    ContrastThreshold = ContrastThreshold
+                                });
+                                InfoAdd(ActualTaskIndicatorStackSlab.Name, FileType, EstimatedRadius, SmoothingRadius, ContrastThreshold);
+                            }
+                            else
+                            {
+                                OnProgressChange("Empty Folder Path ! ");
+                            }
+                        }
+                        else // Just Make SubStacks
+                        {
+                            if (StacksFolder != "" && _tempdir != "")
+                            {
+                                NamingTask(ActualTaskIndicatorSlab.Name);
+                                StackTasks.Add(new StackTask
+                                {
+                                    TaskName = taskName.ToString(),
+                                    TaskNumber = StackTasks.Count,
+                                    ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
+                                    OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                                    SourceFolder = _tempdir,
+                                    OutputImagesDesignatedFolder = StacksFolder,
+                                    TaskIndicatorCodeValue = ActualTaskIndicatorSlab.Value,
+                                    Substack = true,
+                                    FileType = FileType,
+                                    Number = Stack_items,
+                                    Overlap = Stack_overlap,
+                                    EstimatedRadius = EstimatedRadius,
+                                    SmoothingRadius = SmoothingRadius,
+                                    ContrastThreshold = ContrastThreshold
+                                });
+                                InfoAdd(ActualTaskIndicatorSlab.Name, FileType, EstimatedRadius, SmoothingRadius, ContrastThreshold);
+                            }
+                            else
+                            {
+                                OnProgressChange("Empty Folder Path ! ");
+                            }
+                        }
+                    }
+                    else // Make Single Pass Stack
+                    {
+                        if (_tempdir != "" && SingleFolder != "")
+                        {
+                            NamingTask(ActualTaskIndicator.Name);
+                            StackTasks.Add(new StackTask
+                            {
+                                TaskName = taskName.ToString(),
+                                TaskNumber = StackTasks.Count,
+                                ProjectDispositionCodeValue = ActualProjectDispositionCodeValue.Value,
+                                OutputImageDispositionCodeValue = ActualOutputImageDispositionCodeValue.Value,
+                                SourceFolder = _tempdir,
+                                OutputImagesDesignatedFolder = SingleFolder,
+                                TaskIndicatorCodeValue = ActualTaskIndicator.Value,
+                                Substack = false,
+                                FileType = FileType,
+                                Number = Stack_items,
+                                Overlap = Stack_overlap,
+                                EstimatedRadius = EstimatedRadius,
+                                SmoothingRadius = SmoothingRadius,
+                                ContrastThreshold = ContrastThreshold
+                            });
+                            InfoAdd(ActualTaskIndicatorStackSlab.Name, FileType, EstimatedRadius, SmoothingRadius, ContrastThreshold);
+                        }
+                        else
+                        {
+                            OnProgressChange("Empty Folder Path ! ");
+                        }
+                    }
+                }                     
+            }
+                        
         }
         private void DeleteTask()
         {
@@ -874,6 +959,10 @@ namespace Macrophotography.ViewModel
             TaskIndicatorCodesSubs.Add(new TaskIndicatorCodeValues { Text = "Stack Selected (DMap)", Value = 5, Name = "SelecDMap" });
             TaskIndicatorCodesSubs.Add(new TaskIndicatorCodeValues { Text = "Make Stereo Pair(s)", Value = 6, Name = "Stereo" });
 
+            TaskIndicatorCodesSubs2.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (PMax)", Value = 1, Name = "Ali&PMax" });
+            TaskIndicatorCodesSubs2.Add(new TaskIndicatorCodeValues { Text = "Align & Stack All (DMap)", Value = 2, Name = "Ali&DMap" });
+            TaskIndicatorCodesSubs2.Add(new TaskIndicatorCodeValues { Text = "Make Stereo Pair(s)", Value = 6, Name = "Stereo" });
+
             OutputImageDispositionCodes.Add(new OutputImageDispositionCodeValues { Text = "Do not save images separately (keep only in projects)", Value = 1 });
             OutputImageDispositionCodes.Add(new OutputImageDispositionCodeValues { Text = "Save in source folders", Value = 2 });
             OutputImageDispositionCodes.Add(new OutputImageDispositionCodeValues { Text = "Save in project folders (as SavedImages/*)", Value = 3 });
@@ -881,7 +970,7 @@ namespace Macrophotography.ViewModel
             OutputImageDispositionCodes.Add(new OutputImageDispositionCodeValues { Text = "Save in designated folder (with no prefix)", Value = 5 });
 
             ProjectDispositionCodes.Add(new ProjectDispositionCodeValues { Text = "New projects are temporary (do not save)", Value = 101 });
-            ProjectDispositionCodes.Add(new ProjectDispositionCodeValues { Text = "Save new projects in source folders", Value = 102 });
+            //ProjectDispositionCodes.Add(new ProjectDispositionCodeValues { Text = "Save new projects in source folders", Value = 102 });
             ProjectDispositionCodes.Add(new ProjectDispositionCodeValues { Text = "Save new projects in designated folder", Value = 103 });
         }
         private void PreferenceAdd(string propertyName, string subpropertyName, string subpropertyValue)
@@ -955,10 +1044,47 @@ namespace Macrophotography.ViewModel
             writer.WriteEndElement();
             writer.WriteEndDocument();
             writer.Close();
-            MessageBox.Show("XML File created ! ");
+            OnProgressChange("XML File created ! ");
+        }
+        private void OpenZereneBatchFile()
+        {
+            /*var dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.InitialDirectory = _tempdir;
+            dialog.FileName = null;*/
+
+            string myPath = _tempdir;
+            System.Diagnostics.Process prc = new System.Diagnostics.Process();
+            prc.StartInfo.FileName = myPath;
+            prc.Start();
         }
         private void PopulatePreferences(int contrastThreshold, int estimatedRadius, int smoothingRadius, string fileType)
         {
+            Props.Clear();
+            string BitsValue;
+            BitsValue = fileType=="tif" ? "16" : "8";
+            PreferenceAdd("AcquisitionSequencer", "BacklashMillimeters", "0.22");
+            PreferenceAdd("AcquisitionSequencer", "CommandLogging", "false");
+            PreferenceAdd("AcquisitionSequencer", "DistancePerStepperRotation", "1.5875");
+            PreferenceAdd("AcquisitionSequencer", "EndPosition", "0");
+            PreferenceAdd("AcquisitionSequencer", "MaximumMmPerSecond", "2.0");
+            PreferenceAdd("AcquisitionSequencer", "MicrostepsPerRotation", "3200");
+            PreferenceAdd("AcquisitionSequencer", "MovementRampTime", "2.0");
+            PreferenceAdd("AcquisitionSequencer", "NumberOfSteps", "5");
+            PreferenceAdd("AcquisitionSequencer", "PrecisionThreshold", "0.05");
+            PreferenceAdd("AcquisitionSequencer", "PrerunMillimeters", "0.0");
+            PreferenceAdd("AcquisitionSequencer", "RPPIndicatorLeft", "-100.0");
+            PreferenceAdd("AcquisitionSequencer", "RPPIndicatorRight", "+100.0");
+            PreferenceAdd("AcquisitionSequencer", "SettlingTime", "3.0");
+            PreferenceAdd("AcquisitionSequencer", "ShutterActivationsPerStep", "1");
+            PreferenceAdd("AcquisitionSequencer", "ShutterAfterTime", "2.0");
+            PreferenceAdd("AcquisitionSequencer", "ShutterBetweenTime", "1.0");
+            PreferenceAdd("AcquisitionSequencer", "ShutterPulseTime", "0.3");
+            PreferenceAdd("AcquisitionSequencer", "StartPosition", "0");
+            PreferenceAdd("AcquisitionSequencer", "StepSize", "0.1");
+            PreferenceAdd("AcquisitionSequencer", "StepSizeAdjustmentFactor", "1.0");
+            PreferenceAdd("AcquisitionSequencer", "StepSizesFile", "");
+
+            PreferenceAdd("AlignmentControl", "AddNewFilesAsAlreadyAligned", "false");
             PreferenceAdd("AlignmentControl", "AlignmentSettingsChanged", "false");
             PreferenceAdd("AlignmentControl", "AllowRotation", "true");
             PreferenceAdd("AlignmentControl", "AllowScale", "true");
@@ -980,14 +1106,16 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("ColorManagement", "DebugPrintProfile", "false");
             PreferenceAdd("ColorManagement", "InputOption", "UseAssumedProfile");
             PreferenceAdd("ColorManagement", "InputOption.AssumedProfile", "Adobe RGB(1998)");
+            PreferenceAdd("ColorManagement", "ManageZSDisplays", "true");
+            PreferenceAdd("ColorManagement", "ManageZSDisplaysHasChanged", "false");
             PreferenceAdd("ColorManagement", "OutputOption", "CopyInput");
 
             PreferenceAdd("DepthMapControl", "AlgorithmIdentifier", "1");
             PreferenceAdd("DepthMapControl", "ContrastThresholdLevel", "90.0");
-            PreferenceAdd("DepthMapControl", "ContrastThresholdPercentile", contrastThreshold.ToString()); // Contrast Threshold
+            PreferenceAdd("DepthMapControl", "ContrastThresholdPercentile", contrastThreshold.ToString() + ".0"); // Contrast Threshold
             PreferenceAdd("DepthMapControl", "EstimationRadius", estimatedRadius.ToString()); //Estimation Radius
-            PreferenceAdd("DepthMapControl", "SaveDepthMapImage", "");
-            PreferenceAdd("DepthMapControl", "SaveDepthMapImageDirector", "");
+            PreferenceAdd("DepthMapControl", "SaveDepthMapImage", "false");
+            PreferenceAdd("DepthMapControl", "SaveDepthMapImageDirectory", "");
             PreferenceAdd("DepthMapControl", "SaveUsedPixelImages", "false");
             PreferenceAdd("DepthMapControl", "SmoothingRadius", smoothingRadius.ToString());  //Smoothing Radius
             PreferenceAdd("DepthMapControl", "UseFixedContrastThresholdLevel", "false");
@@ -999,7 +1127,17 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("Interpolator", "RenderingSelection", "Interpolator.Spline4x4");
             PreferenceAdd("Interpolator", "ShowAdvanced", "false");
 
+            PreferenceAdd("LightroomPlugin", "CurrentInstallationFolder", "");
+            PreferenceAdd("LightroomPlugin", "DefaultColorSpace", "AdobeRGB");
+            PreferenceAdd("LightroomPlugin", "TemporaryImagesFolder", "");
+
             PreferenceAdd("OutputImageNaming", "Template", "Slab {outseq} {method}");
+
+
+            PreferenceAdd("Precrop", "LimitsString", "");
+            PreferenceAdd("Precrop", "Selected", "false");
+
+            PreferenceAdd("PreferencesFileChooser", "LastDirectory", "");
 
             PreferenceAdd("Prerotation", "Degrees", "0");
             PreferenceAdd("Prerotation", "Selected", "false");
@@ -1011,8 +1149,8 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("PyramidControl", "GritSuppressionMethod", "1");
             PreferenceAdd("PyramidControl", "RetainUDRImage", "false");
 
-            PreferenceAdd("SaveImage", "BitsPerColor", "16");
-            PreferenceAdd("SaveImage", "CompressionQuality", "0.75");
+            PreferenceAdd("SaveImage", "BitsPerColor", BitsValue); //Tiff 8 vs 16 bits
+            PreferenceAdd("SaveImage", "CompressionQuality", "0.75"); //Jpeg file quallity
 
             PreferenceAdd("SaveImage", "FileType", fileType); //Output File Type
             PreferenceAdd("SaveImage", "RescaleImageToAvoidOverflow", "true");
@@ -1027,6 +1165,9 @@ namespace Macrophotography.ViewModel
             PreferenceAdd("StackingControl", "FrameSkipFactor", "1");
             PreferenceAdd("StackingControl", "FrameSkipSelected", "false");
             PreferenceAdd("StereoOrdering", "LeftRightIndexSeparation", "1");
+
+            PreferenceAdd("WatchDirectoryOptions", "AcceptViaDelay", "false");
+            PreferenceAdd("WatchDirectoryOptions", "AcceptViaDelaySeconds", "2.0");
         }
         private void GenericTask(XmlTextWriter writer, int outputImageDispositionCodeValue, string outputImagesDesignatedFolder, int taskIndicatorCodeValue, bool substack, int number, int overlap)
         {
@@ -1100,20 +1241,23 @@ namespace Macrophotography.ViewModel
         {
             Output = new AsyncObservableCollection<string>();
             InitCommands();
-            LoadZereneData();
             PopulateCombos();
             CreateTempDir(true);
             MakeZereneLaunchCommand();
             ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
             ServiceProvider.WindowsManager.Event += WindowsManager_Event;
+            LoadZereneData();
             UpDateDMapCommand = new RelayCommand(UpDateDMap);
             UpDateDMap2Command = new RelayCommand(UpDateDMap2);
+            UpDateDMap3Command = new RelayCommand(UpDateDMap3);
             UpDateIsProjetFolderCommand = new RelayCommand(UpDateIsProjetFolder);
+            UpDateStackItemsCommand = new RelayCommand(UpDateStackItems);
             AddTaskCommand = new RelayCommand(AddTask);
             DeleteTaskCommand = new RelayCommand(DeleteTask);
             MoveUpTaskCommand = new RelayCommand(MoveUpTask);
             MoveDownTaskCommand = new RelayCommand(MoveDownTask);
             MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
+            OpenBatchCommand = new RelayCommand(OpenZereneBatchFile);
             ReloadCommand = new RelayCommand(LoadZereneData);
             PreviewCommand = new RelayCommand(Preview);
             GenerateCommand = new RelayCommand(Generate);
@@ -1161,7 +1305,7 @@ namespace Macrophotography.ViewModel
         
         public void UpDateDMap()
         {
-            if (ActualTaskIndicatorCodeValue.Value == 2 || ActualTaskIndicatorCodeValue.Value == 5)
+            if (ActualTaskIndicator.Value == 2 || ActualTaskIndicator.Value == 5)
             {
                 IsDMap = true;
             }
@@ -1170,12 +1314,21 @@ namespace Macrophotography.ViewModel
         }
         public void UpDateDMap2()
         {
-            if (ActualTaskIndicatorCodeValueSlab.Value == 2 || ActualTaskIndicatorCodeValueSlab.Value == 5)
+            if (ActualTaskIndicatorStackSlab.Value == 5)
             {
                 IsDMap2 = true;
             }
             else
                 IsDMap2 = false;
+        }
+        public void UpDateDMap3()
+        {
+            if (ActualTaskIndicatorSlab.Value == 5)
+            {
+                IsDMap3 = true;
+            }
+            else
+                IsDMap3 = false;
         }
         public void UpDateIsProjetFolder()
         {
@@ -1185,7 +1338,17 @@ namespace Macrophotography.ViewModel
             }
             else
                 IsProjetFolder = false;
-        }        
+        }
+        public void UpDateStackItems()
+        {
+            Stack_overlap = Stack_items / 2;
+
+        }
+        public void UpDateTiff()
+        {
+            FileType = IsTiff ? "tif" : "jpg";
+            OnProgressChange("OutPut format is: " + FileType);
+        } 
 
         #region Run Zerene Process
 
@@ -1295,9 +1458,19 @@ namespace Macrophotography.ViewModel
             try
             {
                 ZereneCommand = @"C:\Program Files\ZereneStacker\jre\bin\java.exe";
-                OnProgressChange("Zerene Command: " + ZereneCommand);
+                OnProgressChange("Zerene Command: " + ZereneCommand);                          
 
                 launchCommand = launchCommand.Replace(@"""C:\Program Files\ZereneStacker\jre\bin\javaw.exe""", "");  // to make SHOWPROGRESS lines available 
+                launchCommand = launchCommand.Replace("-wasRestarted", "");  // to make SHOWPROGRESS lines available
+
+                string defaultCmd =
+                            " -Xmx5000m -DjavaBits=64bitJava" +
+                            " -Dlaunchcmddir=" + "\"" + mLaunchCmdDir + "\"" +
+                            " -classpath \"C:\\Program Files\\ZereneStacker\\ZereneStacker.jar;" +
+                            "C:\\Program Files\\ZereneStacker\\JREextensions\\*\"" +
+                            " com.zerenesystems.stacker.gui.MainFrame";
+                launchCommand = defaultCmd;
+
                 launchCommand += " -noSplashScreen";
                 launchCommand += " -exitOnBatchScriptCompletion";
                 launchCommand += " -runMinimized";
@@ -1341,7 +1514,7 @@ namespace Macrophotography.ViewModel
                 newprocess.BeginOutputReadLine();
                 newprocess.BeginErrorReadLine();
                 newprocess.WaitForExit();
-                if (File.Exists(_resulfile))
+                /*if (File.Exists(_resulfile))
                 {
                     //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
                     //                                Path.GetFileName(_resulfile));
@@ -1353,7 +1526,7 @@ namespace Macrophotography.ViewModel
                 {
                     OnProgressChange("No output file something went wrong !");
                 }
-                _ZereneProcess = null;
+                _ZereneProcess = null;*/
             }
             catch (Exception exception)
             {
@@ -1380,7 +1553,7 @@ namespace Macrophotography.ViewModel
             Task.Factory.StartNew(GenerateTask);
         }
         
-        void PreviewTask()
+        private void PreviewTask()
         {
             IsBusy = true;
             CopyFiles(true);
@@ -1397,7 +1570,7 @@ namespace Macrophotography.ViewModel
             if (!_shouldStop)
                 MakeZereneBatchFile();
                 ZereneStack();
-            if (File.Exists(_resulfile))
+            /*if (File.Exists(_resulfile))
             {
                 string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName),
                     Path.GetFileNameWithoutExtension(Files[0].FileName) + "_enfuse" + ".jpg");
@@ -1414,7 +1587,7 @@ namespace Macrophotography.ViewModel
                         ServiceProvider.Settings.DefaultSession.Files.Add(im);
                     }));
                 }
-            }
+            }*/
             OnActionDone();
             IsBusy = false;
         }
@@ -1435,7 +1608,7 @@ namespace Macrophotography.ViewModel
         {
             OnProgressChange(e.Data);
 
-            if (e.Data.Contains("SHOWPROGRESS: Done")) 
+            /*if (e.Data.Contains("SHOWPROGRESS: Done")) 
             {
 				//mProgressBar.setVisible(false);
 			} 
@@ -1447,8 +1620,8 @@ namespace Macrophotography.ViewModel
             {
 				//mProgressBar.setIndeterminate(true);
 				//mProgressBar.setStringPainted(false);  // do not show progress as percent
-			} 
-            else if (e.Data.Contains("SHOWPROGRESS: Max")) 
+			} */
+            /*if (e.Data.Contains("SHOWPROGRESS: Max")) 
             {
                 string data = e.Data;
                 string lastFragment = data.Split('=').Last();
@@ -1458,8 +1631,7 @@ namespace Macrophotography.ViewModel
 				//mProgressBar.setMaximum(max);
 				//mProgressBar.setIndeterminate(false);
 				//mProgressBar.setStringPainted(true);  // show progress as percent
-			} 
-            else if (e.Data.Contains("SHOWPROGRESS: Current")) 
+			} if (e.Data.Contains("SHOWPROGRESS: Current")) 
             {
                 string data = e.Data;
                 string lastFragment = data.Split('=').Last();
@@ -1468,7 +1640,11 @@ namespace Macrophotography.ViewModel
 				//mProgressBar.setValue(val);
 				//mProgressBar.setIndeterminate(false);
                 ProgressBarValue = val;
-            }
+            }*/
+        }
+        private void InfoAdd(string actualTaskIndicatorStackSlab, string fileType, int estimatedRadius, int smoothingRadius, int contrastThreshold)
+        {
+            OnProgressChange("Added: " + actualTaskIndicatorStackSlab + fileType + estimatedRadius.ToString() + smoothingRadius.ToString() + contrastThreshold.ToString());
         }
 
      

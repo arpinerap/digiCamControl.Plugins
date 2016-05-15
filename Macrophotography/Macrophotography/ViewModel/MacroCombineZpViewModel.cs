@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -24,11 +25,146 @@ namespace Macrophotography.ViewModel
 {
     public class MacroCombineZpViewModel : MacroStackViewModel
     {
-        
+
+        #region Variables
+        private ObservableCollection<StackTask> _StackTasks = new ObservableCollection<StackTask>();
+        private StackTask _ActualStackTask = new StackTask();
+
         private Process _enfuseProcess;
         private PluginSetting _pluginSetting;
         private string _pathtoenfuse = "";
         //private string _combineZpFolder;
+
+        #endregion
+
+        #region RaisePropertyChanged
+
+
+        public ObservableCollection<StackTask> StackTasks
+        {
+            get { return _StackTasks; }
+            set
+            {
+                _StackTasks = value;
+                RaisePropertyChanged(() => StackTasks);
+            }
+        }
+        public StackTask ActualStackTask
+        {
+            get { return _ActualStackTask; }
+            set
+            {
+                _ActualStackTask = value;
+                RaisePropertyChanged(() => ActualStackTask);
+            }
+        }
+
+        #endregion
+
+
+        public class StackTask
+        {
+            public string TaskName { get; set; }
+            public int TaskNumber { get; set; }
+            public int ProjectDispositionCodeValue { get; set; }
+            public int OutputImageDispositionCodeValue { get; set; }
+            public int TaskIndicatorCodeValue { get; set; }
+            public string SourceFolder { get; set; }
+            public string OutputImagesDesignatedFolder { get; set; }
+            public string ProjetFolder { get; set; }
+            public bool Substack { get; set; }
+            public string FileType { get; set; }
+            public int Number { get; set; }
+            public int Overlap { get; set; }
+
+        }
+
+        #region Task ListBox Management
+
+        public void NamingTask()
+        {
+            taskName.Clear();
+
+            string taskSubs = IsNotSubStack == true ? "SimpleStack" : "SubStacks";
+
+            taskName.Append("Work");
+            taskName.Append(StackTasks.Count + 1);
+            taskName.Append(".- " + taskSubs + "_");
+            taskName.Append(Macro);
+
+        }
+        private void AddTask()
+        {
+            if (IsJustStackSubs) // Just Stack SubStaks
+            {
+                NamingTask();
+                taskName.Append("--Stack Slabs--");
+                StackTasks.Add(new StackTask
+                {
+                    TaskName = taskName.ToString(),
+                    TaskNumber = StackTasks.Count,
+                });
+            }
+
+            else
+            {
+                if (IsSubStack)
+                {
+                    if (IsStackSubs) // Make SubStacks + Process SubStacks
+                    {
+                        NamingTask();
+                        StackTasks.Add(new StackTask
+                        {
+                            TaskName = taskName.ToString(),
+                            TaskNumber = StackTasks.Count,
+                        });
+
+                        NamingTask();
+                        taskName.Append("--Stack Slabs--");
+                        StackTasks.Add(new StackTask
+                        {
+                            TaskName = taskName.ToString(),
+                            TaskNumber = StackTasks.Count,
+                        });
+                    }
+                    else // Just Make SubStacks
+                    {
+                        NamingTask();
+                        StackTasks.Add(new StackTask
+                        {
+                            TaskName = taskName.ToString(),
+                            TaskNumber = StackTasks.Count,
+                        });
+                    }
+                }
+                else // Make Single Pass Stack
+                {
+                    NamingTask();
+                    StackTasks.Add(new StackTask
+                    {
+                        TaskName = taskName.ToString(),
+                        TaskNumber = StackTasks.Count,
+                    });
+                }
+            }
+        }
+        private void DeleteTask()
+        {
+            StackTasks.Remove(ActualStackTask);
+        }
+        private void MoveUpTask()
+        {
+            int pos = StackTasks.IndexOf(ActualStackTask);
+            if (pos != 0) StackTasks.Move(pos, --pos);
+        }
+        private void MoveDownTask()
+        {
+            int pos = StackTasks.IndexOf(ActualStackTask);
+            if (pos != StackTasks.Count - 1) StackTasks.Move(pos, ++pos);
+        }
+
+        #endregion
+        
 
 
         public PluginSetting PluginSetting
@@ -66,7 +202,19 @@ namespace Macrophotography.ViewModel
 
         public List<string> Macros { get; set; }
 
+        public List<string> MacrosSub { get; set; }
+
         public string Macro
+        {
+            get { return PluginSetting["Macro"] as string; }
+            set
+            {
+                PluginSetting["Macro"] = value;
+                RaisePropertyChanged(() => Macro);
+            }
+        }
+
+        public string MacroSub
         {
             get { return PluginSetting["Macro"] as string; }
             set
@@ -194,8 +342,7 @@ namespace Macrophotography.ViewModel
 
         private void Preview()
         {
-            Output.Clear();
-            _shouldStop = false;
+            Init();
             Task.Factory.StartNew(PreviewTask);
         }
 
