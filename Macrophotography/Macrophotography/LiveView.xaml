@@ -492,6 +492,9 @@
                 <TabItem Header="Zerene">
                     <local:Zerene/>
                 </TabItem>
+                <TabItem Header="VisualSFM">
+                    <local:VisualSFM/>
+                </TabItem>
             </controls:MetroAnimatedTabControl>
 
 

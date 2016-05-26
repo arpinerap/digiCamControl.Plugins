@@ -235,12 +235,13 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="270"/>
             <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="270"/>
             <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
 
 
-        <GroupBox Header="Stacking" 
-                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
+        <GroupBox Header="Stacking with SubStacks" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" IsEnabled="{Binding IsFree}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -264,7 +265,7 @@
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Label Content="SubStacks" VerticalAlignment="Center" FontSize="12"/>
                     <controls:NumericUpDown Value="{Binding Stack_items}"  HideUpDownButtons="False" Minimum="0" Width="70" BorderThickness="0" TextAlignment="Left"/>
 
@@ -272,14 +273,41 @@
                     <controls:NumericUpDown Value="{Binding Stack_overlap}" HideUpDownButtons="False" Minimum="0" Width="70" BorderThickness="0" TextAlignment="Left"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="0,10,0,0">
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4" Margin="0,10,0,0">
                     <Label Content="Stacks Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=StacksFolder}"
                          Margin="2" IsReadOnly="True" Width="140"/>
                     <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetStacksFolderCommand}"/>
                 </StackPanel>
+            </Grid>
+        </GroupBox>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4" Visibility="{Binding SinglePassStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="0,10,0,0">
+        <GroupBox Header="Stacking Single Pass" Visibility="{Binding SinglePassStack, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" IsEnabled="{Binding IsFree}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60*"/>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="60*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+                    <Label Content="Mode" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Macros}" SelectedItem="{Binding Macro}" SelectedIndex="1" Margin="3" Width="200"                                           
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4" Margin="0,10,0,0">
                     <Label Content="Single Folder" HorizontalContentAlignment="Right" FontSize="12"/>
                     <TextBox Text="{Binding Path=SingleFolder}"
                          Margin="2" IsReadOnly="True" Width="140"/>
@@ -289,7 +317,7 @@
         </GroupBox>
 
         <GroupBox Header="SubStacking" Visibility="{Binding ProcessSubStacks, Converter={StaticResource BooleanToVisibilityConverter1}}"
-                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
+                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" IsEnabled="{Binding IsFree}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -307,9 +335,9 @@
 
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding ProcessSubStacks, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" >
                     <Label Content="SubMode" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding MacrosSub}" SelectedItem="{Binding MacroSub}" SelectedIndex="1" Margin="3" Width="200"                                           
+                    <ComboBox ItemsSource="{Binding Macros}" SelectedItem="{Binding MacroSub}" SelectedIndex="1" Margin="3" Width="200"                                           
                         HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -320,14 +348,114 @@
                          Margin="2" IsReadOnly="True" Width="140"/>
                     <Button Content=" ... " Width="40" Margin="2" Command="{Binding SetSubStacksFolderCommand}"/>
                 </StackPanel>
+            </Grid>
+        </GroupBox>
 
+        <GroupBox Header="Tasks" 
+                Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" IsEnabled="{Binding IsFree}">
+            <Grid>
 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <ListBox x:Name="StackTasks_lbx" ItemsSource="{Binding StackTasks}" DisplayMemberPath="TaskName" SelectedItem="{Binding ActualStackTask}"
+                    Grid.Column="1" Grid.ColumnSpan="2"
+                    BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Vertical"  />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+                <StackPanel Grid.RowSpan="2">
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding AddTaskCommand}"
+                        Margin="0" ToolTip="Add Stack Task"
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_above}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding DeleteTaskCommand}"
+                        Margin="0" ToolTip="Remove Stack Task"
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MoveUpTaskCommand}"
+                        Margin="0" ToolTip="Move Up Selected Stack Task"
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_up}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MoveDownTaskCommand}"
+                        Margin="0" ToolTip="Move Down Selected Stack Task"
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_reorder_down}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
+
+                <WrapPanel Grid.Column="1" Grid.Row="1">
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
+                        Margin="0" ToolTip="Refresh Files"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Rectangle Width="20" Height="25">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MakeBatchCommand}"
+                        Margin="0" ToolTip="Make Zerene Batch XML File in Working Folder"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Rectangle Width="20" Height="25">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_word}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding GetFileItemFormatCommand}"
+                        Margin="0" ToolTip="Get Source Files Format"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Rectangle Width="20" Height="25">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_select}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding OpenBatchCommand}"
+                        Margin="0" ToolTip="Get Source Files Format"
+                        HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Rectangle Width="20" Height="25">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_folder_open}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                </WrapPanel>
             </Grid>
         </GroupBox>
 
         <GroupBox Header="Process" 
-                Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
+                Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -350,13 +478,20 @@
                 </StackPanel>
 
                 <CheckBox Grid.Row="2" Content="Auto preview when new image captured" Margin="3"  Width="250" IsChecked="{Binding AutoPreview}"/>
-                <CheckBox Grid.Row="3" Content="Stack SubStacks" Margin="3"  Width="250" />
+                
+                <StackPanel Orientation="Horizontal" Margin="5"
+                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="{Binding IsFree}">
+                    <RadioButton Content="Tiff" IsChecked="{Binding IsTiff}" Padding="5"/>
+                    <RadioButton Content="Jpeg" IsChecked="{Binding IsJpeg}" Padding="5"/>
+                    <TextBox Width="50" Text="{Binding Items}"/>
+                </StackPanel>
 
             </Grid>
         </GroupBox>
 
         <GroupBox Header="Process" 
-                Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="240" >
+                Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="240" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
@@ -370,21 +505,21 @@
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="80*"/>
                     <ColumnDefinition Width="30*"/>
-                </Grid.ColumnDefinitions>
-               
+                </Grid.ColumnDefinitions>               
 
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
+                
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
                     <RadioButton Content="Make Stack" IsChecked="{Binding IsNotJustStackSubs}" HorizontalAlignment="Stretch" Margin="5"/>
                     <RadioButton Content="Just Process SubStacks" IsChecked="{Binding IsJustStackSubs}" HorizontalAlignment="Stretch" Margin="5"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <RadioButton Content="Just Stack" IsChecked="{Binding SinglePassStack}" HorizontalAlignment="Stretch" Margin="5"/>
                     <RadioButton Content="Make SubStacks" IsChecked="{Binding IsSubStack}" HorizontalAlignment="Stretch" Margin="5"/>
                 </StackPanel>
 
-                <CheckBox Content="Process SubStacks" IsChecked="{Binding IsStackSubs}" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" Margin="10,0,0,0"
-                              Padding="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"/>
+                <CheckBox Content="Process SubStacks" IsChecked="{Binding IsStackSubs}" Visibility="{Binding IsSubStack, Converter={StaticResource BooleanToVisibilityConverter1}}" IsEnabled="{Binding IsNotJustStackSubs}"
+                              Margin="10,0,0,0" Padding="5" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"/>
 
 
 
@@ -394,7 +529,7 @@
 
         <Expander
             IsExpanded="False" 
-            Grid.Column="5" MinWidth="30" MaxWidth="800" HorizontalAlignment="Left"
+            Grid.Column="6" MinWidth="30" MaxWidth="800" HorizontalAlignment="Left"
             ExpandDirection="Left" Margin="5" >
             <Expander.Header>
                 <TextBlock Text="LOG" TextAlignment="Right" FontSize="12">
@@ -500,6 +635,15 @@
                         <Rectangle Width="30" Height="30">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_section_collapse_all}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectInverCommand}" ToolTip="Select None Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_shuffle}"/>
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>

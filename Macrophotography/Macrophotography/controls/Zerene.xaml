@@ -348,7 +348,7 @@
                 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="35"/>
                 </Grid.RowDefinitions>
 
                 <ListBox x:Name="StackTasks_lbx" ItemsSource="{Binding StackTasks}" DisplayMemberPath="TaskName" SelectedItem="{Binding ActualStackTask}"
@@ -403,7 +403,7 @@
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}"
                         Margin="0" ToolTip="Refresh Files"
                         HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <Rectangle Width="20" Height="20">
+                        <Rectangle Width="22" Height="22">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
                             </Rectangle.Fill>
@@ -412,16 +412,16 @@
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding MakeBatchCommand}"
                         Margin="0" ToolTip="Make Zerene Batch XML File in Working Folder"
                         HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <Rectangle Width="20" Height="20">
+                        <Rectangle Width="22" Height="22">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_word}"/>
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
-                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding GetFileItemFormatCommand}"
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding CopyBatchCommand}"
                         Margin="0" ToolTip="Get Source Files Format"
                         HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <Rectangle Width="20" Height="20">
+                        <Rectangle Width="22" Height="22">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_page_select}"/>
                             </Rectangle.Fill>
@@ -430,9 +430,9 @@
                     <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding OpenBatchCommand}"
                         Margin="0" ToolTip="Get Source Files Format"
                         HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <Rectangle Width="20" Height="20">
+                        <Rectangle Width="22" Height="22">
                             <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_folder_open}"/>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_folder_star}"/>
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
@@ -600,13 +600,6 @@
                                     </Grid>
                                 </StackPanel>
                             </Grid>
-                            <DataTemplate.Triggers>
-                                <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
-                                <DataTrigger Binding="{Binding Path=IsUnLiked}" Value="true">
-                                    <Setter TargetName="_Rectangle" Property="Fill" Value="Black" />
-                                    <Setter TargetName="_Rectangle" Property="Opacity" Value="0.7" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ItemsPanel>
@@ -648,6 +641,15 @@
                         <Rectangle Width="30" Height="30">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_section_collapse_all}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectInverCommand}" ToolTip="Select None Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_shuffle}"/>
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>

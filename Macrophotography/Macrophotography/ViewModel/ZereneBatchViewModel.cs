@@ -598,12 +598,14 @@ namespace Macrophotography.ViewModel
         public RelayCommand MoveDownTaskCommand { get; set; }
         public RelayCommand MakeBatchCommand { get; set; }
         public RelayCommand OpenBatchCommand { get; set; }
+        public RelayCommand CopyBatchCommand { get; set; }
         public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
         public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectInverCommand { get; private set; }
         public RelayCommand SetProjetFolderCommand { get; set; }
-        public RelayCommand SetSingleFolderCommand { get; set; }
+        /*public RelayCommand SetSingleFolderCommand { get; set; }
         public RelayCommand SetStacksFolderCommand { get; set; }
-        public RelayCommand SetSubStacksFolderCommand { get; set; }
+        public RelayCommand SetSubStacksFolderCommand { get; set; }*/
         public RelayCommand GetFileItemFormatCommand { get; set; }
 
         #endregion
@@ -876,7 +878,7 @@ namespace Macrophotography.ViewModel
                 Log.Error("Error set ProjetFolder ", ex);
             }
         }
-        private void SetSingleFolder()
+        /*private void SetSingleFolder()
         {
             try
             {
@@ -938,7 +940,7 @@ namespace Macrophotography.ViewModel
             {
                 Log.Error("Error set SubStacksFolder ", ex);
             }
-        }
+        }*/
 
         #endregion
 
@@ -1056,6 +1058,30 @@ namespace Macrophotography.ViewModel
             System.Diagnostics.Process prc = new System.Diagnostics.Process();
             prc.StartInfo.FileName = myPath;
             prc.Start();
+        }
+        private void CopyZereneBatchFile()
+        {
+            try
+            {
+                string SessionFolder = ServiceProvider.Settings.DefaultSession.Folder;
+                string fileName = "ZereneBatch.xml";
+                string sourcePath = _tempdir;
+                string targetPath = SessionFolder;
+
+                // Use Path class to manipulate file and directory paths.
+                string sourceFile = Path.Combine(sourcePath, fileName);
+                string destFile = Path.Combine(targetPath, fileName);
+
+                // To copy a file to another location and 
+                // overwrite the destination file if it already exists.
+                File.Copy(sourceFile, destFile, true);
+                
+                
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error copy ZereneBatchFile to Session Folder ", ex);
+            }
         }
         private void PopulatePreferences(int contrastThreshold, int estimatedRadius, int smoothingRadius, string fileType)
         {
@@ -1258,16 +1284,15 @@ namespace Macrophotography.ViewModel
             MoveDownTaskCommand = new RelayCommand(MoveDownTask);
             MakeBatchCommand = new RelayCommand(MakeZereneBatchFile);
             OpenBatchCommand = new RelayCommand(OpenZereneBatchFile);
+            CopyBatchCommand = new RelayCommand(CopyZereneBatchFile);
             ReloadCommand = new RelayCommand(LoadZereneData);
             PreviewCommand = new RelayCommand(Preview);
             GenerateCommand = new RelayCommand(Generate);
             StopCommand = new RelayCommand(Stop);
             SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
             SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
-            SetProjetFolderCommand = new RelayCommand(SetProjetFolder);
-            SetSingleFolderCommand = new RelayCommand(SetSingleFolder);
-            SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
-            SetSubStacksFolderCommand = new RelayCommand(SetSubStacksFolder);
+            SelectInverCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectInver(); });
+            SetProjetFolderCommand = new RelayCommand(SetProjetFolder);            
             GetFileItemFormatCommand = new RelayCommand(GetFileItemFormat);
         }
         
@@ -1339,6 +1364,7 @@ namespace Macrophotography.ViewModel
             else
                 IsProjetFolder = false;
         }
+
         public void UpDateStackItems()
         {
             Stack_overlap = Stack_items / 2;
@@ -1433,7 +1459,6 @@ namespace Macrophotography.ViewModel
             }
         }
 
-
         private async void MakeZereneLaunchCommand()
         {
             string userName = Environment.UserName;
@@ -1474,6 +1499,8 @@ namespace Macrophotography.ViewModel
                 launchCommand += " -noSplashScreen";
                 launchCommand += " -exitOnBatchScriptCompletion";
                 launchCommand += " -runMinimized";
+                launchCommand += " -showProgressWhenMinimized=false";
+                launchCommand += " -showProgressPercentage"; 
                 launchCommand += " ";
                 launchCommand += _tempdir;
 
@@ -1484,6 +1511,7 @@ namespace Macrophotography.ViewModel
                 OnProgressChange("Could not change Zerene Command File");
             }
         }
+
         public void ZereneStack()
         {
             try
@@ -1558,9 +1586,12 @@ namespace Macrophotography.ViewModel
             IsBusy = true;
             CopyFiles(true);
             if (!_shouldStop)
+            {
                 MakeZereneBatchFile();
-            ZereneStack();
-            OnActionDone();
+                CopyZereneBatchFile();
+                ZereneStack();
+                OnActionDone();
+            }                
             IsBusy = false;
         }
         private void GenerateTask()
@@ -1568,8 +1599,12 @@ namespace Macrophotography.ViewModel
             IsBusy = true;
             CopyFiles(false);
             if (!_shouldStop)
+            {
                 MakeZereneBatchFile();
+                CopyZereneBatchFile();
                 ZereneStack();
+            }
+                
             /*if (File.Exists(_resulfile))
             {
                 string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName),

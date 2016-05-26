@@ -1,0 +1,351 @@
+﻿<UserControl x:Class="Macrophotography.controls.VisualSFM"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:T="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
+             xmlns:viewModel="clr-namespace:Macrophotography.ViewModel"
+             xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:macrophotography="clr-namespace:Macrophotography"
+             xmlns:my="clr-namespace:NMT.Wpf.Controls;assembly=PulseButton"
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="2000">
+
+    <UserControl.DataContext>
+        <viewModel:VisualSFMViewModel/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+
+            <!-- The IconButtonStyle -->
+            <Style x:Key="IconButtonStyle"
+               TargetType="{x:Type Button}">
+                <!-- set some default values -->
+                <Setter Property="Background"
+                    Value="Transparent" />
+                <Setter Property="BorderBrush"
+                    Value="Transparent" />
+                <!-- set the visual tree of the control -->
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <!-- here come the actual sub-controls -->
+                            <Border x:Name="border"
+                                Height="{TemplateBinding Height}"
+                                Width="{TemplateBinding Width}"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                Padding="0"
+                                CornerRadius="3,3,3,3">
+                                <Border x:Name="innerBorder"
+                                    SnapsToDevicePixels="True"
+                                    BorderThickness="1"
+                                    Padding="2"
+                                    CornerRadius="3,3,3,3">
+                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"
+                                                  Margin="{TemplateBinding Padding}">
+                                        <ContentPresenter.Effect>
+                                            <!-- give the content a bit of shadow -->
+                                            <DropShadowEffect x:Name="shadow"
+                                                          ShadowDepth="2"
+                                                          Opacity="0.7"
+                                                          BlurRadius="3" />
+                                        </ContentPresenter.Effect>
+                                        <ContentPresenter.RenderTransform>
+                                            <!-- push the content a bit to the left and the top -->
+                                            <TranslateTransform x:Name="translation"
+                                                            X="-1"
+                                                            Y="-1" />
+                                        </ContentPresenter.RenderTransform>
+                                    </ContentPresenter>
+                                </Border>
+                            </Border>
+                            <ControlTemplate.Triggers>
+
+                                <!-- when the control is disabled, just let the background shine through -->
+                                <Trigger Property="IsEnabled"
+                                     Value="false">
+                                    <Setter Property="Opacity"
+                                        Value="0.5" />
+                                </Trigger>
+                                <Trigger Property="IsPressed"
+                                     Value="True">
+                                    <!-- This Trigger manages the Animation of the button's content and its shadow -->
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="shadow"
+                                                             Storyboard.TargetProperty="(DropShadowEffect.ShadowDepth)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.X)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="1"
+                                                             Storyboard.TargetName="shadow"
+                                                             Storyboard.TargetProperty="(DropShadowEffect.ShadowDepth)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="-1"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.X)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="-1"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="25*"/>
+        </Grid.ColumnDefinitions>
+
+
+
+        <GroupBox Header="Projet Folder" 
+                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="240" IsEnabled="{Binding IsFree}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="80*"/>
+                    <ColumnDefinition Width="30*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding IsProjetFolder, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                    <Label Content="Proyect Folder" HorizontalContentAlignment="Right" FontSize="12" />
+                    <TextBox Text="{Binding Path=ProjetFolder}" Width="150" Margin="2" IsReadOnly="True"/>
+                    <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolderCommand}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Process" 
+                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" 
+                            Grid.Row="0" Margin="0,5,0,0" IsEnabled="{Binding IsFree}">
+                    <Button Content="Preview" Margin="3" Command="{Binding PreviewCommand}" 
+                            Width="100"/>
+                    <Button Content="Create final image" Margin="3"  Command="{Binding GenerateCommand}"
+                            Width="130" HorizontalAlignment="Right"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,5,0,0" HorizontalAlignment="Stretch" Grid.Row="1" >
+                    <Button Width="60" Grid.Row="1" Content="Stop"  Margin="3" Command="{Binding StopCommand}" IsEnabled="{Binding IsBusy}"/>
+                    <ProgressBar Height="20" Width="160" Margin="10,0,0,0" HorizontalAlignment="Right" Maximum="{Binding ProgressBarMaxValue}" Minimum="0" Value="{Binding ProgressBarValue}"/>
+                </StackPanel>
+
+                <ComboBox ItemsSource="{Binding OutputImageDispositionCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualOutputImageDispositionCodeValue}" SelectedIndex="4"
+                        Margin="5"
+                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="{Binding IsFree}" />
+                <StackPanel Orientation="Horizontal" Margin="5"
+                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="{Binding IsFree}">
+                    <RadioButton Content="Tiff" IsChecked="{Binding IsTiff}" Padding="5"/>
+                    <RadioButton Content="Jpeg" IsChecked="{Binding IsJpeg}" Padding="5"/>
+                    <TextBox Width="50" Text="{Binding Items}"/>
+                </StackPanel>
+                
+
+            </Grid>
+        </GroupBox>
+
+        <Expander
+            IsExpanded="False" 
+            Grid.Column="6" MinWidth="30" MaxWidth="800" HorizontalAlignment="Left"
+            ExpandDirection="Left" Margin="5" >
+            <Expander.Header>
+                <TextBlock Text="LOG" TextAlignment="Right" FontSize="12">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
+            <Grid>
+                <ListBox ItemsSource="{Binding Output}" Width="800" Margin="5"/>
+            </Grid>
+        </Expander>
+
+        <Expander 
+            IsExpanded="False" 
+            Grid.Column="0" Grid.ColumnSpan="6" MinWidth="30" MaxWidth="1400" HorizontalAlignment="Left"
+            ExpandDirection="Right" Margin="5" >
+            <Expander.Header>
+                <TextBlock Text="FILE LIST" TextAlignment="Right" FontSize="12">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
+
+            <Grid Background="#FF2F2F2F" Margin="0,-5,-5,-5">
+                <ListBox VirtualizingStackPanel.IsVirtualizing="True" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
+                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Center" ScrollViewer.CanContentScroll="False" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="classes:FileItem">
+                            <Grid Margin="-5,0,0,0" >
+                                <StackPanel Orientation="Horizontal">
+                                    <Grid Height="175" Margin="4,4,4,4">
+                                        <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5">
+                                            <Image.Effect>
+                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
+                                            </Image.Effect>
+                                            <Image.LayoutTransform>
+                                                <RotateTransform  Angle="{Binding RotationAngle}" />
+                                            </Image.LayoutTransform>
+                                        </Image>
+                                        <Image Source="{Binding Path=ThumbnailMarks}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" RenderTransformOrigin="0.5,0.5"
+                                       Visibility="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=EnhancedThumbs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Image.Effect>
+                                                <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
+                                            </Image.Effect>
+                                            <Image.LayoutTransform>
+                                                <RotateTransform  Angle="{Binding RotationAngle}" />
+                                            </Image.LayoutTransform>
+                                        </Image>
+                                        <Rectangle Stroke="Transparent" Margin="1" Name="_Rectangle"/>
+                                        <CheckBox IsChecked="{Binding Path=IsChecked}" Margin="3,3,3,5" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="10"/>
+                                        <Label Content="RAW" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsRaw, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <Label Content="VIDEO" Background="White" Margin="5" Padding="1" Opacity="0.5" FontWeight="Bold" Foreground="Black" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="{Binding IsMovie, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding ReloadCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseMove">
+                            <i:InvokeCommandAction Command="{Binding ReloadCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ListBox>
+
+                <WrapPanel Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35">
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding ReloadCommand}" ToolTip="Reload Selected Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectAllCommand}" ToolTip="Select All Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_section_expand_all}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectNoneCommand}" ToolTip="Select None Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_section_collapse_all}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button Style="{DynamicResource IconButtonStyle}" Command="{Binding SelectInverCommand}" ToolTip="Select None Photos"
+                        Height="30" Width="30" Padding="-20" Margin="0,0,10,0">
+                        <Rectangle Width="30" Height="30">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_shuffle}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                </WrapPanel>
+            </Grid>
+
+        </Expander>
+
+
+    </Grid>
+</UserControl>

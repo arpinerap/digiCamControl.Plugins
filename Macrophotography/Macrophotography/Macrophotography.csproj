@@ -272,6 +272,9 @@
     <Compile Include="controls\Zerene.xaml.cs">
       <DependentUpon>Zerene.xaml</DependentUpon>
     </Compile>
+    <Compile Include="controls\VisualSFM.xaml.cs">
+      <DependentUpon>VisualSFM.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LiveView.xaml.cs">
       <DependentUpon>LiveView.xaml</DependentUpon>
     </Compile>
@@ -290,6 +293,7 @@
     <Compile Include="StepperManager.cs" />
     <Compile Include="ViewModel\MacroCombineZpViewModel.cs" />
     <Compile Include="ViewModel\MacroStackViewModel.cs" />
+    <Compile Include="ViewModel\VisualSFMViewModel.cs" />
     <Compile Include="ViewModel\ZereneBatchViewModel.cs" />
     <Compile Include="Windows\MagniWin.xaml.cs">
       <DependentUpon>MagniWin.xaml</DependentUpon>
@@ -325,6 +329,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="controls\Zerene.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="controls\VisualSFM.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -20,6 +20,7 @@ namespace Macrophotography.ViewModel
         private string _SingleFolder = "";
         private string _StacksFolder = "";
         private string _SubStacksFolder = "";
+        private string _OutputFolder = "";
 
         private bool _IsSubStack;
         private bool _IsNotSubStack;
@@ -80,6 +81,15 @@ namespace Macrophotography.ViewModel
             {
                 _SubStacksFolder = value;
                 RaisePropertyChanged(() => SubStacksFolder);
+            }
+        }
+        public string OutputFolder
+        {
+            get { return _OutputFolder; }
+            set
+            {
+                _OutputFolder = value;
+                RaisePropertyChanged(() => OutputFolder);
             }
         }
 
@@ -239,6 +249,25 @@ namespace Macrophotography.ViewModel
 
         #endregion
 
+        #region Commands
+
+        public GalaSoft.MvvmLight.Command.RelayCommand<FileItem> RemoveItemCommand { get; set; }
+        public RelayCommand ReloadCommand { get; set; }
+        public RelayCommand ResetCommand { get; set; }
+        public RelayCommand PreviewCommand { get; set; }
+        public RelayCommand GenerateCommand { get; set; }
+        public RelayCommand StopCommand { get; set; }
+        public RelayCommand ConfPluginCommand { get; set; }
+
+        public RelayCommand SetSingleFolderCommand { get; set; }
+        public RelayCommand SetStacksFolderCommand { get; set; }
+        public RelayCommand SetSubStacksFolderCommand { get; set; }
+
+
+
+
+        #endregion
+
 
         public ObservableCollection<FileItem> Files
         {
@@ -291,19 +320,15 @@ namespace Macrophotography.ViewModel
             get { return ServiceProvider.Settings.DefaultSession; }
         }
 
-        public GalaSoft.MvvmLight.Command.RelayCommand<FileItem> RemoveItemCommand { get; set; }
-        public RelayCommand ReloadCommand { get; set; }
-        public RelayCommand ResetCommand { get; set; }
-        public RelayCommand PreviewCommand { get; set; }
-        public RelayCommand GenerateCommand { get; set; }
-
-        public RelayCommand StopCommand { get; set; }
-        public RelayCommand ConfPluginCommand { get; set; }
+        
 
         public void InitCommands()
         {
             RemoveItemCommand = new GalaSoft.MvvmLight.Command.RelayCommand<FileItem>(RemoveItem);
             ReloadCommand = new RelayCommand(Reload);
+            SetSingleFolderCommand = new RelayCommand(SetSingleFolder);
+            SetStacksFolderCommand = new RelayCommand(SetStacksFolder);
+            SetSubStacksFolderCommand = new RelayCommand(SetSubStacksFolder);
         }
 
         private void RemoveItem(FileItem obj)

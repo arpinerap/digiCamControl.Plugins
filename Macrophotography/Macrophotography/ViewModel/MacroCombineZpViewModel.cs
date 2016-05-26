@@ -66,12 +66,9 @@ namespace Macrophotography.ViewModel
         {
             public string TaskName { get; set; }
             public int TaskNumber { get; set; }
-            public int ProjectDispositionCodeValue { get; set; }
-            public int OutputImageDispositionCodeValue { get; set; }
-            public int TaskIndicatorCodeValue { get; set; }
+            public string Macro { get; set; }
             public string SourceFolder { get; set; }
-            public string OutputImagesDesignatedFolder { get; set; }
-            public string ProjetFolder { get; set; }
+            public string OutputFolder { get; set; }
             public bool Substack { get; set; }
             public string FileType { get; set; }
             public int Number { get; set; }
@@ -103,6 +100,13 @@ namespace Macrophotography.ViewModel
                 {
                     TaskName = taskName.ToString(),
                     TaskNumber = StackTasks.Count,
+                    Macro = MacroStackSub,
+                    SourceFolder = StacksFolder,
+                    OutputFolder = SubStacksFolder,
+                    Substack = true,
+                    FileType = "",
+                    Number = 0,
+                    Overlap = 0
                 });
             }
 
@@ -117,6 +121,13 @@ namespace Macrophotography.ViewModel
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
+                            Macro = MacroSub,
+                            SourceFolder = _tempdir,
+                            OutputFolder = StacksFolder,
+                            Substack = true,
+                            FileType = "",
+                            Number = 0,
+                            Overlap = 0
                         });
 
                         NamingTask();
@@ -125,6 +136,13 @@ namespace Macrophotography.ViewModel
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
+                            Macro = MacroStackSub,
+                            SourceFolder = StacksFolder,
+                            OutputFolder = SubStacksFolder,
+                            Substack = true,
+                            FileType = "",
+                            Number = 0,
+                            Overlap = 0
                         });
                     }
                     else // Just Make SubStacks
@@ -134,6 +152,13 @@ namespace Macrophotography.ViewModel
                         {
                             TaskName = taskName.ToString(),
                             TaskNumber = StackTasks.Count,
+                            Macro = MacroSub,
+                            SourceFolder = _tempdir,
+                            OutputFolder = StacksFolder,
+                            Substack = true,
+                            FileType = "",
+                            Number = 0,
+                            Overlap = 0
                         });
                     }
                 }
@@ -144,6 +169,13 @@ namespace Macrophotography.ViewModel
                     {
                         TaskName = taskName.ToString(),
                         TaskNumber = StackTasks.Count,
+                        Macro = Macro,
+                        SourceFolder = _tempdir,
+                        OutputFolder = SingleFolder,
+                        Substack = true,
+                        FileType = "",
+                        Number = 0,
+                        Overlap = 0
                     });
                 }
             }
@@ -164,7 +196,21 @@ namespace Macrophotography.ViewModel
         }
 
         #endregion
-        
+
+
+        #region Commands
+
+        public RelayCommand AddTaskCommand { get; set; }
+        public RelayCommand DeleteTaskCommand { get; set; }
+        public RelayCommand MoveUpTaskCommand { get; set; }
+        public RelayCommand MoveDownTaskCommand { get; set; }
+
+        public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
+        public CameraControl.Core.Classes.RelayCommand<object> SelectInverCommand { get; private set; }
+
+        #endregion
+
 
 
         public PluginSetting PluginSetting
@@ -200,9 +246,13 @@ namespace Macrophotography.ViewModel
             }
         }
 
-        public List<string> Macros { get; set; }
 
+        #region Macros
+
+        public List<string> Macros { get; set; }
         public List<string> MacrosSub { get; set; }
+        public List<string> MacrosStackSub { get; set; }
+
 
         public string Macro
         {
@@ -213,16 +263,43 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => Macro);
             }
         }
-
         public string MacroSub
         {
-            get { return PluginSetting["Macro"] as string; }
+            get { return PluginSetting["MacroSub"] as string; }
             set
             {
-                PluginSetting["Macro"] = value;
-                RaisePropertyChanged(() => Macro);
+                PluginSetting["MacroSub"] = value;
+                RaisePropertyChanged(() => MacroSub);
             }
         }
+        public string MacroStackSub
+        {
+            get { return PluginSetting["MacroStackSub"] as string; }
+            set
+            {
+                PluginSetting["MacroStackSub"] = value;
+                RaisePropertyChanged(() => MacroStackSub);
+            }
+        }
+
+        private void PopulateMacros()
+        {
+            if (Directory.Exists(CombineZpFolder))
+            {
+                var files = Directory.GetFiles(CombineZpFolder, "*.czm");
+                foreach (string file in files)
+                {
+                    Macros.Add(Path.GetFileNameWithoutExtension(file));
+                    MacrosSub.Add(Path.GetFileNameWithoutExtension(file));
+                    MacrosStackSub.Add(Path.GetFileNameWithoutExtension(file));
+                }
+            }
+        }
+
+        #endregion
+
+
+        
 
 
         public bool UseSmallThumb
@@ -240,6 +317,8 @@ namespace Macrophotography.ViewModel
             InitCommands();
             Output = new AsyncObservableCollection<string>();
             Macros = new List<string>();
+            MacrosSub = new List<string>();
+            MacrosStackSub = new List<string>();
             LoadData();
             //window.Closing += window_Closing;
             ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
@@ -248,6 +327,13 @@ namespace Macrophotography.ViewModel
             PreviewCommand = new RelayCommand(Preview);
             GenerateCommand = new RelayCommand(Generate);
             StopCommand = new RelayCommand(Stop);
+            AddTaskCommand = new RelayCommand(AddTask);
+            DeleteTaskCommand = new RelayCommand(DeleteTask);
+            MoveUpTaskCommand = new RelayCommand(MoveUpTask);
+            MoveDownTaskCommand = new RelayCommand(MoveDownTask);
+            SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
+            SelectNoneCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
+            SelectInverCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectInver(); });
             LoadData();
             CombineZpFolder = @"c:\Program Files (x86)\Alan Hadley\CombineZP\";
             _pathtoenfuse = Path.Combine(CombineZpFolder, "CombineZP.exe");
@@ -276,17 +362,7 @@ namespace Macrophotography.ViewModel
                 Macro = "Do Weighted Average";
         }*/
 
-        private void PopulateMacros()
-        {
-            if (Directory.Exists(CombineZpFolder))
-            {
-                var files = Directory.GetFiles(CombineZpFolder, "*.czm");
-                foreach (string file in files)
-                {
-                    Macros.Add(Path.GetFileNameWithoutExtension(file));
-                }
-            }
-        }
+        
 
         private void WindowsManager_Event(string cmd, object o)
         {
