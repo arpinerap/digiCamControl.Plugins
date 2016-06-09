@@ -6,7 +6,7 @@
              xmlns:RadialMenu="clr-namespace:RadialMenu.Controls;assembly=RadialMenu"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" 
-             d:DesignHeight="220" d:DesignWidth="280">
+             d:DesignHeight="280" d:DesignWidth="280">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -217,14 +217,14 @@
 
     <Grid>
         <StackPanel>
-            <Grid Height="220" Width="280">
+            <Grid Height="280" Width="340">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
 
 
-                <RadialMenu:RadialMenu x:Name="LiveViewOff_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-25,-40,-50,-40">
+                <RadialMenu:RadialMenu x:Name="LiveViewOff_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-75,-80,-50,-40">
 
                     <RadialMenu:RadialMenu.CentralItem>
                         <RadialMenu:RadialMenuCentralItem 
@@ -244,78 +244,70 @@
                     </RadialMenu:RadialMenu.CentralItem>
 
                     <RadialMenu:RadialMenuItem x:Name="Up_button"  
-                    EdgePadding="-10" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="70"
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Up_button_Click">
+                    EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
+                    ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5" 
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Up_button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem  IsEnabled="False"
-                    EdgePadding="10" EdgeInnerRadius="70" EdgeOuterRadius="90" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="50" 
-                    ArrowRadius="80" ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
+                    EdgePadding="10" EdgeInnerRadius="85" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="85"
+                    ArrowRadius="90" ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
 
                     </RadialMenu:RadialMenuItem>
 
 
                     <RadialMenu:RadialMenuItem x:Name="Right_button" 
-                    EdgePadding="-50" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="38"
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Right_button_Click">
+                    EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
+                    ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5" 
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Right_button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem IsEnabled="False"
-                    EdgePadding="10" EdgeInnerRadius="70" EdgeOuterRadius="90" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="50" 
-                    ArrowRadius="80" ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
+                    EdgePadding="10" EdgeInnerRadius="85" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="85"
+                    ArrowRadius="90"  ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
 
                     </RadialMenu:RadialMenuItem>
 
 
                     <RadialMenu:RadialMenuItem x:Name="Down_button" 
-                    EdgePadding="-50" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="40" 
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Down_button_Click">
+                    EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
+                    ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5"
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Down_button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem IsEnabled="False"
-                    EdgePadding="10" EdgeInnerRadius="70" EdgeOuterRadius="90" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="50" 
-                    ArrowRadius="80" ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
+                    EdgePadding="10" EdgeInnerRadius="85" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="85"
+                    ArrowRadius="90" ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
 
                     </RadialMenu:RadialMenuItem>
 
 
                     <RadialMenu:RadialMenuItem x:Name="Left_button" 
-                    EdgePadding="-50" EdgeInnerRadius="70" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="65"
-                    ArrowRadius="85" ArrowHeight="30" ArrowWidth="40" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Left_button_Click">
+                    EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
+                    ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5"
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Left_button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem IsEnabled="False"
-                    EdgePadding="10" EdgeInnerRadius="70" EdgeOuterRadius="90" OuterRadius="100" InnerRadius="70"
-                    ContentRadius="50" 
-                    ArrowRadius="80" ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
+                    EdgePadding="10" EdgeInnerRadius="85" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="85"
+                    ArrowRadius="90"  ArrowBackground="WhiteSmoke" ArrowHeight="12" ArrowWidth="30">
 
                     </RadialMenu:RadialMenuItem>
 
 
                 </RadialMenu:RadialMenu>
 
-                <RadialMenu:RadialMenu x:Name="LiveViewOff2_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-25,-40,-50,-40">
+                <RadialMenu:RadialMenu x:Name="LiveViewOff2_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-75,-80,-50,-40">
 
                     <RadialMenu:RadialMenuItem x:Name="FlipUp_button"  
-                    EdgePadding="-10" EdgeInnerRadius="45" EdgeOuterRadius="60" OuterRadius="60" InnerRadius="45"
-                    ContentRadius="50" BorderThickness="5" EdgeBackground="#FF312E2E"  BorderBrush="Black" 
-                    ArrowRadius="52"  ArrowWidth="0" Click="FlipUp_Button_Click">
-                        <Rectangle Width="30" Height="14" Margin="0,-2,0,0">
-                            <Rectangle.Fill >
-                                <VisualBrush Stretch="Fill"  Visual="{StaticResource appbar_chevron_up}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                    EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50"
+                    BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
+                    ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
+                    ArrowBorderBrush="Gray" Click="FlipUp_Button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
@@ -327,15 +319,11 @@
                     </RadialMenu:RadialMenuItem>
 
 
-                    <RadialMenu:RadialMenuItem 
-                    EdgePadding="-50" EdgeInnerRadius="45" EdgeOuterRadius="60" OuterRadius="60" InnerRadius="45"
-                    ContentRadius="38" BorderThickness="5"
-                    ArrowRadius="52" ArrowWidth="0" ArrowBorderThickness="5" ArrowBackground="Snow" Click="FlipRight_btn_Click" EdgeBorderBrush="Black" EdgeBackground="#FF312E2E" BorderBrush="Black">
-                        <Rectangle Width="14" Height="30" Margin="13,0,0,0" >
-                            <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_chevron_right}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                    <RadialMenu:RadialMenuItem x:Name="FlipRight_button" 
+                    EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50"
+                    BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
+                    ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
+                    ArrowBorderBrush="Gray" Click="FlipRight_btn_Click" >
 
                     </RadialMenu:RadialMenuItem>
 
@@ -348,15 +336,10 @@
 
 
                     <RadialMenu:RadialMenuItem x:Name="FlipDown_button" 
-                    EdgePadding="-50" EdgeInnerRadius="45" EdgeOuterRadius="60" OuterRadius="60" InnerRadius="45"
-                    ContentRadius="40" BorderThickness="5" EdgeBackground="#FF312E2E"  BorderBrush="Black"
-                    ArrowRadius="52" ArrowWidth="0" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="FlipDown_Button_Click">
-                        <Rectangle Width="30" Height="14" Margin="0,11,0,0" >
-                            <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_chevron_down}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        
+                    EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50"
+                    BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
+                    ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
+                    ArrowBorderBrush="Gray" Click="FlipDown_Button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
@@ -368,16 +351,11 @@
                     </RadialMenu:RadialMenuItem>
 
 
-                    <RadialMenu:RadialMenuItem  
-                    EdgePadding="-50" EdgeInnerRadius="45" EdgeOuterRadius="60" OuterRadius="60" InnerRadius="45"
-                    ContentRadius="65" BorderThickness="5" EdgeBackground="#FF312E2E"  BorderBrush="Black"
-                    ArrowRadius="52" ArrowWidth="0" ArrowBorderThickness="5" ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Left_button_Click">
-                        <Rectangle Width="14" Height="30" Margin="14,0,0,0" >
-                            <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_chevron_left}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-
+                    <RadialMenu:RadialMenuItem  x:Name="FlipLeft_button"
+                    EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50" 
+                    BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
+                    ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
+                    ArrowBorderBrush="Gray" Click="FlipLeft_btn_Click">
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem IsEnabled="False" Visibility="Hidden"
@@ -447,14 +425,14 @@
         </StackPanel>
 
         <StackPanel>
-            <Grid Height="220" Width="280">
+            <Grid Height="280" Width="340">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
 
 
-                <RadialMenu:RadialMenu  x:Name="LiveViewOn_btn" IsOpen="True" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-25,-40,-50,-40" RenderTransformOrigin="0.5,0.5">
+                <RadialMenu:RadialMenu  x:Name="LiveViewOn_btn" IsOpen="True" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-75,-80,-50,-40" RenderTransformOrigin="0.5,0.5">
                     <RadialMenu:RadialMenu.CentralItem>
                         <RadialMenu:RadialMenuCentralItem 
                         Width="80" Height="80" 

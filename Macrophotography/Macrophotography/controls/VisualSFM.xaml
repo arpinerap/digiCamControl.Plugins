@@ -144,92 +144,49 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="270"/>
-            <ColumnDefinition Width="320"/>
             <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
 
 
 
-        <GroupBox Header="Projet Folder" 
-                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="240" IsEnabled="{Binding IsFree}">
+        <GroupBox Header="Process" 
+                Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="280">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="80*"/>
-                    <ColumnDefinition Width="30*"/>
-                </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Grid.Row="0" Margin="0,5,0,0" IsEnabled="{Binding IsProjetFolder}">
+                    <Button Content="Create 3D Objet"  Margin="3" Command="{Binding GenerateCommand}" IsEnabled="{Binding IsFree}"
+                            Width="250"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="{Binding IsProjetFolder, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                <StackPanel Orientation="Horizontal"  IsEnabled="{Binding IsProjetFolder}"
+                            Margin="0,5,0,0" HorizontalAlignment="Center" Grid.Row="1">
+                    <Button Width="80" Grid.Row="1" Content="Stop"  Margin="0,3,0,0" Command="{Binding StopCommand}" IsEnabled="{Binding IsBusy}"/>
+                    <ProgressBar Height="20" Width="155" Margin="10,0,0,0" HorizontalAlignment="Right" Maximum="{Binding ProgressBarMaxValue}" Minimum="0" Value="{Binding ProgressBarValue}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center"
+                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" VerticalAlignment="Center" IsEnabled="{Binding IsFree}">
                     <Label Content="Proyect Folder" HorizontalContentAlignment="Right" FontSize="12" />
-                    <TextBox Text="{Binding Path=ProjetFolder}" Width="150" Margin="2" IsReadOnly="True"/>
+                    <TextBox Text="{Binding Path=ProjetFolder}" Width="130" Margin="2" IsReadOnly="True"/>
                     <Button  Content=" ... " Width="30" HorizontalAlignment="Left" Margin="2" Command="{Binding SetProjetFolderCommand}"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
-                </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" Visibility="{Binding IsNotJustStackSubs, Converter={StaticResource BooleanToVisibilityConverter1}}">
-                </StackPanel>
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Header="Process" 
-                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MinWidth="200" >
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel Orientation="Horizontal" 
-                            Grid.Row="0" Margin="0,5,0,0" IsEnabled="{Binding IsFree}">
-                    <Button Content="Preview" Margin="3" Command="{Binding PreviewCommand}" 
-                            Width="100"/>
-                    <Button Content="Create final image" Margin="3"  Command="{Binding GenerateCommand}"
-                            Width="130" HorizontalAlignment="Right"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            Margin="0,5,0,0" HorizontalAlignment="Stretch" Grid.Row="1" >
-                    <Button Width="60" Grid.Row="1" Content="Stop"  Margin="3" Command="{Binding StopCommand}" IsEnabled="{Binding IsBusy}"/>
-                    <ProgressBar Height="20" Width="160" Margin="10,0,0,0" HorizontalAlignment="Right" Maximum="{Binding ProgressBarMaxValue}" Minimum="0" Value="{Binding ProgressBarValue}"/>
-                </StackPanel>
-
-                <ComboBox ItemsSource="{Binding OutputImageDispositionCodes}" DisplayMemberPath="Text" SelectedItem="{Binding ActualOutputImageDispositionCodeValue}" SelectedIndex="4"
-                        Margin="5"
-                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="{Binding IsFree}" />
-                <StackPanel Orientation="Horizontal" Margin="5"
-                        Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"                                           
-                        HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="{Binding IsFree}">
-                    <RadioButton Content="Tiff" IsChecked="{Binding IsTiff}" Padding="5"/>
-                    <RadioButton Content="Jpeg" IsChecked="{Binding IsJpeg}" Padding="5"/>
-                    <TextBox Width="50" Text="{Binding Items}"/>
-                </StackPanel>
-                
-
+                <TextBox Grid.Row="3" Width="50" Height="20" Text="{Binding Items}" BorderThickness="0"/>
             </Grid>
         </GroupBox>
 
         <Expander
             IsExpanded="False" 
-            Grid.Column="6" MinWidth="30" MaxWidth="800" HorizontalAlignment="Left"
+            Grid.Column="3" MinWidth="30" MaxWidth="800" HorizontalAlignment="Left"
             ExpandDirection="Left" Margin="5" >
             <Expander.Header>
                 <TextBlock Text="LOG" TextAlignment="Right" FontSize="12">
@@ -245,7 +202,7 @@
 
         <Expander 
             IsExpanded="False" 
-            Grid.Column="0" Grid.ColumnSpan="6" MinWidth="30" MaxWidth="1400" HorizontalAlignment="Left"
+            Grid.Column="0" Grid.ColumnSpan="2" MinWidth="30" MaxWidth="1400" HorizontalAlignment="Left"
             ExpandDirection="Right" Margin="5" >
             <Expander.Header>
                 <TextBlock Text="FILE LIST" TextAlignment="Right" FontSize="12">

@@ -38,7 +38,6 @@ namespace Macrophotography.ViewModel
         #region Variables
 
         private string _VisualSFMCommand;
-        private string _launchCommand;
 
         private PluginSetting _pluginSetting;
 
@@ -46,6 +45,11 @@ namespace Macrophotography.ViewModel
 
         private int _Items;
         private string _ProjetFolder = "";
+        private bool _IsProjetFolder = false;
+
+
+        private int _ProgressBarValue = 0;
+        private int _ProgressBarMaxValue = 100;
         
 
         #endregion
@@ -75,6 +79,16 @@ namespace Macrophotography.ViewModel
             }
         }
 
+        public bool IsProjetFolder
+        {
+            get { return _IsProjetFolder; }
+            set
+            {
+                _IsProjetFolder = value;
+                RaisePropertyChanged(() => IsProjetFolder);
+            }
+        }
+
 
         public string VisualSFMCommand
         {
@@ -83,15 +97,6 @@ namespace Macrophotography.ViewModel
             {
                 _VisualSFMCommand = value;
                 RaisePropertyChanged(() => VisualSFMCommand);
-            }
-        }
-        public string launchCommand
-        {
-            get { return _launchCommand; }
-            set
-            {
-                _launchCommand = value;
-                RaisePropertyChanged(() => launchCommand);
             }
         }
 
@@ -105,16 +110,33 @@ namespace Macrophotography.ViewModel
             }
         }
 
+
+        public int ProgressBarValue
+        {
+            get { return _ProgressBarValue; }
+            set
+            {
+                _ProgressBarValue = value;
+                RaisePropertyChanged(() => ProgressBarValue);
+            }
+        }
+        public int ProgressBarMaxValue
+        {
+            get { return _ProgressBarMaxValue; }
+            set
+            {
+                _ProgressBarMaxValue = value;
+                RaisePropertyChanged(() => ProgressBarMaxValue);
+            }
+        } 
+
         #endregion
 
         #region Commands
 
         public CameraControl.Core.Classes.RelayCommand<object> SelectAllCommand { get; private set; }
         public CameraControl.Core.Classes.RelayCommand<object> SelectNoneCommand { get; private set; }
-        public CameraControl.Core.Classes.RelayCommand<object> SelectInverCommand { get; private set; }
-        
-        
-        
+        public CameraControl.Core.Classes.RelayCommand<object> SelectInverCommand { get; private set; }    
         public RelayCommand SetProjetFolderCommand { get; set; }
 
         #endregion
@@ -135,11 +157,14 @@ namespace Macrophotography.ViewModel
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     ProjetFolder = dialog.SelectedPath;
+                    IsProjetFolder = true;
                 }
             }
             catch (Exception ex)
             {
                 Log.Error("Error set ProjetFolder ", ex);
+                WriteLog("Error set ProjetFolder " + ex.Data);
+                WriteShortLog("Error set ProjetFolder " + ex.Data);
             }
         }
 
@@ -149,13 +174,12 @@ namespace Macrophotography.ViewModel
         {
             Output = new AsyncObservableCollection<string>();
             InitCommands();
-            CreateTempDir(true);
-            MakeVisualSFMLaunchCommand();
+            //CreateTempDir(true);
+            //MakeVisualSFMLaunchCommand();
             ServiceProvider.FileTransfered += ServiceProvider_FileTransfered;
             ServiceProvider.WindowsManager.Event += WindowsManager_Event;
             LoadVisualSFMData();
             ReloadCommand = new RelayCommand(LoadVisualSFMData);
-            PreviewCommand = new RelayCommand(Preview);
             GenerateCommand = new RelayCommand(Generate);
             StopCommand = new RelayCommand(Stop);
             SelectAllCommand = new CameraControl.Core.Classes.RelayCommand<object>(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
@@ -181,19 +205,28 @@ namespace Macrophotography.ViewModel
                 _filenames.Clear();
 
                 OnProgressChange("Copying files");
+                WriteLog("Copying files");
+                WriteShortLog("Copying files");
 
                 foreach (FileItem fileItem in Files)
                 {
-                    OnProgressChange("Copying file " + fileItem.Name);
                     string source = preview ? fileItem.LargeThumb : fileItem.FileName;
 
                     MagickImageInfo info = new MagickImageInfo();
                     info.Read(source);
                     string format = info.Format.ToString();
 
+                    OnProgressChange(fileItem.Name + " format is:  " + format);
+                    WriteLog(fileItem.Name + " format is:  " + format);
+                    WriteShortLog(fileItem.Name + " format is:  " + format);
+                                       
+
                     if (format == "Jpeg")
                     {
-                        string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".jpg");
+                        OnProgressChange("Copying file " + fileItem.Name);
+                        WriteLog("Copying file " + fileItem.Name);
+                        WriteShortLog("Copying file " + fileItem.Name);
+                        string randomFile = Path.Combine(ProjetFolder, "image_" + counter.ToString("0000") + ".jpg");
                         AutoExportPluginHelper.ExecuteTransformPlugins(fileItem, PluginSetting.AutoExportPluginConfig, source, randomFile);
                         _filenames.Add(randomFile);
                         counter++;
@@ -201,18 +234,56 @@ namespace Macrophotography.ViewModel
 
                     if (format == "Tiff")
                     {
-                        string randomFile = Path.Combine(_tempdir, "image_" + counter.ToString("0000") + ".tif");
-                        using (MagickImage image = new MagickImage(source))
+                        OnProgressChange("Converting file " + fileItem.Name);
+                        WriteLog("Converting file " + fileItem.Name);
+                        WriteShortLog("Converting file " + fileItem.Name);
+                        string randomFile = Path.Combine(ProjetFolder, "image_" + counter.ToString("0000") + ".jpg");
+
+                        try
                         {
-                            image.Format = MagickFormat.Tiff;
-                            image.Write(randomFile);
+                            using (MagickImage image = new MagickImage(source))
+                            {
+                                image.Format = MagickFormat.Jpeg;
+                                image.Write(randomFile);
+                            }
+                            _filenames.Add(randomFile);
+                            counter++;
                         }
-                        _filenames.Add(randomFile);
-                        counter++;
+                        catch (Exception exception)
+                        {
+                            Log.Error("Error converting Tiff file", exception);
+                        }    
                     }
-                    if (format != "Jpeg" && format != "Tiff")
+
+                    if (format == "Nef" || format == "Cr2" || format == "Crw")
                     {
-                        OnProgressChange(fileItem.Name + "has invalid format, will not be copied");
+                        OnProgressChange("Converting file " + fileItem.Name);
+                        WriteLog("Converting file " + fileItem.Name);
+                        WriteShortLog("Converting file " + fileItem.Name);
+                        string randomFile = Path.Combine(ProjetFolder, "image_" + counter.ToString("0000") + ".jpg");
+
+                        try
+                        {
+                            string dcraw_exe = Path.Combine(Settings.ApplicationFolder, "dcraw.exe");
+                            if (File.Exists(dcraw_exe))
+                            {
+                                PhotoUtils.RunAndWait(dcraw_exe,
+                                    string.Format(" -e -O \"{0}\" \"{1}\"", randomFile, source));
+                                _filenames.Add(randomFile);
+                                counter++;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Error("Error converting Raw file", exception);
+                        }
+                    }
+
+                    if (format != "Jpeg" && format != "Tiff" && format != "Nef" && format != "Cr2" && format != "Crw")
+                    {
+                        OnProgressChange(fileItem.Name + " has invalid format, will not be copied");
+                        WriteLog(fileItem.Name + " has invalid format, will not be copied");
+                        WriteShortLog(fileItem.Name + " has invalid format, will not be copied");
                     }
 
 
@@ -226,6 +297,8 @@ namespace Macrophotography.ViewModel
             catch (Exception exception)
             {
                 OnProgressChange("Error copy files " + exception.Message);
+                WriteLog("Error copy files " + exception.Message);
+                WriteShortLog("Error copy files " + exception.Message);
                 Log.Error("Error copy files ", exception);
                 _shouldStop = true;
             }
@@ -235,19 +308,24 @@ namespace Macrophotography.ViewModel
         {
             try
             {
-                string VisualSFMFolder = @"C:\Program Files\VisualSFM_windows_64bit";
-                string VisualSFMFile = "VisualSFM.exe";
-                VisualSFMCommand = Path.Combine(VisualSFMFolder, VisualSFMFile);
-                OnProgressChange("VisualSFM Command: " + VisualSFMCommand);
+                string VisualSFMFolder = @" /c C:\""Program Files""\VisualSFM_windows_64bit\VisualSFM.exe";
 
-                launchCommand = " sfm+pmvs";
-                launchCommand += " " + _tempdir;
-                launchCommand += OutputFolder + "output.nvm";
-                OnProgressChange("Launch Command: " + launchCommand);
+                VisualSFMCommand = VisualSFMFolder;
+                VisualSFMCommand += " sfm+pmvs";
+                VisualSFMCommand += " " + ProjetFolder;
+                VisualSFMCommand += " " + ProjetFolder + @"\output.nvm";
+
+                OnProgressChange("VisualSFM Command: " + VisualSFMCommand);
+                WriteLog("VisualSFM Command: " + VisualSFMCommand);
+                WriteShortLog("VisualSFM Command: " + VisualSFMCommand);
+
             }
             catch (Exception ex)
             {
-                OnProgressChange("Could not change VisualSFM Command File");
+                Log.Error("Error Make VisualSFM Launch Command ", ex);
+                OnProgressChange("Could not make VisualSFM Launch Command");
+                WriteLog("Could not make VisualSFM Launch Command");
+                WriteShortLog("Could not make VisualSFM Launch Command");
             }
         }
 
@@ -258,15 +336,12 @@ namespace Macrophotography.ViewModel
                 OnProgressChange("VisualSFM is merging images ..");
                 OnProgressChange("This may take few minutes too");
 
-                _resulfile = Path.Combine(_tempdir, Path.GetFileNameWithoutExtension(Files[0].FileName) + Files.Count + ".jpg");
-                _resulfile = Path.Combine(Path.GetTempPath(), Path.GetFileName(_resulfile));
-
 
                 Process newprocess = new Process();
                 newprocess.StartInfo = new ProcessStartInfo()
                 {
-                    FileName = VisualSFMCommand,
-                    Arguments = launchCommand,
+                    FileName = "cmd.exe",
+                    Arguments = VisualSFMCommand,
                     UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Minimized,
                     CreateNoWindow = true,
@@ -281,24 +356,11 @@ namespace Macrophotography.ViewModel
                 newprocess.BeginOutputReadLine();
                 newprocess.BeginErrorReadLine();
                 newprocess.WaitForExit();
-                /*if (File.Exists(_resulfile))
-                {
-                    //string localfile = Path.Combine(Path.GetDirectoryName(_files[0].FileName),
-                    //                                Path.GetFileName(_resulfile));
-                    //File.Copy(_resulfile, localfile, true);
-                    //ServiceProvider.Settings.DefaultSession.AddFile(localfile);
-                    PreviewBitmap = BitmapLoader.Instance.LoadImage(_resulfile);
-                }
-                else
-                {
-                    OnProgressChange("No output file something went wrong !");
-                }
-                _ZereneProcess = null;*/
             }
             catch (Exception exception)
             {
-                OnProgressChange("Error copy files " + exception.Message);
-                Log.Error("Error copy files ", exception);
+                OnProgressChange("Error VisualSFM launch: " + exception.Message);
+                Log.Error("Error VisualSFM launch: ", exception);
                 _shouldStop = true;
             }
         }
@@ -309,28 +371,14 @@ namespace Macrophotography.ViewModel
             _shouldStop = false;
 
         }
-        private void Preview()
-        {
-            Init();
-            Task.Factory.StartNew(PreviewTask);
-        }
+
         private void Generate()
         {
             Init();
+            MakeVisualSFMLaunchCommand();
             Task.Factory.StartNew(GenerateTask);
         }
 
-        private void PreviewTask()
-        {
-            IsBusy = true;
-            CopyFiles(true);
-            if (!_shouldStop)
-            {
-                VisualSFMMerge();
-                OnActionDone();
-            }
-            IsBusy = false;
-        }
         private void GenerateTask()
         {
             IsBusy = true;
@@ -339,28 +387,10 @@ namespace Macrophotography.ViewModel
             {
                 VisualSFMMerge();
             }
-
-            /*if (File.Exists(_resulfile))
-            {
-                string newFile = Path.Combine(Path.GetDirectoryName(Files[0].FileName),
-                    Path.GetFileNameWithoutExtension(Files[0].FileName) + "_enfuse" + ".jpg");
-                newFile = PhotoUtils.GetNextFileName(newFile);
-
-                File.Copy(_resulfile, newFile, true);
-
-                if (ServiceProvider.Settings.DefaultSession.GetFile(newFile) == null)
-                {
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        FileItem im = new FileItem(newFile);
-                        im.Transformed = true;
-                        ServiceProvider.Settings.DefaultSession.Files.Add(im);
-                    }));
-                }
-            }*/
             OnActionDone();
             IsBusy = false;
         }
+
         private void Stop()
         {
             _shouldStop = true;
@@ -375,9 +405,96 @@ namespace Macrophotography.ViewModel
             }
         }
 
+        public void WriteLog(string log)
+        {
+            if (!String.IsNullOrEmpty(log))
+            {
+                string VisualSFMLogFile;
+                VisualSFMLogFile = Path.Combine(ProjetFolder, "VisualSFMlog.txt");
+
+                using (StreamWriter w = File.AppendText(VisualSFMLogFile))
+                {
+                    LogFile(log, w);
+                }
+            }            
+        }
+
+        public void WriteShortLog(string log)
+        {
+            if (!String.IsNullOrEmpty(log))
+            {
+                string VisualSFMLogFileShort;
+                VisualSFMLogFileShort = Path.Combine(ProjetFolder, "VisualSFMlogShort.txt");
+
+                using (StreamWriter w = File.AppendText(VisualSFMLogFileShort))
+                {
+                    LogFileShort(log, w);
+                }
+            }            
+        }
+
         private void newprocess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             OnProgressChange(e.Data);
+            WriteLog(e.Data);
+            WriteShortLog(e.Data);
+
+            /*string VisualSFMLogFile;
+            VisualSFMLogFile = Path.Combine(ProjetFolder,"VisualSFMlog.txt");
+
+            using (StreamWriter w = File.AppendText(VisualSFMLogFile))
+            {
+                LogFile(e.Data, w);
+            }
+
+            WriteLog();
+            WriteShortLog();
+
+
+            string VisualSFMLogFileShort;
+            VisualSFMLogFileShort = Path.Combine(ProjetFolder, "VisualSFMlogShort.txt");
+            using (StreamWriter w = File.AppendText(VisualSFMLogFileShort))
+            {
+                LogFileShort(e.Data, w);
+            }*/
+
+
+
+
+
+            /*if (e.Data.Contains("SHOWPROGRESS: Done")) 
+            {
+				//mProgressBar.setVisible(false);
+			} 
+            else if (e.Data.Contains("SHOWPROGRESS: Show")) 
+            {
+				//mProgressBar.setVisible(true);
+			} 
+            else if (e.Data.Contains("SHOWPROGRESS: Indeterminate")) 
+            {
+				//mProgressBar.setIndeterminate(true);
+				//mProgressBar.setStringPainted(false);  // do not show progress as percent
+			} */
+            /*if (e.Data.Contains("SHOWPROGRESS: Max")) 
+            {
+                string data = e.Data;
+                string lastFragment = data.Split('=').Last();
+                int val = int.Parse(lastFragment);
+                ProgressBarMaxValue = val;                                
+				//int max = int.Parse(e.Data.Replace("^.*=",""));
+				//mProgressBar.setMaximum(max);
+				//mProgressBar.setIndeterminate(false);
+				//mProgressBar.setStringPainted(true);  // show progress as percent
+			} if (e.Data.Contains("SHOWPROGRESS: Current")) 
+            {
+                string data = e.Data;
+                string lastFragment = data.Split('=').Last();
+                int val = int.Parse(lastFragment);
+                //int val = int.Parse(e.Data.Replace("^.*=", ""));
+				//mProgressBar.setValue(val);
+				//mProgressBar.setIndeterminate(false);
+                ProgressBarValue = val;
+            }*/
         }
 
         #endregion

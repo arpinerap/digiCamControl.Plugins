@@ -102,5 +102,6 @@ namespace Macrophotography.controls
             //FlipLeft_btn.Visibility = System.Windows.Visibility.Hidden;
             LiveViewOn_btn.IsOpen = true;
         }
+
     }
 }

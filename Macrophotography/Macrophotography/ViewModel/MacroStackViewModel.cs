@@ -357,6 +357,22 @@ namespace Macrophotography.ViewModel
             LoadData();
         }
 
+        public static void LogFile(string logMessage, TextWriter w)
+        {
+            w.Write("\r\nLog Entry : ");
+            w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
+                DateTime.Now.ToLongDateString());
+            //w.WriteLine("  :");
+            w.WriteLine("  :{0}", logMessage);
+            w.WriteLine("-------------------------------");
+        }
+        
+        public static void LogFileShort(string logMessage, TextWriter w)
+        {
+            
+            w.WriteLine(logMessage);
+        }
+
         public void OnProgressChange(string text)
         {
             if (text != null)

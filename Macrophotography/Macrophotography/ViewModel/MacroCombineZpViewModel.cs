@@ -61,6 +61,7 @@ namespace Macrophotography.ViewModel
 
         #endregion
 
+        #region Classes
 
         public class StackTask
         {
@@ -75,6 +76,8 @@ namespace Macrophotography.ViewModel
             public int Overlap { get; set; }
 
         }
+
+        #endregion
 
         #region Task ListBox Management
 
@@ -298,10 +301,7 @@ namespace Macrophotography.ViewModel
 
         #endregion
 
-
-        
-
-
+       
         public bool UseSmallThumb
         {
             get { return PluginSetting.GetBool("UseSmallThumb"); }
@@ -431,8 +431,7 @@ namespace Macrophotography.ViewModel
         public void Init()
         {
             Output.Clear();
-            _shouldStop = false;
-           
+            _shouldStop = false;           
         }
 
         public void CopyFiles(bool preview)
