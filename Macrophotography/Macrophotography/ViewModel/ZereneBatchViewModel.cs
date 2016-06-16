@@ -1475,9 +1475,9 @@ namespace Macrophotography.ViewModel
                     launchCommand = line;
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                OnProgressChange("Could not read the Zerene Command File");
+                OnProgressChange("Could not read the Zerene Command File" + exception.Message);
             }
 
             try
@@ -1506,9 +1506,9 @@ namespace Macrophotography.ViewModel
 
                 OnProgressChange("Launch Command: " + launchCommand);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                OnProgressChange("Could not change Zerene Command File");
+                OnProgressChange("Could not change Zerene Command File" + exception.Message);
             }
         }
 
