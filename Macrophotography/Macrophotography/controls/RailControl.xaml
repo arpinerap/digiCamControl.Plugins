@@ -549,7 +549,7 @@
 
                     <Label Content="Start Delay" Grid.Column="0" Grid.Row="1" />
                     <controls:NumericUpDown Value="{Binding InitStackDelay, Source={x:Static macrophotography:StepperManager.Instance}}"
-                                    Minimum="0" Interval="1000" IsEnabled="{Binding IsFree}" 
+                                    Minimum="5000" Interval="1000" IsEnabled="{Binding IsFree}" 
                                     Grid.Column="1" Grid.Row="1" Margin="3"/>
 
                     <Grid Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Top" Visibility="{Binding IsNotStacking, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}">

@@ -195,13 +195,14 @@ namespace Macrophotography.controls
             {
                 // Stabilization
                 Thread.Sleep(StepperManager.Instance.StabilizationDelay);
-                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(3000); }
+                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(5000); }
                 //======================
                 // Shot
                 ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
                 //======================
                 // Wait for file transfer to be finished
                 ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                Thread.Sleep(1000);
                 //======================
                 // Focus moving logic
                 ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
@@ -222,13 +223,14 @@ namespace Macrophotography.controls
             {
                 // Stabilization
                 Thread.Sleep(StepperManager.Instance.StabilizationDelay);
-                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(3000); }
+                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(5000); }
                 //======================
                 // Shot
                 ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
                 //======================
                 // Wait for file transfer to be finished
                 ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+                Thread.Sleep(1000);
                 //======================
                 // Focus moving logic
                 ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);
