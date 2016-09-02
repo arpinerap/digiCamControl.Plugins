@@ -85,13 +85,13 @@ namespace Macrophotography.controls
         private void FlipLeft_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(5, DCsteps * 1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1, StepperManager.Instance.Speed3d);
         }
 
         private void FlipRight_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DCsteps = (int)DCsteps_sld.Value;
-            ArduinoPorts.Instance.SendCommand(5, DCsteps * -1, StepperManager.Instance.Speed3d);
+            ArduinoPorts.Instance.SendCommand(5, DCsteps * 1, StepperManager.Instance.Speed3d);
         }
 
 
