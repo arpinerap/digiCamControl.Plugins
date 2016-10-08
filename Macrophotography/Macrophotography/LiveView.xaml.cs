@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -74,6 +75,8 @@ namespace Macrophotography
                     e.Cancel = true;
                     ServiceProvider.WindowsManager.ExecuteCommand("MacroLiveView_Hide");
                 }
+                ArduinoPorts.Instance.SendCommand(10, 0, 0);
+                System.Threading.Tasks.Task.Delay(300);
                 ArduinoPorts.Instance.ClosePort();
                 ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
                 ServiceProvider.DeviceManager.SelectedCameraDevice.HostMode = false;
@@ -220,6 +223,22 @@ namespace Macrophotography
             LiveViewViewModel.Instance.MagiCalc(3.6);
             Windows.MagniWin MW= new Windows.MagniWin();
             MW.ShowDialog();
+        }
+
+        private void MetroWindow_Activated(object sender, EventArgs e)
+        {
+            ArduinoPorts.Instance.DetectArduino();
+            //System.Threading.Thread.Sleep(2500);
+            Task.Delay(5000);
+            ArduinoPorts.Instance.SendCommand(10, 1, 0);
+        }
+
+        private void Arduino_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ArduinoPorts.Instance.DetectArduino();
+            //System.Threading.Thread.Sleep(2500);
+            Task.Delay(5000);
+            ArduinoPorts.Instance.SendCommand(10, 1, 0);
         }
     }
 }

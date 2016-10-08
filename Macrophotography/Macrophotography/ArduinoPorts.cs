@@ -89,7 +89,8 @@ namespace Macrophotography
             if (!sp.IsOpen)
             {
                 sp.PortName = port;
-                sp.BaudRate = 9600;
+                //sp.BaudRate = 9600;
+                sp.BaudRate = 38400;
                 sp.Parity = Parity.None;
                 sp.StopBits = StopBits.One;
                 sp.DataBits = 8;
@@ -127,14 +128,14 @@ namespace Macrophotography
                 FillPorts();
                 foreach (string port in portslist)
                 {
-                    sp = new SerialPort(port, 9600);
+                    //sp = new SerialPort(port, 9600);
+                    sp = new SerialPort(port, 38400);
                     int intReturnASCII = 0;
                     char charReturnValue = (Char)intReturnASCII;
                     ClosePort();
                     sp.Open();
                     sp.WriteLine("1535 ");
-                    Thread.Sleep(1000);
-                    //Task.Delay(100000);
+                    Thread.Sleep(500);
                     int count = sp.BytesToRead;
                     string returnMessage = "";
                     while (count > 0)
@@ -143,6 +144,7 @@ namespace Macrophotography
                         returnMessage = returnMessage + Convert.ToChar(intReturnASCII);
                         count--;
                     }
+                    Task.Delay(1000);
                     sp.Close();
                     if (returnMessage.Contains("YES"))
                     {

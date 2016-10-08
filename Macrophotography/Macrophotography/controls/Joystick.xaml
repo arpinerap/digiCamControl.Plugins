@@ -246,7 +246,7 @@
                     <RadialMenu:RadialMenuItem x:Name="Up_button"  
                     EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
                     ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5" 
-                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Up_button_Click">
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Up_button_Click"  >
 
                     </RadialMenu:RadialMenuItem>
 
@@ -260,9 +260,7 @@
                     <RadialMenu:RadialMenuItem x:Name="Right_button" 
                     EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
                     ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5" 
-                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Right_button_Click">
-
-                    </RadialMenu:RadialMenuItem>
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" PreviewMouseLeftButtonDown="Right_button_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="Right_button_PreviewMouseLeftButtonUp" MouseLeftButtonUp="Right_button_MouseLeftButtonUp" />
 
                     <RadialMenu:RadialMenuItem IsEnabled="False"
                     EdgePadding="10" EdgeInnerRadius="85" EdgeOuterRadius="100" OuterRadius="100" InnerRadius="85"
@@ -274,7 +272,7 @@
                     <RadialMenu:RadialMenuItem x:Name="Down_button" 
                     EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
                     ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5"
-                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Down_button_Click">
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Down_button_Click" >
 
                     </RadialMenu:RadialMenuItem>
 
@@ -287,8 +285,9 @@
 
                     <RadialMenu:RadialMenuItem x:Name="Left_button" 
                     EdgePadding="0" EdgeInnerRadius="85" EdgeOuterRadius="120" OuterRadius="120" InnerRadius="90"
-                    ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5"
-                    ArrowBorderBrush="Gray" ArrowBackground="Snow" Click="Left_button_Click">
+                    ArrowRadius="100" ArrowHeight="35" ArrowWidth="50" ArrowBorderThickness="5" 
+                    ArrowBorderBrush="Gray" ArrowBackground="Snow" 
+                    Delay="500" Interval="100" Click="Left_button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
@@ -303,12 +302,12 @@
 
                 <RadialMenu:RadialMenu x:Name="LiveViewOff2_btn" IsOpen="False" HalfShiftedItems="True" Foreground="Transparent" Grid.Column="0" Margin="-75,-80,-50,-40">
 
-                    <RadialMenu:RadialMenuItem x:Name="FlipUp_button"  
+                    <RadialMenu:RadialMenuItem x:Name="FlipUp_button" 
                     EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50"
                     BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
                     ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
-                    ArrowBorderBrush="Gray" Click="FlipUp_Button_Click">
-
+                    ArrowBorderBrush="Gray" Delay="500" Interval="150" Click="FlipUp_Button_Click">
+                        
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem  IsEnabled="False" Visibility="Hidden"
@@ -323,7 +322,8 @@
                     EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50"
                     BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
                     ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
-                    ArrowBorderBrush="Gray" Click="FlipRight_btn_Click" >
+                    ArrowBorderBrush="Gray" 
+                                               Delay="500" Interval="150" Click="FlipRight_btn_Click" >
 
                     </RadialMenu:RadialMenuItem>
 
@@ -339,7 +339,8 @@
                     EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50"
                     BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
                     ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
-                    ArrowBorderBrush="Gray" Click="FlipDown_Button_Click">
+                    ArrowBorderBrush="Gray" 
+                                               Delay="500" Interval="150" Click="FlipDown_Button_Click">
 
                     </RadialMenu:RadialMenuItem>
 
@@ -355,7 +356,8 @@
                     EdgePadding="0" EdgeInnerRadius="50" EdgeOuterRadius="75" OuterRadius="75" InnerRadius="50" 
                     BorderBrush="Black" BorderThickness="5" ContentRadius="62" 
                     ArrowRadius="65" ArrowHeight="20" ArrowWidth="35" ArrowBorderThickness="7" 
-                    ArrowBorderBrush="Gray" Click="FlipLeft_btn_Click">
+                    ArrowBorderBrush="Gray" 
+                                                Delay="500" Interval="150" Click="FlipLeft_btn_Click">
                     </RadialMenu:RadialMenuItem>
 
                     <RadialMenu:RadialMenuItem IsEnabled="False" Visibility="Hidden"
@@ -373,8 +375,8 @@
                 <Slider x:Name="DCsteps_sld" Style="{DynamicResource FlatSlider}" Visibility="Hidden"
                     Grid.Column="1" Height="70" HorizontalAlignment="Center" Margin="5,0,0,0"
                     Orientation="Vertical" VerticalAlignment="Center"
-                    AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True"
-                Minimum="10" Maximum="2000" Ticks="1,5,10,20,50,100,200,500,1000,1500,2000">
+                    AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True" Minimum="1"
+                Ticks="1,5,10,20,50,100,200">
                 </Slider>
 
                 <Button x:Name="rot1_button" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
@@ -399,11 +401,11 @@
                     <Image Source="/macrophotography;component/resources/appbar.flip.down.png" />
                 </Button>
 
-                <Button x:Name="FlipUp_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                <Button x:Name="FlipUp" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
                         Height="50" Width="50" Padding="-20"
                         Grid.Column="0" 
-                        HorizontalAlignment="Left" VerticalAlignment="Top" Click="FlipUp_Button_Click">
-                    <Image Source="/macrophotography;component/resources/appbar.flip.up.png"/>
+                        HorizontalAlignment="Left" VerticalAlignment="Top">
+                    />
                 </Button>
 
                 <Button x:Name="FlipLeft_btn" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"

@@ -45,21 +45,6 @@ namespace Macrophotography.controls
             StepperManager.Instance.TotalDOFFull = 0;
         }
 
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-            // Close Serial Port when Plugin is closed
-            try
-            {
-                ArduinoPorts.Instance.ClosePort();
-                ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
-                ServiceProvider.DeviceManager.SelectedCameraDevice.HostMode = false;
-            }
-            catch (Exception)
-            {
-            }
-        }
-
 
         #region Slider Manager
 
@@ -189,21 +174,34 @@ namespace Macrophotography.controls
 
         CancellationTokenSource m_cancelTokenSource = null;
 
+        private void Shot()
+        {
+            // Stabilization
+            Thread.Sleep(StepperManager.Instance.StabilizationDelay);
+            if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(5000); }
+            //======================
+            // LED Flash ON
+            if (StepperManager.Instance.IsLightON) { ArduinoPorts.Instance.SendCommand(15, 0, 0); }
+            ArduinoPorts.Instance.SendCommand(15, 1, StepperManager.Instance.LightValue * 10);
+            //======================
+            // Shot
+            ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
+            //======================
+            // LED Flash OFF
+            ArduinoPorts.Instance.SendCommand(15, 0, 0);
+            //======================
+            // Wait for file transfer to be finished
+            ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
+            Thread.Sleep(1000);
+            //======================
+        }
+
         private void Shot_MoveFar()
         {
             try
             {
-                // Stabilization
-                Thread.Sleep(StepperManager.Instance.StabilizationDelay);
-                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(5000); }
-                //======================
-                // Shot
-                ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                //======================
-                // Wait for file transfer to be finished
-                ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
-                Thread.Sleep(1000);
-                //======================
+                // Take Photo
+                Shot();
                 // Focus moving logic
                 ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull);
                 //======================
@@ -221,16 +219,8 @@ namespace Macrophotography.controls
         {
             try
             {
-                // Stabilization
-                Thread.Sleep(StepperManager.Instance.StabilizationDelay);
-                if (StepperManager.Instance.StabilizationDelay == 0) { Thread.Sleep(5000); }
-                //======================
-                // Shot
-                ServiceProvider.DeviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                //======================
-                // Wait for file transfer to be finished
-                ServiceProvider.DeviceManager.SelectedCameraDevice.WaitForCamera(5000);
-                Thread.Sleep(1000);
+                // Take Photo
+                Shot();
                 //======================
                 // Focus moving logic
                 ArduinoPorts.Instance.SendCommand(1, StepperManager.Instance.ShotStepFull * -1);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,7 @@ namespace Macrophotography
         private bool _IsStacking;
         private bool _IsNearFocusLocked; 
         private bool _IsFarFocusLocked;
+        private bool _IsLightON = false;
         private bool _GoNearToFar = true;
         private int _position = 0;
         private int _lastPosition = 0;
@@ -59,7 +61,9 @@ namespace Macrophotography
 
         private int _LinesNumber = 0;
 
+        private int _LightValue = 50;
 
+        public Stopwatch stopwatch;
 
         #endregion
 
@@ -190,7 +194,16 @@ namespace Macrophotography
             get { return !IsFarFocusLocked; }
         }
 
-        
+        public bool IsLightON
+        {
+            get { return _IsLightON; }
+            set
+            {
+                _IsLightON = value;
+                RaisePropertyChanged(() => IsLightON);
+            }
+        }
+
         public bool IsStacking
         {
             get { return _IsStacking; }
@@ -462,7 +475,26 @@ namespace Macrophotography
             }
         }
 
-        
+        public int LightValue
+        {
+            get { return _LightValue; }
+            set
+            {
+                _LightValue = value;
+                RaisePropertyChanged(() => LightValue);
+            }
+        }
+
+        /*public static Stopwatch stopwatch
+        {
+            get { return _stopwatch; }
+            set
+            {
+                _stopwatch = value;
+                RaisePropertyChanged(() => stopwatch);
+            }
+        }*/
+
         #endregion
 
 

@@ -14,6 +14,8 @@
              xmlns:my="clr-namespace:CameraControl.Controls;assembly=CameraControl.Core"             
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:classes2="clr-namespace:Macrophotography.Classes"         
+             xmlns:viewmodel="clr-namespace:Macrophotography.ViewModel"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:classes="clr-namespace:CameraControl.Core.Classes;assembly=CameraControl.Core"
@@ -22,7 +24,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="1050.544" d:DesignWidth="1150.718"
              WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing" 
-                      d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}">
+                      d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}" Activated="MetroWindow_Activated">
     
     <!--<Window.DataContext>
         <macrophotography:LiveViewViewModel/>
@@ -37,12 +39,14 @@
                 <Label Content=" || "/>
                 <Label Content="{Binding NameRail, Source={x:Static macrophotography:StepperManager.Instance}}"/>
                 <Label Content=" || "/>
-                <ComboBox x:Name="Ports_Combo_Commands" SelectedItem="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                <Label Content="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"/>
+                <Label Content=" || "/>
+                <!--<ComboBox x:Name="Ports_Combo_Commands" SelectedItem="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
                                   ItemsSource="{Binding portslist, Source={x:Static macrophotography:ArduinoPorts.Instance}}"                        
                           Height="38" VerticalAlignment="Center"/>
-                <Label Content=" || "/>
-                <Button Content="Search Stage" Command="{Binding DetectArduino, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
-                        Height="38" VerticalAlignment="Center"/>            
+                <Label Content=" || "/>-->
+                <Button x:Name="Arduino_Button" Content="Search Stage" 
+                        Height="38" VerticalAlignment="Center" Click="Arduino_Button_Click"/>            
             </WrapPanel>
 
         </controls:WindowCommands>
@@ -456,7 +460,10 @@
             <local:MacroCameraControl/>
         </Expander>
 
-        <local:Joystick  IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"
+        <!--<local:Joystick  IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"
+            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>-->
+
+        <local:Joy1 
             Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
 
         <Expander Header="Stacking Control" 
@@ -479,6 +486,29 @@
                 <TabItem Header="Session">
                     <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
                              BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
+                        <i:Interaction.Behaviors>
+                            <classes2:HorizontalScrollBehavior/>
+                        </i:Interaction.Behaviors>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <ContextMenu.DataContext>
+                                    <viewmodel:ImageListViewmodel/>
+                                </ContextMenu.DataContext>
+                                <MenuItem Header="Select" >
+                                    <MenuItem Header="{translation:TranslateExtension LabelSelectNone}" Command="{Binding Path=SelectNoneCommand}"/>
+                                    <MenuItem Header="{translation:TranslateExtension LabelSelectAll}" Command="{Binding Path=SelectAllCommand}"/>
+                                    <MenuItem Header="{translation:TranslateExtension LabelSelectUnLiked}" Command="{Binding Path=SelectUnLiked}"/>
+                                    <MenuItem Header="{translation:TranslateExtension LabelSelectLiked}" Command="{Binding Path=SelectLiked}"/>
+                                    <MenuItem Header="{translation:TranslateExtension LabelSelectSeries}" Command="{Binding Path=SelectSeries}"/>
+                                    <MenuItem Header="{translation:TranslateExtension MenuInver}" Command="{Binding Path=SelectInvertCommand}"/>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="{translation:TranslateExtension LabelDeleteFiles}" Command="{Binding SendCommand}" CommandParameter="Del_Image" />
+                                <MenuItem Header="{translation:TranslateExtension LabelShowInExplorer}" Command="{Binding SendCommand}" CommandParameter="ViewExplorer" />
+                                <MenuItem Header="{translation:TranslateExtension LabelOpenInExternalViewer}" Command="{Binding SendCommand}" CommandParameter="ViewExternal" />
+                                <MenuItem Header="Copy full path in clipboard" Name="mnu_copypath" Command="{Binding Path=CopyNameClipboardCommand}" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top"/>

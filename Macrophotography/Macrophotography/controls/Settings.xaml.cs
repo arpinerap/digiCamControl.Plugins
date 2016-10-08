@@ -40,7 +40,6 @@ namespace Macrophotography.controls
             Fill_ComboNameLens();
             Fill_ComboNameRail();
             Fill_ComboNameSensor();
-            ArduinoPorts.Instance.DetectArduino();
             NameRail_Combo.SelectedIndex = 0;
             Fill_RailData();
             LiveViewViewModel.Instance.SetAFLensConnected();
@@ -642,6 +641,8 @@ namespace Macrophotography.controls
         private void SearchPort_btn_Click(object sender, RoutedEventArgs e)
         {
             ArduinoPorts.Instance.DetectArduino();
+            System.Threading.Thread.Sleep(2500);
+            ArduinoPorts.Instance.SendCommand(10, 1, 0);
         }
 
         private void ValueChanged(object sender, TextChangedEventArgs e)
