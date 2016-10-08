@@ -375,12 +375,8 @@
                 <Slider x:Name="DCsteps_sld" Style="{DynamicResource FlatSlider}" Visibility="Hidden"
                     Grid.Column="1" Height="70" HorizontalAlignment="Center" Margin="5,0,0,0"
                     Orientation="Vertical" VerticalAlignment="Center"
-<<<<<<< HEAD
                     AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True" Minimum="1"
-=======
-                    AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="True"
->>>>>>> origin/master
-                Ticks="1,5,10,20,50,100,200">
+                    Ticks="1,2,5,10,20,50,100,200">
                 </Slider>
 
                 <Button x:Name="rot1_button" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
