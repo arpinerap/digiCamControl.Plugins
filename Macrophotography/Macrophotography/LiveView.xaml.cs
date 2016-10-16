@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,13 +19,16 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
+using CameraControl.Core.Classes.Queue;
 using CameraControl.Core.Translation;
 using System.IO.Ports;
 using System.Timers;
 using CameraControl.Core.Interfaces;
+using CameraControl.Core.Wpf;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using Macrophotography;
+using Macrophotography.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Macrophotography
@@ -32,9 +38,11 @@ namespace Macrophotography
     /// </summary>
     public partial class LiveView : IWindow
     {
-        private Timer _timer = new Timer();
+        //private Timer _timer = new Timer();
 
         //private bool _loading = false;
+
+
 
         public LiveView()
         {
@@ -44,6 +52,8 @@ namespace Macrophotography
             //RefreshItems();
             
         }
+
+    #region Image Methods
 
         private void _image_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -65,6 +75,22 @@ namespace Macrophotography
             }
         }
 
+        private void _image_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                ((LiveViewViewModel)DataContext).SelectedCameraDevice.LiveViewImageZoomRatio.NextValue();
+            }
+            else
+            {
+                ((LiveViewViewModel)DataContext).SelectedCameraDevice.LiveViewImageZoomRatio.PrevValue();
+            }
+        }
+
+    #endregion
+
+    #region Windows Methods    
+ 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Close Serial Port when Plugin is closed
@@ -86,7 +112,82 @@ namespace Macrophotography
             }
         }
 
+        private void MetroWindow_Activated(object sender, EventArgs e)
+        {
+            ArduinoPorts.Instance.DetectArduino();
+            //System.Threading.Thread.Sleep(2500);
+            Task.Delay(5000);
+            ArduinoPorts.Instance.SendCommand(10, 1, 0);
+        }
 
+    #endregion
+
+    #region Zoom&Pan Methods
+
+    
+        private void LvZoomAndPanControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Point curContentMousePoint = e.GetPosition(PreviewBitmap);
+            if (LvZoomAndPanControl.ContentScale <= LvZoomAndPanControl.FitScale())
+            {
+                LvZoomAndPanControl.ZoomAboutPoint(4, curContentMousePoint);
+            }
+            else
+            {
+                LvZoomAndPanControl.ScaleToFit();
+            }
+        }
+
+        private void LvZoomAndPanControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+            Point curContentMousePoint = e.GetPosition(PreviewBitmap);
+            if (e.Delta > 0)
+            {
+                LvZoomAndPanControl.ZoomIn(curContentMousePoint);
+            }
+            else if (e.Delta < 0)
+            {
+                // don't allow zoomout les that original image 
+                if (LvZoomAndPanControl.ContentScale - 0.2 > LvZoomAndPanControl.FitScale())
+                {
+                    LvZoomAndPanControl.ZoomOut(curContentMousePoint);
+                }
+                else
+                {
+                    LvZoomAndPanControl.ScaleToFit();
+                }
+            }
+        }
+
+        private void LvZoomAndPanControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            LvZoomAndPanControl.ScaleToFit();
+        }
+
+        /*private void zoomAndPanControl2_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+            Point curContentMousePoint = e.GetPosition(Image);
+            if (e.Delta > 0)
+            {
+                zoomAndPanControl.ZoomIn(curContentMousePoint);
+            }
+            else if (e.Delta < 0)
+            {
+                // don't allow zoomout les that original image 
+                if (zoomAndPanControl.ContentScale - 0.2 > zoomAndPanControl.FitScale())
+                {
+                    zoomAndPanControl.ZoomOut(curContentMousePoint);
+                }
+                else
+                {
+                    zoomAndPanControl.ScaleToFit();
+                }
+            }
+        }*/
+
+    #endregion
 
         /*private void cmb_transfer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {       
@@ -225,14 +326,6 @@ namespace Macrophotography
             MW.ShowDialog();
         }
 
-        private void MetroWindow_Activated(object sender, EventArgs e)
-        {
-            ArduinoPorts.Instance.DetectArduino();
-            //System.Threading.Thread.Sleep(2500);
-            Task.Delay(5000);
-            ArduinoPorts.Instance.SendCommand(10, 1, 0);
-        }
-
         private void Arduino_Button_Click(object sender, RoutedEventArgs e)
         {
             ArduinoPorts.Instance.DetectArduino();
@@ -240,5 +333,9 @@ namespace Macrophotography
             Task.Delay(5000);
             ArduinoPorts.Instance.SendCommand(10, 1, 0);
         }
+
+       
+        
+
     }
 }

@@ -4,198 +4,213 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
+using CameraControl.Core.Interfaces;
 using CameraControl.Devices;
-using Microsoft.VisualBasic.FileIO;
+using CameraControl.Devices.Classes;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using System.Windows.Controls;
 
 namespace Macrophotography.ViewModel
 {
-    class ImageListViewmodel : ViewModelBase
+    public class ImageListViewModel : ViewModelBase
     {
-        public GalaSoft.MvvmLight.Command.RelayCommand<string> SendCommand { get; set; }
+        private bool _zoomFit;
+        private bool _zoom11;
+        private bool _zoom12;
+        private bool _freeZoom;
+        private bool _zoomToFocus;
+        private bool _lightroomIsInstalled;
+        private bool _photoshopIsInstalled;
+        public bool ZoomFit
+        {
+            get { return _zoomFit; }
+            set
+            {
+                if ( _zoomFit != value && value )
+                {
+                    _zoomFit = true;
+                    Zoom11 = false;
+                    Zoom12 = false;
+                    ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Zoom_Image_Fit);
+                }
+                _zoomFit = value;
+                RaisePropertyChanged(() => ZoomFit);
+            }
+        }
 
-        public ListBox ImageLIst { get; set; }
-        
-        public RelayCommand SelectLiked { get; private set; }
-        public RelayCommand SelectUnLiked { get; private set; }
+        public bool Zoom11
+        {
+            get { return _zoom11; }
+            set
+            {
+                _zoom11 = value;
+                if (value)
+                {
+                    ZoomFit = false;
+                    Zoom12 = false;
+                    ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Zoom_Image_100);
+                }
+                RaisePropertyChanged(() => Zoom11);
+            }
+        }
+
+        public bool Zoom12
+        {
+            get { return _zoom12; }
+            set
+            {
+                _zoom12 = value;
+                if (value)
+                {
+                    ZoomFit = false;
+                    Zoom11 = false;
+                    ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Zoom_Image_200);
+                }
+                RaisePropertyChanged(() => Zoom12);
+            }
+        }
+
+
+        public bool FreeZoom
+        {
+            get { return _freeZoom || Zoom12 || Zoom11; }
+            set
+            {
+                if (value)
+                {
+                    ZoomFit = false;
+                    Zoom11 = false;
+                    Zoom12 = false;
+                }
+                _freeZoom = value;
+            }
+        }
+
+        public bool ZoomToFocus
+        {
+            get { return _zoomToFocus; }
+            set
+            {
+                _zoomToFocus = value;
+                RaisePropertyChanged(() => ZoomToFocus);
+            }
+        }
+
+        public AsyncObservableCollection<IPanelPlugin> PanelPlugins
+        {
+            get { return ServiceProvider.PluginManager.PanelPlugins; }
+        }
+
+        public RelayCommand NextImageCommand { get; private set; }
+        public RelayCommand PrevImageCommand { get; private set; }
+        public RelayCommand OpenExplorerCommand { get; private set; }
+        public RelayCommand DeleteItemCommand { get; private set; }
+        public RelayCommand RestoreCommand { get; private set; }
+        public RelayCommand ImageDoubleClickCommand { get; private set; }
+        public RelayCommand RotateLeftCommand { get; private set; }
+        public RelayCommand RotateRightCommand { get; private set; }
+        public RelayCommand OpenInLightroomCommand { get; private set; }
         public RelayCommand SelectNoneCommand { get; private set; }
-        public RelayCommand SelectInvertCommand { get; private set; }
-        public RelayCommand SelectSeries { get; private set; }
         public RelayCommand SelectAllCommand { get; private set; }
 
-        public ImageListViewmodel()
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool LightroomIsInstalled
         {
-            ServiceProvider.WindowsManager.Event -= Trigger_Event;
-            SelectAllCommand = new RelayCommand(delegate { ServiceProvider.Settings.DefaultSession.SelectAll(); });
-            SelectNoneCommand = new RelayCommand(delegate { ServiceProvider.Settings.DefaultSession.SelectNone(); });
-            SelectLiked = new RelayCommand(delegate { ServiceProvider.Settings.DefaultSession.SelectLiked(); });
-            SelectUnLiked = new RelayCommand(delegate { ServiceProvider.Settings.DefaultSession.SelectUnLiked(); });
-            SelectInvertCommand = new RelayCommand(delegate { ServiceProvider.Settings.DefaultSession.SelectInver(); });
-            SelectSeries =
-                new RelayCommand(delegate
-                {
-                    try
-                    {
-                        ServiceProvider.Settings.DefaultSession.SelectSameSeries(
-                            ServiceProvider.Settings.SelectedBitmap.FileItem.Series);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error("SelectSeries", ex);
-                    }
-                });
-        }
-
-        private void TriggerEvent(string cmd, object o)
-        {
-            try
+            get
             {
-                switch (cmd)
-                {
-                    case WindowsCmdConsts.Del_Image:
-                        {
-                            DeleteItem();
-                        }
-                        break;
-                    case WindowsCmdConsts.Select_Image:
-                        FileItem fileItem = o as FileItem;
-                        if (fileItem != null)
-                        {
-                            ImageLIst.SelectedValue = fileItem;
-                            ImageLIst.ScrollIntoView(fileItem);
-                        }
-                        break;
-                    case WindowsCmdConsts.ViewExternal:
-                        OpenInExternalViewer();
-                        break;
-                    case WindowsCmdConsts.ViewExplorer:
-                        OpenInExplorer();
-                        break;
-                }
-            }
-            catch (Exception exception)
-            {
-                Log.Error("Unable to process TriggerEvent in ImageListViewmodel ", exception);
+                return _lightroomIsInstalled;
             }
 
+           private set
+            {
+                _lightroomIsInstalled = value;
+            }
         }
 
-        private void Trigger_Event(string cmd, object o)
+        public bool PhotoshopIsInstalled
         {
-            try
+            get
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => TriggerEvent(cmd, o)));
+                return _photoshopIsInstalled;
             }
-            catch (Exception)
+
+            private set
             {
+                _photoshopIsInstalled = value;
             }
         }
+
+        public ImageListViewModel()
+        {
+            NextImageCommand =
+                new RelayCommand(() => ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Next_Image));
+            PrevImageCommand =
+                new RelayCommand(() => ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Prev_Image));
+
+            OpenExplorerCommand = new RelayCommand(OpenInExplorer);
+            DeleteItemCommand = new RelayCommand(DeleteItem);
+            RestoreCommand = new RelayCommand(Restore);
+            OpenInLightroomCommand =
+               new RelayCommand(() => ServiceProvider.Settings.DefaultSession.OpenInLightroom(), () => ServiceProvider.Settings.DefaultSession.IsAvailable("Lightroom"));
+            LightroomIsInstalled = ServiceProvider.Settings.DefaultSession.IsAvailable("Lightroom");
+            PhotoshopIsInstalled = ServiceProvider.Settings.DefaultSession.IsAvailable("Photoshop");
+
+            SelectNoneCommand = new RelayCommand(() => ServiceProvider.Settings.DefaultSession.SelectNone());
+            SelectAllCommand = new RelayCommand(() => ServiceProvider.Settings.DefaultSession.SelectAll());
+
+            ImageDoubleClickCommand =
+                new RelayCommand(
+                    () => ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.FullScreenWnd_Show));
+            if (!IsInDesignMode)
+            {
+                ZoomFit = true;
+            }
+            RotateLeftCommand =
+                new RelayCommand(() => ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.RotateLeft));
+            RotateRightCommand =
+                new RelayCommand(() => ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.RotateRight));
+
+        }
+
+        
 
         private void DeleteItem()
         {
-            List<FileItem> filestodelete = new List<FileItem>();
-            try
-            {
-                filestodelete.AddRange(
-                    ServiceProvider.Settings.DefaultSession.Files.Where(fileItem => fileItem.IsChecked));
-
-                if (ServiceProvider.Settings.SelectedBitmap != null &&
-                    ServiceProvider.Settings.SelectedBitmap.FileItem != null &&
-                    filestodelete.Count == 0)
-                    filestodelete.Add(ServiceProvider.Settings.SelectedBitmap.FileItem);
-
-                if (filestodelete.Count == 0)
-                    return;
-                int selectedindex = ImageLIst.Items.IndexOf(filestodelete[0]);
-
-                bool delete = false;
-                if (filestodelete.Count > 1)
-                {
-                    delete = MessageBox.Show("Multile files are selected !! Do you really want to delete selected files ?", "Delete files",
-                        MessageBoxButton.YesNo) == MessageBoxResult.Yes;
-                }
-                else
-                {
-                    delete = MessageBox.Show("Do you really want to delete selected file ?", "Delete file",
-                        MessageBoxButton.YesNo) == MessageBoxResult.Yes;
-
-                }
-                if (delete)
-                {
-                    foreach (FileItem fileItem in filestodelete)
-                    {
-                        if ((ServiceProvider.Settings.SelectedBitmap != null &&
-                             ServiceProvider.Settings.SelectedBitmap.FileItem != null &&
-                             fileItem.FileName == ServiceProvider.Settings.SelectedBitmap.FileItem.FileName))
-                        {
-                            ServiceProvider.Settings.SelectedBitmap.DisplayImage = null;
-                        }
-                        if (File.Exists(fileItem.FileName))
-                            FileSystem.DeleteFile(fileItem.FileName, UIOption.OnlyErrorDialogs,
-                                                  RecycleOption.SendToRecycleBin);
-                        fileItem.RemoveThumbs();
-                        ServiceProvider.Settings.DefaultSession.Files.Remove(fileItem);
-                    }
-                    if (selectedindex < ImageLIst.Items.Count)
-                    {
-                        ImageLIst.SelectedIndex = selectedindex + 1;
-                        ImageLIst.SelectedIndex = selectedindex - 1;
-                        FileItem item = ImageLIst.SelectedItem as FileItem;
-
-                        if (item != null)
-                            ImageLIst.ScrollIntoView(item);
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                Log.Error("Error to delete file", exception);
-            }
+            ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Del_Image);
         }
 
         private void OpenInExplorer()
         {
-            if (ServiceProvider.Settings.SelectedBitmap == null ||
-                ServiceProvider.Settings.SelectedBitmap.FileItem == null)
-                return;
-            try
-            {
-                ProcessStartInfo processStartInfo = new ProcessStartInfo();
-                processStartInfo.FileName = "explorer";
-                processStartInfo.UseShellExecute = true;
-                processStartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                processStartInfo.Arguments =
-                    string.Format("/e,/select,\"{0}\"", ServiceProvider.Settings.SelectedBitmap.FileItem.FileName);
-                Process.Start(processStartInfo);
-            }
-            catch (Exception exception)
-            {
-                Log.Error("Error to show file in explorer", exception);
-            }
+            ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.ViewExplorer);
         }
 
-        private void OpenInExternalViewer()
+        private void Restore()
         {
             if (ServiceProvider.Settings.SelectedBitmap == null ||
                 ServiceProvider.Settings.SelectedBitmap.FileItem == null)
                 return;
-            if (!string.IsNullOrWhiteSpace(ServiceProvider.Settings.ExternalViewer) &&
-                File.Exists(ServiceProvider.Settings.ExternalViewer))
+            var item = ServiceProvider.Settings.SelectedBitmap.FileItem;
+            if (File.Exists(item.BackupFileName))
             {
-                PhotoUtils.Run(ServiceProvider.Settings.ExternalViewer,
-                    "\"" + ServiceProvider.Settings.SelectedBitmap.FileItem.FileName + "\"",
-                    ProcessWindowStyle.Maximized);
-            }
-            else
-            {
-                PhotoUtils.Run("\"" + ServiceProvider.Settings.SelectedBitmap.FileItem.FileName + "\"", "",
-                    ProcessWindowStyle.Maximized);
+                try
+                {
+                    PhotoUtils.WaitForFile(item.FileName);
+                    File.Copy(item.BackupFileName, item.FileName, true);
+                    item.RemoveThumbs();
+                    item.IsLoaded = false;
+                    ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Refresh_Image);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Error restore", ex);
+                }
+
             }
         }
     }

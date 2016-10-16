@@ -35,6 +35,9 @@ namespace Macrophotography
         private bool _operInProgress = false;
         private Timer _timer = new Timer(1000 / 25.0);
 
+        private BitmapSource _previewBitmap;
+        private bool _previewBitmapVisible;
+
         private ICameraDevice _cameraDevice;
         private BitmapSource _bitmap;
         private Bitmap _ColorBitmap;
@@ -293,6 +296,26 @@ namespace Macrophotography
             }
         }
 
+        public BitmapSource PreviewBitmap
+        {
+            get { return _previewBitmap; }
+            set
+            {
+                _previewBitmap = value;
+                RaisePropertyChanged(() => PreviewBitmap);
+                PreviewBitmapVisible = true;
+            }
+        }
+
+        public bool PreviewBitmapVisible
+        {
+            get { return _previewBitmapVisible; }
+            set
+            {
+                _previewBitmapVisible = value;
+                RaisePropertyChanged(() => PreviewBitmapVisible);
+            }
+        }
         public BitmapSource Bitmap
         {
             get { return _bitmap; }

@@ -14,13 +14,13 @@
              xmlns:my="clr-namespace:CameraControl.Controls;assembly=CameraControl.Core"             
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:layouts="clr-namespace:Macrophotography.Layouts"
              xmlns:classes2="clr-namespace:Macrophotography.Classes"         
              xmlns:viewmodel="clr-namespace:Macrophotography.ViewModel"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:classes="clr-namespace:CameraControl.Core.Classes;assembly=CameraControl.Core"
-
-
+             xmlns:zoompan="clr-namespace:CameraControl.Core.Controls.ZoomAndPan;assembly=CameraControl.Core"
              mc:Ignorable="d" 
              d:DesignHeight="1050.544" d:DesignWidth="1150.718"
              WindowState="Maximized" VerticalContentAlignment="Center" WindowStyle="ToolWindow" Closing="MetroWindow_Closing" 
@@ -68,7 +68,6 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
 
             <!-- Iamge ListBox Template-->
-
             <Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
@@ -76,7 +75,7 @@
                             <Grid Margin="-5,0,0,0" >
                                 <!--<Line Stroke="Green" StrokeThickness="4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" X2="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" Visibility="{Binding Alternate, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.5"/>-->
                                 <StackPanel Orientation="Horizontal">
-                                    <Grid Height="150" Margin="4,4,4,4">
+                                    <Grid Height="200" Margin="4,4,4,4">
                                         <Image Source="{Binding Path=Thumbnail}" ToolTip="{Binding Path=ToolTip}" Stretch="Uniform" Margin="3" Name="_image" RenderTransformOrigin="0.5,0.5">
                                             <Image.Effect>
                                                 <DropShadowEffect ShadowDepth="2" Color="Black" BlurRadius="7" />
@@ -126,6 +125,28 @@
             <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type wpf:MoveThumb}">
                 <Rectangle Fill="Transparent"/>
             </ControlTemplate>
+            
+            <Style x:Key="ZoomStyle" TargetType="{x:Type zoompan:ZoomAndPanControl}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type zoompan:ZoomAndPanControl}">
+                            <Border Visibility="{TemplateBinding ZoneOneVisibility}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <!-- The ContentPresenter is used to scale and offset the content of ZoomAndPanControl.
+                    
+                        A transforms computed from 'ContentScale', 'ContentOffsetX' and 'ContentOffsetY' are assigned 
+                        to the 'RenderTransform' property in OnApplyTemplate in ZoomAndPanControl.cs.
+                        
+                        The alignment is set to top-left.  This allows the content offset to be used to place
+                        the content in the center of the viewport when the viewport is bigger than the content.-->
+                                <ContentPresenter x:Name="PART_Content" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
             <!-- ResizeDecorator Template -->
             <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
@@ -148,6 +169,7 @@
                        VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
                 </Grid>
             </ControlTemplate>
+            
             <!-- Designer Item Template-->
             <ControlTemplate x:Key="DesignerItemTemplate" TargetType="ContentControl">
                 <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
@@ -358,12 +380,42 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-
+        <!--<Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.DisplayImage}" Visibility="{Binding LiveViewNotRunning, Converter={StaticResource BooleanToVisibilityConverter1}}"/>-->
+        
 
         <Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Bitmap}" Name="_image" MouseDown="_image_MouseDown" Visibility="{Binding LiveViewIsRunning, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-        <Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.DisplayImage}" Visibility="{Binding LiveViewNotRunning, Converter={StaticResource BooleanToVisibilityConverter1}}"/>
-        
-        <Grid Grid.Row="0" Grid.Column="1">
+
+        <zoompan:ZoomAndPanControl x:Name="LvZoomAndPanControl" Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                   Visibility="{Binding LiveViewIsRunning, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                                   Style="{StaticResource ZoomStyle}" ZoneOneVisibility="{Binding PreviewBitmapVisible, Converter={StaticResource BooleanToVisibilityConverter1}}" 
+                                   MouseWheel="LvZoomAndPanControl_MouseWheel" SizeChanged="LvZoomAndPanControl_SizeChanged" MouseDoubleClick="LvZoomAndPanControl_MouseDoubleClick" ClipToBounds="True">
+            <Image x:Name="PreviewBitmap" Stretch="Uniform" Source="{Binding PreviewBitmap}" RenderTransformOrigin="0.5,0.5" Grid.Row="0" Grid.Column="1"
+                Width="{Binding ElementName=_image, Path=ActualWidth}" Height="{Binding ElementName=_image, Path=ActualHeight}" >
+                    <Image.LayoutTransform>
+                        <RotateTransform  Angle="{Binding Rotation}" />
+                    </Image.LayoutTransform>
+            </Image>
+        </zoompan:ZoomAndPanControl>
+
+     
+
+        <Grid Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" ClipToBounds="True"
+              Visibility="{Binding LiveViewNotRunning, Converter={StaticResource BooleanToVisibilityConverter1}}">
+                <Grid.LayoutTransform>
+                    <RotateTransform  Angle="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.FileItem.RotationAngle}" />
+                </Grid.LayoutTransform>
+            <zoompan:ZoomAndPanControl x:Name="SesionZoomAndPanControl" MouseWheel="SesionZoomAndPanControl_MouseWheel" >
+                    <Image Name="Image" Source="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.DisplayImage}" 
+                           HorizontalAlignment="Stretch" Margin="5" Stretch="Uniform">
+                        <Image.Effect>
+                            <DropShadowEffect ShadowDepth="10" Color="Black" BlurRadius="20" />
+                        </Image.Effect>
+                    </Image>                
+            </zoompan:ZoomAndPanControl>
+            <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Background="Black"/>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1" Name="SetAreaGrid">
             <Grid.LayoutTransform>
                 <RotateTransform  Angle="{Binding Rotation}" />
             </Grid.LayoutTransform>
@@ -393,7 +445,9 @@
             </Viewbox>
         </Grid>
 
-        <GroupBox Header="3d Position" HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" >
+        <GroupBox Header="3d Position" 
+                  HorizontalAlignment="Left" Margin="20,10,10,0" VerticalAlignment="Top" Grid.Column="1" 
+                  Visibility="{Binding LiveViewIsRunning, Converter={StaticResource BooleanToVisibilityConverter1}}">
             <StackPanel Orientation="Vertical">
                 <controls:NumericUpDown x:Name="AngleLevel_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding LevelAngle}"/>
                 <controls:NumericUpDown x:Name="AngleLevelPitch_Nud" Width="200" HideUpDownButtons="True" IsReadOnly="True" Value="{Binding AngleLevelPitching}"/>
@@ -402,8 +456,9 @@
             </StackPanel>
         </GroupBox>
 
-        <!--<StackPanel Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" IsEnabled="{Binding FocusingEnabled}" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10">-->
-        <StackPanel Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10">
+        <StackPanel Name="LiveViewControlPanel"
+            Background="#35000000" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Row="0" Orientation="Vertical" Grid.RowSpan="4" Margin="10,55,10,10"
+            Visibility="{Binding LiveViewIsRunning, Converter={StaticResource BooleanToVisibilityConverter1}}">
             <Button Height="40" Width="40" Margin="0" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Command="{Binding ZoomOutCommand}">
                 <Rectangle Width="20" Height="20">
                     <Rectangle.Fill>
@@ -445,8 +500,7 @@
             </Canvas>
         </StackPanel>
 
-
-        <Expander
+        <Expander Name="Camera_Exp"
             IsExpanded="True" 
             Grid.Row="0" Grid.Column="0" Width="auto" MinWidth="30"
             ExpandDirection="Right"  Padding="0">
@@ -460,13 +514,10 @@
             <local:MacroCameraControl/>
         </Expander>
 
-        <!--<local:Joystick  IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}"
-            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>-->
-
-        <local:Joy1 
+        <local:Joy1 x:Name="NewJoystick"
             Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
 
-        <Expander Header="Stacking Control" 
+        <Expander Name="Stacking_Exp" Header="Stacking Control" 
             IsExpanded="True"
             Grid.Row="1" Grid.ColumnSpan="3" Height="auto" MinHeight="30"        
             ExpandDirection="Up" Padding="0"
@@ -485,14 +536,14 @@
                 </TabItem>
                 <TabItem Header="Session">
                     <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
-                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Bottom" Margin="5" ScrollViewer.CanContentScroll="False" >
+                             BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Stretch" Margin="0" ScrollViewer.CanContentScroll="False">
                         <i:Interaction.Behaviors>
                             <classes2:HorizontalScrollBehavior/>
                         </i:Interaction.Behaviors>
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <ContextMenu.DataContext>
-                                    <viewmodel:ImageListViewmodel/>
+                                    <viewmodel:ImageListViewModel/>
                                 </ContextMenu.DataContext>
                                 <MenuItem Header="Select" >
                                     <MenuItem Header="{translation:TranslateExtension LabelSelectNone}" Command="{Binding Path=SelectNoneCommand}"/>
@@ -515,6 +566,9 @@
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
                     </ListBox>
+                </TabItem>
+                <TabItem Header="Session2">
+                    <layouts:PanelLayout/>
                 </TabItem>
                 <TabItem Header="CombineZP">                   
                     <local:CombineZP/>
