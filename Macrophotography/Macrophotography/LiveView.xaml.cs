@@ -122,7 +122,7 @@ namespace Macrophotography
 
     #endregion
 
-    #region Zoom&Pan Methods
+    /*#region Zoom&Pan Methods
 
     
         private void LvZoomAndPanControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -165,29 +165,29 @@ namespace Macrophotography
             LvZoomAndPanControl.ScaleToFit();
         }
 
-        /*private void zoomAndPanControl2_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void SesionZoomAndPanControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
             Point curContentMousePoint = e.GetPosition(Image);
             if (e.Delta > 0)
             {
-                zoomAndPanControl.ZoomIn(curContentMousePoint);
+                SesionZoomAndPanControl.ZoomIn(curContentMousePoint);
             }
             else if (e.Delta < 0)
             {
                 // don't allow zoomout les that original image 
-                if (zoomAndPanControl.ContentScale - 0.2 > zoomAndPanControl.FitScale())
+                if (SesionZoomAndPanControl.ContentScale - 0.2 > SesionZoomAndPanControl.FitScale())
                 {
-                    zoomAndPanControl.ZoomOut(curContentMousePoint);
+                    SesionZoomAndPanControl.ZoomOut(curContentMousePoint);
                 }
                 else
                 {
-                    zoomAndPanControl.ScaleToFit();
+                    SesionZoomAndPanControl.ScaleToFit();
                 }
             }
-        }*/
+        }
 
-    #endregion
+    #endregion*/
 
         /*private void cmb_transfer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {       

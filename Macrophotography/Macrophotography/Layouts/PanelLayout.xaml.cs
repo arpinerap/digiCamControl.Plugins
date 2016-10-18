@@ -666,7 +666,6 @@ namespace Macrophotography.Layouts
         {
             InitializeComponent();
             ImageLIst = ImageLIstBox;
-            ImageListViewModel = (ImageListViewModel)ZoomAndPanControl.DataContext;
             InitServices();
         }
     }

@@ -13,7 +13,7 @@ namespace Macrophotography.Layouts
             ZoomAndPanControl = zoomAndPanControl;
             ImageListViewModel = (ImageListViewModel)ZoomAndPanControl.DataContext;
             content = Image;
-            InitServices();
+            //InitServices();
         }
     }
 }

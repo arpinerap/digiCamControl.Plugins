@@ -649,20 +649,5 @@ namespace Macrophotography.Layouts
         {
             ZoomAndPanControl.ZoomAboutPoint(ZoomAndPanControl.ContentScale + 0.1, contentZoomCenter);
         }
-
-        public void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MediaElement.Play();
-        }
-
-        public void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            MediaElement.Pause();
-        }
-
-        public void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            MediaElement.Stop();
-        }
     }
 }
