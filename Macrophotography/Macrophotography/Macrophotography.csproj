@@ -368,10 +368,7 @@
     <Compile Include="controls\VisualSFM.xaml.cs">
       <DependentUpon>VisualSFM.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Layouts\FullLayout.xaml.cs">
-      <DependentUpon>FullLayout.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Layouts\LayoutBase.cs" />
+    <Compile Include="Layouts\LayoutBaseMacro.cs" />
     <Compile Include="Layouts\ReviewLayout.xaml.cs">
       <DependentUpon>ReviewLayout.xaml</DependentUpon>
     </Compile>
@@ -442,10 +439,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="controls\VisualSFM.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Layouts\FullLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

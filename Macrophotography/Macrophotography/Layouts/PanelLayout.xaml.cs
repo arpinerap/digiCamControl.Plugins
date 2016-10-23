@@ -659,7 +659,7 @@ namespace Macrophotography.Layouts
 
     }*/
 
-    public partial class PanelLayout : LayoutBase
+    public partial class PanelLayout : LayoutBaseMacro
 
     {
         public PanelLayout()

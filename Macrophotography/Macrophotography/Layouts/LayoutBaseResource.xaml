@@ -49,6 +49,7 @@
                         The alignment is set to top-left.  This allows the content offset to be used to place
                         the content in the center of the viewport when the viewport is bigger than the content.
                         -->
+
                         <ContentPresenter 
 							x:Name="PART_Content"
                             HorizontalAlignment="Left"

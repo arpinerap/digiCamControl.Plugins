@@ -29,6 +29,7 @@ using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using Macrophotography;
 using Macrophotography.ViewModel;
+using Macrophotography.Layouts;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Macrophotography
@@ -50,7 +51,6 @@ namespace Macrophotography
             //if (ServiceProvider.DeviceManager != null)
             //    ServiceProvider.DeviceManager.PropertyChanged += DeviceManager_PropertyChanged;
             //RefreshItems();
-            
         }
 
     #region Image Methods
@@ -87,10 +87,14 @@ namespace Macrophotography
             }
         }
 
-    #endregion
+        #endregion
 
-    #region Windows Methods    
+
+        #region Windows Methods    
+
  
+
+
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Close Serial Port when Plugin is closed

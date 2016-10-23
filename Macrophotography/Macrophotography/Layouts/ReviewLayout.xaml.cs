@@ -5,14 +5,15 @@ namespace Macrophotography.Layouts
     /// <summary>
     /// Lógica de interacción para ReviewLayout.xaml
     /// </summary>
-    public partial class ReviewLayout : LayoutBase
+    public partial class ReviewLayout : LayoutBaseMacro
     {
         public ReviewLayout()
         {
             InitializeComponent();
-            ZoomAndPanControl = zoomAndPanControl;
-            ImageListViewModel = (ImageListViewModel)ZoomAndPanControl.DataContext;
+            ZoomAndPanControlMacro = zoomAndPanControl;
+            ImageListViewModel = (ImageListViewModel)ZoomAndPanControlMacro.DataContext;
             content = Image;
+            //UnInit();
             //InitServices();
         }
     }

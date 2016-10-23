@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region USINGS
+
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,9 +22,11 @@ using CameraControl.Devices;
 using Macrophotography.ViewModel;
 using Microsoft.VisualBasic.FileIO;
 
+#endregion
+
 namespace Macrophotography.Layouts
 {
-    public class LayoutBase : UserControl
+    public class LayoutBaseMacro : UserControl
     {
         /// <summary>
      
@@ -35,13 +39,12 @@ namespace Macrophotography.Layouts
         public ListBox ImageLIst { get; set; }
         private readonly BackgroundWorker _worker = new BackgroundWorker();
         private FileItem _selectedItem = null;
-        public ZoomAndPanControl ZoomAndPanControl { get; set; }
+        public ZoomAndPanControl ZoomAndPanControlMacro { get; set; }
         public UIElement content { get; set; }
-        public MediaElement MediaElement { get; set; }
 
         public ImageListViewModel ImageListViewModel { get; set; }
 
-        public LayoutBase()
+        public LayoutBaseMacro()
         {
             ImageListViewModel = new ImageListViewModel();
             _worker.DoWork += worker_DoWork;
@@ -50,11 +53,11 @@ namespace Macrophotography.Layouts
 
         public void UnInit()
         {
-            if (ZoomAndPanControl != null)
+            if (ZoomAndPanControlMacro != null)
             {
-                ZoomAndPanControl.ContentScaleChanged -= ZoomAndPanControl_ContentScaleChanged;
-                ZoomAndPanControl.ContentOffsetXChanged -= ZoomAndPanControl_ContentScaleChanged;
-                ZoomAndPanControl.ContentOffsetYChanged -= ZoomAndPanControl_ContentScaleChanged;
+                ZoomAndPanControlMacro.ContentScaleChanged -= ZoomAndPanControl_ContentScaleChanged;
+                ZoomAndPanControlMacro.ContentOffsetXChanged -= ZoomAndPanControl_ContentScaleChanged;
+                ZoomAndPanControlMacro.ContentOffsetYChanged -= ZoomAndPanControl_ContentScaleChanged;
             }
             _worker.DoWork -= worker_DoWork;
             _worker.RunWorkerCompleted -= _worker_RunWorkerCompleted;
@@ -158,20 +161,20 @@ namespace Macrophotography.Layouts
                 if (ServiceProvider.Settings.DefaultSession.Files.Count > 0)
                     ImageLIst.SelectedIndex = 0;
             }
-            if (ZoomAndPanControl != null)
+            if (ZoomAndPanControlMacro != null)
             {
-                ZoomAndPanControl.ContentScaleChanged += ZoomAndPanControl_ContentScaleChanged;
-                ZoomAndPanControl.ContentOffsetXChanged += ZoomAndPanControl_ContentScaleChanged;
-                ZoomAndPanControl.ContentOffsetYChanged += ZoomAndPanControl_ContentScaleChanged;
+                ZoomAndPanControlMacro.ContentScaleChanged += ZoomAndPanControl_ContentScaleChanged;
+                ZoomAndPanControlMacro.ContentOffsetXChanged += ZoomAndPanControl_ContentScaleChanged;
+                ZoomAndPanControlMacro.ContentOffsetYChanged += ZoomAndPanControl_ContentScaleChanged;
             }
         }
 
         private void ZoomAndPanControl_ContentScaleChanged(object sender, EventArgs e)
         {
             GeneratePreview();
-            var i = Math.Round(ZoomAndPanControl.FitScale(), 4);
-            ImageListViewModel.FreeZoom = Math.Round(ZoomAndPanControl.ContentScale, 4) >
-                                       Math.Round(ZoomAndPanControl.FitScale(), 4);
+            var i = Math.Round(ZoomAndPanControlMacro.FitScale(), 4);
+            ImageListViewModel.FreeZoom = Math.Round(ZoomAndPanControlMacro.ContentScale, 4) >
+                                       Math.Round(ZoomAndPanControlMacro.FitScale(), 4);
             if (!ImageListViewModel.FreeZoom)
                 ImageListViewModel.ZoomFit = true;
         }
@@ -185,7 +188,7 @@ namespace Macrophotography.Layouts
 
                 if (bitmap != null)
                 {
-                    if (ZoomAndPanControl == null)
+                    if (ZoomAndPanControlMacro == null)
                     {
                         bitmap.Freeze();
                         ServiceProvider.Settings.SelectedBitmap.Preview = bitmap;
@@ -197,10 +200,10 @@ namespace Macrophotography.Layouts
                             ServiceProvider.Settings.SelectedBitmap.Preview = bitmap;
                             return;
                         }
-                        int dw = (int)(ZoomAndPanControl.ContentViewportWidthRation * bitmap.PixelWidth);
-                        int dh = (int)(ZoomAndPanControl.ContentViewportHeightRation * bitmap.PixelHeight);
-                        int fw = (int)(ZoomAndPanControl.ContentZoomFocusXRation * bitmap.PixelWidth);
-                        int fh = (int)(ZoomAndPanControl.ContentZoomFocusYRation * bitmap.PixelHeight);
+                        int dw = (int)(ZoomAndPanControlMacro.ContentViewportWidthRation * bitmap.PixelWidth);
+                        int dh = (int)(ZoomAndPanControlMacro.ContentViewportHeightRation * bitmap.PixelHeight);
+                        int fw = (int)(ZoomAndPanControlMacro.ContentZoomFocusXRation * bitmap.PixelWidth);
+                        int fh = (int)(ZoomAndPanControlMacro.ContentZoomFocusYRation * bitmap.PixelHeight);
 
                         bitmap.FillRectangle2(0, 0, bitmap.PixelWidth, bitmap.PixelHeight,
                             Color.FromArgb(128, 128, 128, 128));
@@ -295,13 +298,13 @@ namespace Macrophotography.Layouts
 
         public virtual void OnImageLoaded()
         {
-            if (ImageListViewModel.ZoomFit && ZoomAndPanControl != null)
+            if (ImageListViewModel.ZoomFit && ZoomAndPanControlMacro != null)
             {
-                ZoomAndPanControl.ScaleToFit();
+                ZoomAndPanControlMacro.ScaleToFit();
             }
             else
             {
-                if (ZoomAndPanControl != null)
+                if (ZoomAndPanControlMacro != null)
                     ZoomToFocus();
             }
             GeneratePreview();
@@ -453,17 +456,17 @@ namespace Macrophotography.Layouts
                         RefreshImage();
                         break;
                     case WindowsCmdConsts.Zoom_Image_Fit:
-                        ZoomAndPanControl.ScaleToFit();
+                        ZoomAndPanControlMacro.ScaleToFit();
                         break;
                     case WindowsCmdConsts.Zoom_Image_100:
                         ZoomToFocus();
                         LoadFullRes();
-                        ZoomAndPanControl.ZoomTo(1.0);
+                        ZoomAndPanControlMacro.ZoomTo(1.0);
                         break;
                     case WindowsCmdConsts.Zoom_Image_200:
                         ZoomToFocus();
                         LoadFullRes();
-                        ZoomAndPanControl.ZoomTo(2.0);
+                        ZoomAndPanControlMacro.ZoomTo(2.0);
                         break;
                     case WindowsCmdConsts.RotateLeft:
                     {
@@ -494,12 +497,12 @@ namespace Macrophotography.Layouts
                         break;
                     case WindowsCmdConsts.RefreshDisplay:
                         if (ImageListViewModel.ZoomFit)
-                            ZoomAndPanControl.ScaleToFit();
+                            ZoomAndPanControlMacro.ScaleToFit();
                         break;
                 }
                 if (cmd.StartsWith(WindowsCmdConsts.ZoomPoint))
                 {
-                    if (ZoomAndPanControl != null && cmd.Contains("_"))
+                    if (ZoomAndPanControlMacro != null && cmd.Contains("_"))
                     {
                         var vals = cmd.Split('_');
                         if (vals.Count() > 2)
@@ -509,10 +512,10 @@ namespace Macrophotography.Layouts
                             double.TryParse(vals[1], out x);
                             double.TryParse(vals[2], out y);
                             if (cmd.EndsWith("!"))
-                                ZoomAndPanControl.SnapToRation(x, y);
+                                ZoomAndPanControlMacro.SnapToRation(x, y);
                             else
                             {
-                                ZoomAndPanControl.AnimatedSnapToRation(x, y);
+                                ZoomAndPanControlMacro.AnimatedSnapToRation(x, y);
                             }
 
                         }
@@ -597,7 +600,7 @@ namespace Macrophotography.Layouts
                 ServiceProvider.Settings.SelectedBitmap.FileItem
                     .FileInfo.FocusPoints.Count > 0)
             {
-                ZoomAndPanControl.SnapTo(new Point(ServiceProvider.Settings.SelectedBitmap.FileItem.FileInfo.FocusPoints[0].X + ServiceProvider.Settings.SelectedBitmap.FileItem.FileInfo.FocusPoints[0].Width / 2,
+                ZoomAndPanControlMacro.SnapTo(new Point(ServiceProvider.Settings.SelectedBitmap.FileItem.FileInfo.FocusPoints[0].X + ServiceProvider.Settings.SelectedBitmap.FileItem.FileInfo.FocusPoints[0].Width / 2,
                     ServiceProvider.Settings.SelectedBitmap.FileItem.FileInfo.FocusPoints[0].Y + ServiceProvider.Settings.SelectedBitmap.FileItem.FileInfo.FocusPoints[0].Height / 2));
             }
         }
@@ -614,17 +617,17 @@ namespace Macrophotography.Layouts
             else if (e.Delta < 0)
             {
                 // don't allow zoomout les that original image 
-                if (ZoomAndPanControl.ContentScale - 0.1 > ZoomAndPanControl.FitScale())
+                if (ZoomAndPanControlMacro.ContentScale - 0.1 > ZoomAndPanControlMacro.FitScale())
                 {
-                    ZoomAndPanControl.ZoomOut(curContentMousePoint);
+                    ZoomAndPanControlMacro.ZoomOut(curContentMousePoint);
                 }
                 else
                 {
-                    ZoomAndPanControl.ScaleToFit();
+                    ZoomAndPanControlMacro.ScaleToFit();
                 }
                 ZoomOut(curContentMousePoint);
             }
-            if (ZoomAndPanControl.ContentScale > ZoomAndPanControl.FitScale())
+            if (ZoomAndPanControlMacro.ContentScale > ZoomAndPanControlMacro.FitScale())
             {
                 LoadFullRes();
                 ImageListViewModel.FreeZoom = true;
@@ -639,7 +642,7 @@ namespace Macrophotography.Layouts
         /// </summary>
         private void ZoomOut(Point contentZoomCenter)
         {
-            ZoomAndPanControl.ZoomAboutPoint(ZoomAndPanControl.ContentScale - 0.1, contentZoomCenter);
+            ZoomAndPanControlMacro.ZoomAboutPoint(ZoomAndPanControlMacro.ContentScale - 0.1, contentZoomCenter);
         }
 
         /// <summary>
@@ -647,7 +650,7 @@ namespace Macrophotography.Layouts
         /// </summary>
         private void ZoomIn(Point contentZoomCenter)
         {
-            ZoomAndPanControl.ZoomAboutPoint(ZoomAndPanControl.ContentScale + 0.1, contentZoomCenter);
+            ZoomAndPanControlMacro.ZoomAboutPoint(ZoomAndPanControlMacro.ContentScale + 0.1, contentZoomCenter);
         }
     }
 }
