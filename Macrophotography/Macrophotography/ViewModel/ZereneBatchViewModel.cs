@@ -1471,7 +1471,7 @@ namespace Macrophotography.ViewModel
             {
                 using (StreamReader sr = new StreamReader(mLaunchCmdFile))
                 {
-                    String line = await sr.ReadToEndAsync();
+                    string line = await sr.ReadToEndAsync();
                     launchCommand = line;
                 }
             }

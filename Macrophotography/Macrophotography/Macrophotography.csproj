@@ -334,6 +334,7 @@
     <Compile Include="Classes\Rail.cs" />
     <Compile Include="Classes\RoundPolyline.cs" />
     <Compile Include="Classes\Sensor.cs" />
+    <Compile Include="Classes\Session.cs" />
     <Compile Include="Classes\SettingsDB.cs" />
     <Compile Include="Classes\VisualTreeHelpers.cs" />
     <Compile Include="Classes\ZereneLaunchProof.cs" />
@@ -366,6 +367,9 @@
     </Compile>
     <Compile Include="controls\VisualSFM.xaml.cs">
       <DependentUpon>VisualSFM.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Layouts\FullLayout.xaml.cs">
+      <DependentUpon>FullLayout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Layouts\LayoutBase.cs" />
     <Compile Include="Layouts\ReviewLayout.xaml.cs">
@@ -438,6 +442,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="controls\VisualSFM.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Layouts\FullLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

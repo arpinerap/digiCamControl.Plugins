@@ -25,6 +25,10 @@ namespace Macrophotography.ViewModel
         private bool _zoomToFocus;
         private bool _lightroomIsInstalled;
         private bool _photoshopIsInstalled;
+
+        private int _SizeIcons = 17;
+        private int _SizeButtons = 35;
+
         public bool ZoomFit
         {
             get { return _zoomFit; }
@@ -99,6 +103,27 @@ namespace Macrophotography.ViewModel
                 RaisePropertyChanged(() => ZoomToFocus);
             }
         }
+
+        public int SizeIcons
+        {
+            get { return _SizeIcons; }
+            set
+            {
+                _SizeIcons = value;
+                RaisePropertyChanged(() => SizeIcons);
+            }
+        }
+
+        public int SizeButtons
+        {
+            get { return _SizeButtons; }
+            set
+            {
+                _SizeButtons = value;
+                RaisePropertyChanged(() => SizeButtons);
+            }
+        }
+
 
         public AsyncObservableCollection<IPanelPlugin> PanelPlugins
         {
