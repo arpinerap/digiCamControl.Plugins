@@ -120,7 +120,7 @@ namespace Macrophotography
         {
             ArduinoPorts.Instance.DetectArduino();
             //System.Threading.Thread.Sleep(2500);
-            Task.Delay(5000);
+            Task.Delay(6000);
             ArduinoPorts.Instance.SendCommand(10, 1, 0);
         }
 

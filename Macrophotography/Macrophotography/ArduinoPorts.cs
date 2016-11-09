@@ -22,7 +22,10 @@ namespace Macrophotography
         private string _port;
         string[] _portslist;
         bool _IsArduinoDetected;
-        
+
+        private int SPbaudrate = 38400;
+        //private int SPbaudrate = 9600;
+
         private string cmd = "0";
 
         #endregion
@@ -90,7 +93,7 @@ namespace Macrophotography
             {
                 sp.PortName = port;
                 //sp.BaudRate = 9600;
-                sp.BaudRate = 38400;
+                sp.BaudRate = SPbaudrate;
                 sp.Parity = Parity.None;
                 sp.StopBits = StopBits.One;
                 sp.DataBits = 8;
@@ -129,7 +132,7 @@ namespace Macrophotography
                 foreach (string port in portslist)
                 {
                     //sp = new SerialPort(port, 9600);
-                    sp = new SerialPort(port, 38400);
+                    sp = new SerialPort(port, SPbaudrate);
                     int intReturnASCII = 0;
                     char charReturnValue = (Char)intReturnASCII;
                     ClosePort();

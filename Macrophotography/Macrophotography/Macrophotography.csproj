@@ -350,6 +350,9 @@
     <Compile Include="controls\Joystick.xaml.cs">
       <DependentUpon>Joystick.xaml</DependentUpon>
     </Compile>
+    <Compile Include="controls\LightsControl.xaml.cs">
+      <DependentUpon>LightsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="controls\MacroCameraControl.xaml.cs">
       <DependentUpon>MacroCameraControl.xaml</DependentUpon>
     </Compile>
@@ -415,6 +418,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="controls\Joystick.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="controls\LightsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

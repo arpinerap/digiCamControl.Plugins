@@ -178,7 +178,7 @@ namespace Macrophotography.controls
 
         private void Flash_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.SendCommand(7, 100, 250);
+            ArduinoPorts.Instance.SendCommand(7, 1000, 254);
         }
 
         #endregion

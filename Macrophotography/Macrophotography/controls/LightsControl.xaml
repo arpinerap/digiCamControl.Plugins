@@ -1,0 +1,259 @@
+﻿<UserControl x:Class="Macrophotography.controls.LightsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:macrophotography="clr-namespace:Macrophotography"             
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="200">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- The IconButtonStyle -->
+            <Style x:Key="IconButtonStyle"
+               TargetType="RepeatButton">
+                <!-- set some default values -->
+                <Setter Property="Background"
+                    Value="Transparent" />
+                <Setter Property="BorderBrush"
+                    Value="Transparent" />
+                <!-- set the visual tree of the control -->
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RepeatButton">
+                            <!-- here come the actual sub-controls -->
+                            <Border x:Name="border"
+                                Height="{TemplateBinding Height}"
+                                Width="{TemplateBinding Width}"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                Padding="0"
+                                CornerRadius="3,3,3,3">
+                                <Border x:Name="innerBorder"
+                                    SnapsToDevicePixels="True"
+                                    BorderThickness="1"
+                                    Padding="2"
+                                    CornerRadius="3,3,3,3">
+                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"
+                                                  Margin="{TemplateBinding Padding}">
+                                        <ContentPresenter.Effect>
+                                            <!-- give the content a bit of shadow -->
+                                            <DropShadowEffect x:Name="shadow"
+                                                          ShadowDepth="2"
+                                                          Opacity="0.7"
+                                                          BlurRadius="3" />
+                                        </ContentPresenter.Effect>
+                                        <ContentPresenter.RenderTransform>
+                                            <!-- push the content a bit to the left and the top -->
+                                            <TranslateTransform x:Name="translation"
+                                                            X="-1"
+                                                            Y="-1" />
+                                        </ContentPresenter.RenderTransform>
+                                    </ContentPresenter>
+                                </Border>
+                            </Border>
+                            <ControlTemplate.Triggers>
+
+                                <!-- when the control is disabled, just let the background shine through -->
+                                <Trigger Property="IsEnabled"
+                                     Value="false">
+                                    <Setter Property="Opacity"
+                                        Value="0.5" />
+                                </Trigger>
+                                <Trigger Property="IsPressed"
+                                     Value="True">
+                                    <!-- This Trigger manages the Animation of the button's content and its shadow -->
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="shadow"
+                                                             Storyboard.TargetProperty="(DropShadowEffect.ShadowDepth)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.X)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="0"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="1"
+                                                             Storyboard.TargetName="shadow"
+                                                             Storyboard.TargetProperty="(DropShadowEffect.ShadowDepth)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="-1"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.X)" />
+                                                <DoubleAnimation Duration="0:0:0"
+                                                             To="-1"
+                                                             Storyboard.TargetName="translation"
+                                                             Storyboard.TargetProperty="(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <WrapPanel>
+            <Grid Width="50" Background="#7F008B8B" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+
+                <RepeatButton x:Name="LightUp" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="0" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="LightUp_Click">
+                    <Rectangle Width="35" Height="35">
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_rise}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </RepeatButton>
+
+                <Slider x:Name="LightSlider" Grid.Row="1" Height="130" HorizontalAlignment="Center" Orientation="Vertical" TickPlacement="Both" Minimum="1" Maximum="250" Width="30" Margin="5,0,0,0" Visibility="Hidden"
+                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding LightValue, Source={x:Static macrophotography:StepperManager.Instance}}" ValueChanged="LightSlider_ValueChanged"/>
+
+                <RepeatButton x:Name="LightDown" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="2" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="LightDown_Click">
+                    <Rectangle Width="35" Height="35">
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </RepeatButton>
+
+                <RepeatButton x:Name="LightFlash" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="3" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="Flash_Click" >
+                    <Rectangle Width="20" Height="30" >
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </RepeatButton>
+
+                <ToggleButton x:Name="Light_swch" 
+                    Grid.Row="4" VerticalAlignment="Center" Margin="-20" 
+                    Width="55" Height="55" BorderThickness="0"
+                    Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                    IsChecked="{Binding IsLightON, Source={x:Static macrophotography:StepperManager.Instance}}" Checked="ToggleButton_IsCheckedChanged" Unchecked="ToggleButton_IsCheckedChanged" >
+                    <Rectangle Width="40" Height="40" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{DynamicResource appbar_weather_sun}"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ToggleButton>
+
+            </Grid>
+
+            <Grid Width="50" Background="#7F8B0000" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+
+                <RepeatButton x:Name="LightUp2" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="0" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="LightUp2_Click">
+                    <Rectangle Width="35" Height="35">
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_rise}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </RepeatButton>
+
+                <Slider x:Name="LightSlider2" Grid.Row="1" Height="130" HorizontalAlignment="Center" Orientation="Vertical" TickPlacement="Both" Minimum="1" Maximum="250" Width="30" Margin="5,0,0,0" Visibility="Hidden"
+                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding LightValue2, Source={x:Static macrophotography:StepperManager.Instance}}" ValueChanged="LightSlider2_ValueChanged"/>
+
+                <RepeatButton x:Name="LightDown2" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="2" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="LightDown2_Click">
+                    <Rectangle Width="35" Height="35">
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </RepeatButton>
+
+                <RepeatButton x:Name="LightFlash2" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="3" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="Flash2_Click" >
+                    <Rectangle Width="20" Height="30" >
+                        <Rectangle.Fill>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </RepeatButton>
+
+                <ToggleButton x:Name="Light_swch2" 
+                    Grid.Row="4" VerticalAlignment="Center" Margin="-20" 
+                    Width="55" Height="55" BorderThickness="0"
+                    Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                    IsChecked="{Binding IsLightON2, Source={x:Static macrophotography:StepperManager.Instance}}" Checked="ToggleButton2_IsCheckedChanged" Unchecked="ToggleButton2_IsCheckedChanged" >
+                    <Rectangle Width="40" Height="40" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{DynamicResource appbar_weather_sun}"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ToggleButton>
+
+            </Grid>
+
+        </WrapPanel> 
+    </Grid>
+</UserControl>

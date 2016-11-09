@@ -26,6 +26,7 @@ namespace Macrophotography
         private bool _IsNearFocusLocked; 
         private bool _IsFarFocusLocked;
         private bool _IsLightON = false;
+        private bool _IsLightON2 = false;
         private bool _GoNearToFar = true;
         private int _position = 0;
         private int _lastPosition = 0;
@@ -61,7 +62,8 @@ namespace Macrophotography
 
         private int _LinesNumber = 0;
 
-        private int _LightValue = 50;
+        private int _LightValue = 20;
+        private int _LightValue2 = 20;
 
         public Stopwatch stopwatch;
 
@@ -201,6 +203,16 @@ namespace Macrophotography
             {
                 _IsLightON = value;
                 RaisePropertyChanged(() => IsLightON);
+            }
+        }
+
+        public bool IsLightON2
+        {
+            get { return _IsLightON2; }
+            set
+            {
+                _IsLightON2 = value;
+                RaisePropertyChanged(() => IsLightON2);
             }
         }
 
@@ -482,6 +494,16 @@ namespace Macrophotography
             {
                 _LightValue = value;
                 RaisePropertyChanged(() => LightValue);
+            }
+        }
+
+        public int LightValue2
+        {
+            get { return _LightValue2; }
+            set
+            {
+                _LightValue2 = value;
+                RaisePropertyChanged(() => LightValue2);
             }
         }
 
