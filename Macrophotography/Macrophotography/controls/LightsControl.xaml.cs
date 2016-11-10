@@ -31,18 +31,20 @@ namespace Macrophotography.controls
         {
             if (StepperManager.Instance.IsLightON)
             {
-                LightUp.Visibility = System.Windows.Visibility.Visible;
+                /*LightUp.Visibility = System.Windows.Visibility.Visible;
                 LightDown.Visibility = System.Windows.Visibility.Visible;
                 LightSlider.Visibility = System.Windows.Visibility.Visible;
                 LightFlash.Visibility = System.Windows.Visibility.Visible;
+                LightControls1.Visibility = System.Windows.Visibility.Visible;*/
                 ArduinoPorts.Instance.SendCommand(8, 1, StepperManager.Instance.LightValue);
             }
             if (!StepperManager.Instance.IsLightON)
             {
-                LightUp.Visibility = System.Windows.Visibility.Hidden;
+                /*LightUp.Visibility = System.Windows.Visibility.Hidden;
                 LightDown.Visibility = System.Windows.Visibility.Hidden;
                 LightSlider.Visibility = System.Windows.Visibility.Hidden;
                 LightFlash.Visibility = System.Windows.Visibility.Hidden;
+                LightControls1.Visibility = System.Windows.Visibility.Hidden;*/
                 ArduinoPorts.Instance.SendCommand(8, 0, 0);
             }
         }
@@ -60,7 +62,7 @@ namespace Macrophotography.controls
         {
             if (StepperManager.Instance.IsLightON)
             {
-                if (StepperManager.Instance.LightValue > 0) StepperManager.Instance.LightValue -= 10;
+                if (StepperManager.Instance.LightValue > 10) StepperManager.Instance.LightValue -= 10;
                 ArduinoPorts.Instance.SendCommand(8, 1, StepperManager.Instance.LightValue);
             }
 
@@ -68,13 +70,14 @@ namespace Macrophotography.controls
 
         private void Flash_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.SendCommand(7, 1000, 254);
+            ArduinoPorts.Instance.SendCommandFlash(7, 1000, 254, 0);
         }
 
-        private void LightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void LightSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             ArduinoPorts.Instance.SendCommand(8, 1, StepperManager.Instance.LightValue);
         }
+        
         #endregion
 
         #region Light2
@@ -83,18 +86,20 @@ namespace Macrophotography.controls
         {
             if (StepperManager.Instance.IsLightON2)
             {
-                LightUp2.Visibility = System.Windows.Visibility.Visible;
+                /*LightUp2.Visibility = System.Windows.Visibility.Visible;
                 LightDown2.Visibility = System.Windows.Visibility.Visible;
                 LightSlider2.Visibility = System.Windows.Visibility.Visible;
                 LightFlash2.Visibility = System.Windows.Visibility.Visible;
+                LightControls2.Visibility = System.Windows.Visibility.Visible;*/
                 ArduinoPorts.Instance.SendCommand(9, 1, StepperManager.Instance.LightValue2);
             }
             if (!StepperManager.Instance.IsLightON2)
             {
-                LightUp2.Visibility = System.Windows.Visibility.Hidden;
+                /*LightUp2.Visibility = System.Windows.Visibility.Hidden;
                 LightDown2.Visibility = System.Windows.Visibility.Hidden;
                 LightSlider2.Visibility = System.Windows.Visibility.Hidden;
                 LightFlash2.Visibility = System.Windows.Visibility.Hidden;
+                LightControls2.Visibility = System.Windows.Visibility.Hidden;*/
                 ArduinoPorts.Instance.SendCommand(9, 0, 0);
             }
         }
@@ -112,7 +117,7 @@ namespace Macrophotography.controls
         {
             if (StepperManager.Instance.IsLightON2)
             {
-                if (StepperManager.Instance.LightValue2 > 0) StepperManager.Instance.LightValue2 -= 10;
+                if (StepperManager.Instance.LightValue2 > 10) StepperManager.Instance.LightValue2 -= 10;
                 ArduinoPorts.Instance.SendCommand(9, 1, StepperManager.Instance.LightValue2);
             }
 
@@ -120,10 +125,10 @@ namespace Macrophotography.controls
 
         private void Flash2_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.SendCommand(7, 1000, 254);
+            ArduinoPorts.Instance.SendCommandFlash(7, 1000, 0, 254);
         }
 
-        private void LightSlider2_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void LightSlider2_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             ArduinoPorts.Instance.SendCommand(9, 1, StepperManager.Instance.LightValue2);
         }

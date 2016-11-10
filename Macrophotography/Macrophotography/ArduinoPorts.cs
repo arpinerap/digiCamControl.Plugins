@@ -188,6 +188,38 @@ namespace Macrophotography
                     cmd += " ";
                     cmd += Convert.ToString(spd);
                     cmd += " ";
+                    cmd += Convert.ToString(0);
+                    cmd += " ";
+                    cmd += Convert.ToString(checksum);
+                    sp.WriteLine(cmd);
+                    StepperManager.Instance.IsBusy = true;
+                }
+                catch (Exception exception)
+                {
+                    // lst_message.Items.Add(exception.Message);
+                }
+            }
+        }
+
+        public void SendCommandFlash(int motor, int time, int power1, int power2)
+        {
+            // Line Order for Arduino
+            lock (_locker)
+            {
+                try
+                {
+                    ClosePort();
+                    OpenPort(_port);
+                    int checksum = motor + time + power1;
+                    cmd = cmd.Remove(0);
+                    cmd = Convert.ToString(motor);
+                    cmd += " ";
+                    cmd += Convert.ToString(time);
+                    cmd += " ";
+                    cmd += Convert.ToString(power1);
+                    cmd += " ";
+                    cmd += Convert.ToString(power2);
+                    cmd += " ";
                     cmd += Convert.ToString(checksum);
                     sp.WriteLine(cmd);
                     StepperManager.Instance.IsBusy = true;

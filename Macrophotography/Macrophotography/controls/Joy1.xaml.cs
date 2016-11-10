@@ -24,7 +24,7 @@ namespace Macrophotography.controls
         public Joy1()
         {
             InitializeComponent();
-            StepperManager.Instance.IsLightON = false;
+            //StepperManager.Instance.IsLightON = false;
         }
 
         public int DCsteps;
@@ -39,8 +39,8 @@ namespace Macrophotography.controls
             RotL.Visibility = System.Windows.Visibility.Visible;
             RotR.Visibility = System.Windows.Visibility.Visible;
             DCsteps_sld2.Visibility = System.Windows.Visibility.Visible;
-            Light_swch.Visibility = System.Windows.Visibility.Visible;
-            LightFlash.Visibility = System.Windows.Visibility.Visible;  
+            //Light_swch.Visibility = System.Windows.Visibility.Visible;
+            //LightFlash.Visibility = System.Windows.Visibility.Visible;  
         }
 
         private void CloseJoystick(object sender, System.Windows.RoutedEventArgs e)
@@ -48,14 +48,14 @@ namespace Macrophotography.controls
             LiveViewOn_btn.IsOpen = true;
             LiveViewOff_btn.IsOpen = false;
             LiveViewOff2_btn.IsOpen = false;
-            StepperManager.Instance.IsLightON = false;
+            //StepperManager.Instance.IsLightON = false;
             RotL.Visibility = System.Windows.Visibility.Hidden;
             RotR.Visibility = System.Windows.Visibility.Hidden;
             DCsteps_sld2.Visibility = System.Windows.Visibility.Hidden;
-            LightUp.Visibility = System.Windows.Visibility.Hidden;
-            LightDown.Visibility = System.Windows.Visibility.Hidden;
-            Light_swch.Visibility = System.Windows.Visibility.Hidden;
-            LightFlash.Visibility = System.Windows.Visibility.Hidden;
+            //LightUp.Visibility = System.Windows.Visibility.Hidden;
+            //LightDown.Visibility = System.Windows.Visibility.Hidden;
+            //Light_swch.Visibility = System.Windows.Visibility.Hidden;
+            //LightFlash.Visibility = System.Windows.Visibility.Hidden;
         }
 
         #endregion
@@ -139,7 +139,7 @@ namespace Macrophotography.controls
 
         #endregion
 
-        #region Light
+        /*#region Light
 
         private void ToggleButton_IsCheckedChanged(object sender, RoutedEventArgs e)
         {
@@ -181,6 +181,6 @@ namespace Macrophotography.controls
             ArduinoPorts.Instance.SendCommand(7, 1000, 254);
         }
 
-        #endregion
+        #endregion*/
     }
 }

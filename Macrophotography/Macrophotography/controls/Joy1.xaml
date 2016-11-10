@@ -278,7 +278,7 @@
                     <Image  Source="/macrophotography;component/resources/appbar.refresh.counterclockwise.down.png"/>
                 </RepeatButton>
 
-                <ToggleButton x:Name="Light_swch" Visibility="Hidden"
+                <!--<ToggleButton x:Name="Light_swch" Visibility="Hidden"
                     Grid.Column="2" VerticalAlignment="Center" Margin="-30,-40,-40,-40" Padding="-20"
                     Width="80" Height="80" BorderThickness="0"
                     Style="{DynamicResource MetroCircleToggleButtonStyle}"
@@ -325,7 +325,7 @@
                             <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
                         </Rectangle.Fill>
                     </Rectangle>
-                </RepeatButton>
+                </RepeatButton>-->
 
             </Grid>
 

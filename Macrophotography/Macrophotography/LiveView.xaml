@@ -488,10 +488,10 @@
         </Expander>
 
         <local:Joy1 x:Name="NewJoystick"
-            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
+            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30,30,60,30"/>
 
         <local:LightsControl x:Name="LightControl"
-            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="30"/>
+            Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30"/>
 
         <Expander Name="Stacking_Exp" Header="Stacking Control" 
             IsExpanded="True"

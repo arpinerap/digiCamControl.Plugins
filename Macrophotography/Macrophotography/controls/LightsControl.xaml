@@ -6,7 +6,7 @@
              xmlns:macrophotography="clr-namespace:Macrophotography"             
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="200">
+             d:DesignHeight="370" d:DesignWidth="100">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,6 +20,8 @@
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
 
             <!-- The IconButtonStyle -->
             <Style x:Key="IconButtonStyle"
@@ -128,132 +130,147 @@
 
     <Grid>
         <WrapPanel>
-            <Grid Width="50" Background="#7F008B8B" >
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="150"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
 
-                <RepeatButton x:Name="LightUp" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                <Grid Width="50" x:Name="LightControls1" Visibility="{Binding IsLightON, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}" Background="#7F008B8B">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+
+                    <RepeatButton x:Name="LightUp" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
                         Grid.Row="0" 
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Delay="1500" Interval="500" Click="LightUp_Click">
-                    <Rectangle Width="35" Height="35">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_rise}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </RepeatButton>
+                        <Rectangle Width="35" Height="35">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_rise}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
 
-                <Slider x:Name="LightSlider" Grid.Row="1" Height="130" HorizontalAlignment="Center" Orientation="Vertical" TickPlacement="Both" Minimum="1" Maximum="250" Width="30" Margin="5,0,0,0" Visibility="Hidden"
-                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding LightValue, Source={x:Static macrophotography:StepperManager.Instance}}" ValueChanged="LightSlider_ValueChanged"/>
+                    <Slider x:Name="LightSlider" Grid.Row="1" Height="130" HorizontalAlignment="Center" Orientation="Vertical" TickPlacement="Both" Minimum="10" Maximum="250" Width="30" Margin="5,0,0,0"
+                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding LightValue, Source={x:Static macrophotography:StepperManager.Instance}}" PreviewMouseLeftButtonUp="LightSlider_PreviewMouseLeftButtonUp" />
 
-                <RepeatButton x:Name="LightDown" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                    <RepeatButton x:Name="LightDown" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
                         Grid.Row="2" 
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Delay="1500" Interval="500" Click="LightDown_Click">
-                    <Rectangle Width="35" Height="35">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </RepeatButton>
+                        <Rectangle Width="35" Height="35">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
 
-                <RepeatButton x:Name="LightFlash" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                    <RepeatButton x:Name="LightFlash" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
                         Grid.Row="3" 
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Delay="1500" Interval="500" Click="Flash_Click" >
-                    <Rectangle Width="20" Height="30" >
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </RepeatButton>
-
-                <ToggleButton x:Name="Light_swch" 
-                    Grid.Row="4" VerticalAlignment="Center" Margin="-20" 
+                        <Rectangle Width="20" Height="30" >
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
+                </Grid>
+                
+                <Grid Background="#7F008B8B" Width="50" Height="70" Grid.Row="1">
+                    <ToggleButton x:Name="Light_swch" 
+                    Grid.Row="0" VerticalAlignment="Center" Margin="-20,-40,-20,-20" 
                     Width="55" Height="55" BorderThickness="0"
                     Style="{DynamicResource MetroCircleToggleButtonStyle}"
                     IsChecked="{Binding IsLightON, Source={x:Static macrophotography:StepperManager.Instance}}" Checked="ToggleButton_IsCheckedChanged" Unchecked="ToggleButton_IsCheckedChanged" >
-                    <Rectangle Width="40" Height="40" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
+                        <Rectangle Width="40" Height="40" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
                          Visual="{DynamicResource appbar_weather_sun}"/>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </ToggleButton>
-
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </ToggleButton>
+                    <TextBox Text="A" TextAlignment="Center" VerticalAlignment="Bottom" Background="{x:Null}" BorderBrush="{x:Null}" />
+                </Grid>
             </Grid>
 
-            <Grid Width="50" Background="#7F8B0000" >
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="150"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
 
-                <RepeatButton x:Name="LightUp2" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                <Grid Width="50" x:Name="LightControls2" Visibility="{Binding IsLightON2, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}" Background="#7F8B0000">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+
+                    <RepeatButton x:Name="LightUp2" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
                         Grid.Row="0" 
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Delay="1500" Interval="500" Click="LightUp2_Click">
-                    <Rectangle Width="35" Height="35">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_rise}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </RepeatButton>
+                        <Rectangle Width="35" Height="35">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_rise}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
 
-                <Slider x:Name="LightSlider2" Grid.Row="1" Height="130" HorizontalAlignment="Center" Orientation="Vertical" TickPlacement="Both" Minimum="1" Maximum="250" Width="30" Margin="5,0,0,0" Visibility="Hidden"
-                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding LightValue2, Source={x:Static macrophotography:StepperManager.Instance}}" ValueChanged="LightSlider2_ValueChanged"/>
+                    <Slider x:Name="LightSlider2" Grid.Row="1" Height="130" HorizontalAlignment="Center" Orientation="Vertical" TickPlacement="Both" Minimum="10" Maximum="250" Width="30" Margin="5,0,0,0"
+                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding LightValue2, Source={x:Static macrophotography:StepperManager.Instance}}" PreviewMouseLeftButtonUp="LightSlider2_PreviewMouseLeftButtonUp"/>
 
-                <RepeatButton x:Name="LightDown2" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                    <RepeatButton x:Name="LightDown2" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
                         Grid.Row="2" 
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Delay="1500" Interval="500" Click="LightDown2_Click">
-                    <Rectangle Width="35" Height="35">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </RepeatButton>
+                        <Rectangle Width="35" Height="35">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_weather_sun_set}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
 
-                <RepeatButton x:Name="LightFlash2" Style="{DynamicResource IconButtonStyle}" Visibility="Hidden"
+                    <RepeatButton x:Name="LightFlash2" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
                         Grid.Row="3" 
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Delay="1500" Interval="500" Click="Flash2_Click" >
-                    <Rectangle Width="20" Height="30" >
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </RepeatButton>
+                        <Rectangle Width="20" Height="30" >
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
+                </Grid>
 
-                <ToggleButton x:Name="Light_swch2" 
-                    Grid.Row="4" VerticalAlignment="Center" Margin="-20" 
+                <Grid Background="#7F8B0000" Width="50" Height="70" Grid.Row="1">
+                    <ToggleButton x:Name="Light_swch2" 
+                    Grid.Row="0" VerticalAlignment="Center" Margin="-20,-40,-20,-20" 
                     Width="55" Height="55" BorderThickness="0"
                     Style="{DynamicResource MetroCircleToggleButtonStyle}"
                     IsChecked="{Binding IsLightON2, Source={x:Static macrophotography:StepperManager.Instance}}" Checked="ToggleButton2_IsCheckedChanged" Unchecked="ToggleButton2_IsCheckedChanged" >
-                    <Rectangle Width="40" Height="40" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
+                        <Rectangle Width="40" Height="40" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
                          Visual="{DynamicResource appbar_weather_sun}"/>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </ToggleButton>
-
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </ToggleButton>
+                    <TextBox Text="B" TextAlignment="Center" VerticalAlignment="Bottom" Background="{x:Null}" BorderBrush="{x:Null}" />
+                </Grid>
             </Grid>
-
         </WrapPanel> 
     </Grid>
 </UserControl>
