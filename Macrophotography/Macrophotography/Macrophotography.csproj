@@ -251,7 +251,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="RadialMenu">
-      <HintPath>..\..\..\RadialMenu-master\RadialMenu-master\RadialMenu\bin\Debug\RadialMenu.dll</HintPath>
+      <HintPath>..\packages\RadialMenu.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ReachFramework">

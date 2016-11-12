@@ -39,7 +39,13 @@ namespace Macrophotography.Layouts
         public ListBox ImageLIst { get; set; }
         private readonly BackgroundWorker _worker = new BackgroundWorker();
         private FileItem _selectedItem = null;
-        public ZoomAndPanControl ZoomAndPanControlMacro { get; set; }
+
+        public ZoomAndPanControl ZoomAndPanControlMacro
+        {
+
+            get;
+            set;
+        }
         public UIElement content { get; set; }
 
         public ImageListViewModel ImageListViewModel { get; set; }

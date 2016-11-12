@@ -1,4 +1,8 @@
-﻿using Macrophotography.ViewModel;
+﻿using System;
+using System.Windows.Controls;
+using CameraControl.Core;
+using CameraControl.Core.Classes;
+using Macrophotography.ViewModel;
 
 namespace Macrophotography.Layouts
 {
@@ -10,11 +14,29 @@ namespace Macrophotography.Layouts
         public ReviewLayout()
         {
             InitializeComponent();
-            ZoomAndPanControlMacro = zoomAndPanControl;
-            ImageListViewModel = (ImageListViewModel)ZoomAndPanControlMacro.DataContext;
-            content = Image;
+            Loaded += ReviewLayout_Loaded;
             //UnInit();
             //InitServices();
+        }
+
+        private void ReviewLayout_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            try
+            {
+                ZoomAndPanControlMacro = zoomAndPanControl;
+                ImageListViewModel = (ImageListViewModel)ZoomAndPanControlMacro.DataContext;
+                content = Image;
+                ImageLIst = new ListBox();
+                UnInit();
+                InitServices();
+                ServiceProvider.WindowsManager.ExecuteCommand(WindowsCmdConsts.Zoom_Image_Fit);
+
+            }
+            catch (Exception ex)
+            {
+                
+                
+            }
         }
     }
 }
