@@ -134,13 +134,13 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>
+                    <RowDefinition Height="70"/>
                 </Grid.RowDefinitions>
 
-                <Grid Width="50" x:Name="LightControls1" Visibility="{Binding IsLightON, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}" Background="#7F008B8B">
+                <Grid Width="50" x:Name="LightControls1" Visibility="{Binding IsLightON, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="150"/>
-                        <RowDefinition Height="50"/>
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
 
@@ -170,21 +170,9 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </RepeatButton>
-
-                    <RepeatButton x:Name="LightFlash" Style="{DynamicResource IconButtonStyle}"
-                        Height="50" Width="50" Margin="-20" Padding="-20"
-                        Grid.Row="3" 
-                        HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Delay="1500" Interval="500" Click="Flash_Click" >
-                        <Rectangle Width="20" Height="30" >
-                            <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </RepeatButton>
                 </Grid>
                 
-                <Grid Background="#7F008B8B" Width="50" Height="70" Grid.Row="1">
+                <Grid  Width="50" Height="70" Grid.Row="2">
                     <ToggleButton x:Name="Light_swch" 
                     Grid.Row="0" VerticalAlignment="Center" Margin="-20,-40,-20,-20" 
                     Width="55" Height="55" BorderThickness="0"
@@ -199,19 +187,35 @@
                     </ToggleButton>
                     <TextBox Text="A" TextAlignment="Center" VerticalAlignment="Bottom" Background="{x:Null}" BorderBrush="{x:Null}" />
                 </Grid>
+
+                <Grid Width="50" Height="50" Grid.Row="1">
+
+                    <RepeatButton x:Name="LightFlash" Style="{DynamicResource IconButtonStyle}"
+                        Height="50" Width="50" Margin="-20" Padding="-20"
+                        Grid.Row="3" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Delay="1500" Interval="500" Click="Flash_Click" >
+                        <Rectangle Width="20" Height="30" >
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_camera_flash}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </RepeatButton>
+                    
+                </Grid>
             </Grid>
 
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>
+                    <RowDefinition Height="70"/>
                 </Grid.RowDefinitions>
 
-                <Grid Width="50" x:Name="LightControls2" Visibility="{Binding IsLightON2, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}" Background="#7F8B0000">
+                <Grid Width="50" x:Name="LightControls2" Visibility="{Binding IsLightON2, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="150"/>
-                        <RowDefinition Height="50"/>
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
 
@@ -241,6 +245,9 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </RepeatButton>
+                </Grid>
+
+                <Grid  Width="50" Height="50" Grid.Row="1">
 
                     <RepeatButton x:Name="LightFlash2" Style="{DynamicResource IconButtonStyle}"
                         Height="50" Width="50" Margin="-20" Padding="-20"
@@ -253,9 +260,10 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </RepeatButton>
+                    
                 </Grid>
 
-                <Grid Background="#7F8B0000" Width="50" Height="70" Grid.Row="1">
+                <Grid  Width="50" Height="70" Grid.Row="2">
                     <ToggleButton x:Name="Light_swch2" 
                     Grid.Row="0" VerticalAlignment="Center" Margin="-20,-40,-20,-20" 
                     Width="55" Height="55" BorderThickness="0"
