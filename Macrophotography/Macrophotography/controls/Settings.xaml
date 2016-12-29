@@ -33,6 +33,8 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
 
+            <macrophotography:LensStateConverter x:Key="LensStateConverter"/>
+
         </ResourceDictionary>     
     </UserControl.Resources>
 
@@ -57,18 +59,18 @@
                              Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
-                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="AFLensRdb_Click"/>
-                <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
+                                                Grid.Row="0" Checked="AFLensRdb_Checked" Click="RadioButtonClick"/>
+                <RadioButton Content="Manual Lens" x:Name="ManuLensRdb" IsChecked="{Binding Path=NotAFLens, Converter={StaticResource LensStateConverter}, ConverterParameter=ManualLens}"
                              Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                  Grid.Row="1" Checked="ManuLensRdb_Checked" Click="ManuLensRdb_Click"/>
-                <RadioButton Content="Microscopy Lens" x:Name="MicroLensRdb"
+                <RadioButton Content="Microscopy Lens" x:Name="MicroLensRdb" IsChecked="{Binding Path=NotAFLens, Converter={StaticResource LensStateConverter}, ConverterParameter=MicroLens}"
                              Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"
                                                  Grid.Row="2" Checked="MicroLensRdb_Checked" Click="MicroLensRdb_Click"/>
-                <RadioButton Content="Manual Properties" x:Name="ManuPropRdb"
+                <RadioButton Content="Manual Properties" x:Name="ManuPropRdb" IsChecked="{Binding Path=NotAFLens, Converter={StaticResource LensStateConverter}, ConverterParameter=ManualProp}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                                                 Width="auto" Height="auto" Margin="15,5,0,5"                                                
                                                 Grid.Row="3" Checked="ManuPropRdb_Checked" Click="ManuPropRdb_Click"/>
@@ -105,19 +107,23 @@
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="0"
                         Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
-                <ComboBox x:Name="ApertureAF_combo" 
-                    Grid.Column="1" Grid.Row="0" Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
-                    IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"/>
+
+                <ComboBox x:Name="ApertureAF_combo" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"
+                        Grid.Column="1" Grid.Row="0" Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                        IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}"  
+                        SelectionChanged="ApertureAF_combo_SelectionChanged"/>
 
                 <controls:NumericUpDown x:Name="NA_nud" Value="{Binding NA, Source={x:Static macrophotography:StepperManager.Instance}}"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"
                         Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="1"
                         Margin="5,3,5,3" ValueChanged="ValueChanged" LostFocus="sDoFCalcUpdate" GotFocus="sDoFCalcUpdate"/>
+                
                 <controls:NumericUpDown  x:Name="ShotDOF_nud"  Value="{Binding ShotDOF, Source={x:Static macrophotography:StepperManager.Instance}}" 
                         Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="2" Margin="5,3,5,3"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}" ValueChanged="sDoFCalcUpdate" />
+                
                 <controls:NumericUpDown  x:Name="ShotStep_nud"  Value="{Binding ShotStep, Source={x:Static macrophotography:StepperManager.Instance}}"  
                         Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Grid.Column="1" Grid.Row="3" Margin="5,3,5,3"
@@ -202,23 +208,23 @@
                 </Grid.ColumnDefinitions>
 
 
-                <controls:NumericUpDown x:Name="Pitch_nud" Value="4.7" HasDecimals="True"
+                <controls:NumericUpDown x:Name="Pitch_nud" Value="{Binding Pitch, Source={x:Static macrophotography:StepperManager.Instance}}" HasDecimals="True"
                                         Interval="0.1" Minimum="4" Maximum="8"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="0"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="E_nud" Value="2" HasDecimals="True"
+                <controls:NumericUpDown x:Name="E_nud" Value="{Binding E, Source={x:Static macrophotography:StepperManager.Instance}}" HasDecimals="True"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="1"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="Lambda_nud" Value="550" HasDecimals="False"
+                <controls:NumericUpDown x:Name="Lambda_nud" Value="{Binding Lambda, Source={x:Static macrophotography:StepperManager.Instance}}" HasDecimals="False"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="2"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
 
-                <controls:NumericUpDown x:Name="N_nud" Value="1" HasDecimals="False"
+                <controls:NumericUpDown x:Name="N_nud" Value="{Binding N, Source={x:Static macrophotography:StepperManager.Instance}}" HasDecimals="False"
                                              Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                              Grid.Column="1" Grid.Row="3"
                                              Margin="5,3,5,3" GotFocus="sDoFCalcUpdate" LostFocus="sDoFCalcUpdate" ValueChanged="ValueChanged"/>
@@ -378,6 +384,8 @@
                          Width="100" BorderThickness="0" Foreground="#FFA50000" FontSize="16" FontWeight="Bold"
                         HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N8}"/>
                     <Label Content="mm/step"/>
+                    <Label x:Name="FNum" />
+                    <Label x:Name="LOG" />
                 </WrapPanel>
 
 
@@ -408,7 +416,7 @@
 
                     <Label Content="Ports" 
                                                HorizontalAlignment="Left" Grid.Row="0" VerticalAlignment="Top" Height="26" Width="50"/>
-                    <Button x:Name="SearchPort_btn" Content="Seach Arduino"
+                    <Button x:Name="SearchPort_btn" Content="Seach Arduino" IsEnabled="{Binding IsArduinoNotDetected, Source={x:Static macrophotography:ArduinoPorts.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}"
                                             Grid.Row="1" Width="100" Margin="5" Click="SearchPort_btn_Click" />
 
                 </Grid>

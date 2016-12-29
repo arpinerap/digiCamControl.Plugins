@@ -70,7 +70,7 @@ namespace Macrophotography.controls
 
         private void Flash_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.SendCommandFlash(7, 1000, 254, 0);
+            ArduinoPorts.Instance.SendCommandFlash(7, 200, 254, 254);
         }
 
         private void LightSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -125,7 +125,7 @@ namespace Macrophotography.controls
 
         private void Flash2_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.SendCommandFlash(7, 1000, 0, 254);
+            ArduinoPorts.Instance.SendCommandFlash(7, 1000, 254, 254);
         }
 
         private void LightSlider2_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

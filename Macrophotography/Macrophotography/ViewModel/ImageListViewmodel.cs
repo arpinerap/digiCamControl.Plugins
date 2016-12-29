@@ -26,8 +26,8 @@ namespace Macrophotography.ViewModel
         private bool _lightroomIsInstalled;
         private bool _photoshopIsInstalled;
 
-        private int _SizeIcons = 17;
-        private int _SizeButtons = 35;
+        private int _SizeIcons = 20;
+        private int _SizeButtons = 40;
 
         public bool ZoomFit
         {

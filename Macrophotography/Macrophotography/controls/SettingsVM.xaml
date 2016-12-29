@@ -1,0 +1,460 @@
+﻿<UserControl x:Class="Macrophotography.controls.SettingsVM"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:RadialMenu="clr-namespace:RadialMenu.Controls;assembly=RadialMenu"
+             xmlns:macrophotography="clr-namespace:Macrophotography"
+             xmlns:class="clr-namespace:Macrophotography.Classes"
+             xmlns:local="clr-namespace:Macrophotography.controls"
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
+             xmlns:devices="clr-namespace:CameraControl.Devices;assembly=CameraControl.Devices"
+             d:DesignHeight="190" d:DesignWidth="1800"
+             d:DataContext="{d:DesignInstance Type=macrophotography:LiveViewViewModel, IsDesignTimeCreatable=True}">
+
+    <!--UserControl.DataContext>
+        <macrophotography:LiveViewViewModel/>
+    </-->
+
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Styles/CustomControls.xaml"/>
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Macrophotography;component/Resources/Moreicons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
+
+
+        </ResourceDictionary>
+
+        
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="150*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="150*"/>
+            <ColumnDefinition Width="170"/>
+        </Grid.ColumnDefinitions>
+
+
+        <GroupBox Header="Type Lens"
+                                      Grid.Column="0"
+                                      Height="auto">
+            <StackPanel Margin="10">
+
+                <RadioButton Content="AF Lens" x:Name="AFLensRdb" IsChecked="{Binding AFLensConnected}" IsEnabled="False"
+                             Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                                Width="auto" Height="auto" Margin="15,5,0,5"
+                                                Grid.Row="0" />
+                <RadioButton Content="Manual Lens" x:Name="ManuLensRdb"
+                             Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                                Width="auto" Height="auto" Margin="15,5,0,5"
+                                                 Grid.Row="1" />
+                <RadioButton Content="Microscopy Lens" x:Name="MicroLensRdb"
+                             Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                                Width="auto" Height="auto" Margin="15,5,0,5"
+                                                 Grid.Row="2" />
+                <RadioButton Content="Manual Properties" x:Name="ManuPropRdb"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                                Width="auto" Height="auto" Margin="15,5,0,5"                                                
+                                                Grid.Row="3" />
+                <TextBox x:Name="LensSort_txt" Text="{Binding LensSort.Value}" Visibility="Hidden"
+                         Grid.Row="3"
+                         HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"  Width="70"
+                         TextAlignment="Left" BorderThickness="1" />
+
+                <TextBox x:Name="AfLensConnected_txt" Text="{Binding AFLensConnected}" Visibility="Hidden"
+                         Grid.Row="3"
+                         HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"  Width="70"
+                         TextAlignment="Left" BorderThickness="1"/>
+
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Lens Parameters" x:Name="LensParameters_grpbx" Grid.Column="1">
+            <Grid Margin="0,5,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="30*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <controls:NumericUpDown x:Name="aperture_nud" Value="{Binding Aperture, Source={x:Static macrophotography:StepperManager.Instance}}" Visibility="{Binding NotAFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N1}"                     
+                        Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                        Grid.Column="1" Grid.Row="0"
+                        Margin="5,3,5,3" />
+                <ComboBox x:Name="ApertureAF_combo" 
+                    Grid.Column="1" Grid.Row="0" Visibility="{Binding AFLensConnected, Converter={StaticResource BooleanToVisibilityConverter1}}"
+                    IsEnabled="{Binding Path=SelectedCameraDevice.FNumber.IsEnabled}" ItemsSource="{Binding Path=SelectedCameraDevice.FNumber.Values}" SelectedValue="{Binding Path=SelectedCameraDevice.FNumber.Value}"  
+                    
+                          />
+
+                <controls:NumericUpDown x:Name="NA_nud" Value="{Binding NA, Source={x:Static macrophotography:StepperManager.Instance}}"
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}"
+                        Width="70" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                        Grid.Column="1" Grid.Row="1"
+                        Margin="5,3,5,3" />
+                <controls:NumericUpDown  x:Name="ShotDOF_nud"  Value="{Binding ShotDOF, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                        Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                        Grid.Column="1" Grid.Row="2" Margin="5,3,5,3"
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N6}" />
+                <controls:NumericUpDown  x:Name="ShotStep_nud"  Value="{Binding ShotStep, Source={x:Static macrophotography:StepperManager.Instance}}"  
+                        Width="70" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                        Grid.Column="1" Grid.Row="3" Margin="5,3,5,3"
+                        Foreground="#FFA50000" FontSize="16" FontWeight="Bold"
+                        HideUpDownButtons="True" HasDecimals="False" StringFormat="{}{0:N0}" />
+
+
+
+                <Label x:Name="Aperture_label" Content="Aperture" Grid.Row="0" Margin="0"/>
+                <Label x:Name="NA_label" Content="NA" Grid.Row="1" Margin="0"/>
+                <Label x:Name="ShotDoF_label" Content="Shot DoF" Grid.Row="2" Margin="0"/>
+                <Label x:Name="ShotStep_label" Content="Step/Shot" Grid.Row="3" Margin="0"/>
+
+
+            </Grid>
+
+        </GroupBox>
+
+        <GroupBox Header="Lens Presets"  Grid.Column="2">
+            <Grid x:Name="LensPresets_grpbx">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="NameLens_Combo" 
+                          Grid.Row="1" Grid.ColumnSpan="3"
+                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,50,0"                         
+                          />
+
+                <Button x:Name="updatelens_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"
+                    	 Width="45" Height="45"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.edit.png"/>
+                </Button>
+
+                <Button x:Name="savelens_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right"
+                    	Width="45" Height="45"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
+                </Button>
+
+                <Button x:Name="deletelens_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"
+                    	 Width="42" Height="42" 
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
+                </Button>
+
+                <TextBox x:Name="Lens_txt" Text="{Binding NameLens, Source={x:Static macrophotography:StepperManager.Instance}}"
+                         Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
+                         TextAlignment="Center" TextWrapping="NoWrap"/>
+
+
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Sensor" Grid.Column="3">
+            <Grid Margin="0,5,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="30*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <controls:NumericUpDown x:Name="Pitch_nud" Value="4.7" HasDecimals="True"
+                                        Interval="0.1" Minimum="4" Maximum="8"
+                                             Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="0"
+                                             Margin="5,3,5,3" />
+
+                <controls:NumericUpDown x:Name="E_nud" Value="2" HasDecimals="True"
+                                             Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="1"
+                                             Margin="5,3,5,3" />
+
+                <controls:NumericUpDown x:Name="Lambda_nud" Value="550" HasDecimals="False"
+                                             Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="2"
+                                             Margin="5,3,5,3" />
+
+                <controls:NumericUpDown x:Name="N_nud" Value="1" HasDecimals="False"
+                                             Width="80" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="3"
+                                             Margin="5,3,5,3" />
+
+
+                <Label Content="Pixel Width"
+                       HorizontalAlignment="Right"
+                        Grid.Row="0" Margin="0"/>
+                <Label Content="e" 
+                       HorizontalAlignment="Right"
+                        Grid.Row="1" Margin="0,0,10,0"/>
+                <Label Content="λ" 
+                       HorizontalAlignment="Right"
+                        Grid.Row="2" Margin="0,0,10,0"/>
+                <Label Content="n" 
+                       HorizontalAlignment="Right"
+                        Grid.Row="3" Margin="0,0,10,0"/>
+
+                <TextBox x:Name="Sensor_txt" Text="{Binding Source={x:Static Member=Core:ServiceProvider.DeviceManager}, Path=SelectedCameraDevice.DeviceName}"
+                         Grid.Row="2"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="30" Margin="0,0,30,0"
+                         TextAlignment="Left" BorderThickness="0"/>
+
+                <ComboBox x:Name="NameSensor_Combo" SelectedItem="{Binding Source={x:Static Member=Core:ServiceProvider.DeviceManager}, Path=SelectedCameraDevice.DeviceName}"
+                          Grid.Row="1" 
+                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="0,0,30,0"                         
+                          />
+
+                <Button x:Name="updatesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Margin="25,0,0,0"
+                    	 Width="30" Height="30"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.edit.png"/>
+                </Button>
+
+                <Button x:Name="savesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Margin="50,0,0,0"
+                    	 Width="30" Height="30"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
+                </Button>
+
+                <Button x:Name="deletesensor_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"
+                    	 Width="30" Height="30" 
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
+                </Button>
+            </Grid>
+
+        </GroupBox>
+
+
+        <GroupBox Header="Rail Parameters" Grid.Column="4">
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <controls:NumericUpDown x:Name="MotorSteps_nud" 
+                    Width="90" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                    Grid.Column="1" Grid.Row="0"
+                    Margin="5,3,5,3" HasDecimals="False" Maximum="10000" Minimum="0"/>
+
+
+                <Label Content="Steps/Rev" 
+                                           Grid.Row="0"
+                                           Margin="0"/>
+
+                <controls:NumericUpDown x:Name="BallScrew_nud" 
+                                             Width="90" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="1"
+                                             Margin="5,3,5,3" HasDecimals="False" Maximum="10000" Minimum="0"/>
+
+                <Label Content="Ball Screw" 
+                                           Grid.Row="1" Grid.Column="0"
+                                           Margin="0"/>
+
+                <controls:NumericUpDown x:Name="GearBox_nud" 
+                                             Width="90" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="2"
+                                             Margin="5,3,5,3" Minimum="0" Maximum="1000" HasDecimals="False"/>
+
+                <Label Content="GearBox" 
+                                           Grid.Row="2" Grid.Column="0"
+                                           Margin="0"/>
+
+                <controls:NumericUpDown x:Name="MicroSteps_nud" 
+                                             Width="90" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                             Grid.Column="1" Grid.Row="3"
+                                             Margin="5,3,5,3" AllowDrop="False" HasDecimals="False" Maximum="10000" Minimum="0"/>
+
+                <Label Content="MicroSteps" 
+                                           Grid.Row="3" Grid.Column="0"
+                                           Margin="0"/>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Rail Presets" Grid.Column="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="NameRail_Combo" 
+                          Grid.Row="1" Grid.ColumnSpan="3"
+                          HorizontalAlignment="Stretch" Height="38" VerticalAlignment="Center" Margin="10,0,50,0" 
+                           />
+
+                <Button x:Name="SaveRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right"
+                    	 Width="45" Height="45"
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.disk.png"/>
+                </Button>
+
+                <Button x:Name="UpdateRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"
+                    	 Width="45" Height="45" 
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.edit.png"/>
+                </Button>
+
+                <Button x:Name="DeleteRail_button" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"
+                    	 Width="42" Height="42" 
+                    	>
+                    <Image Source="/macrophotography;component/resources/appbar.delete.png"/>
+                </Button>
+
+                <TextBox x:Name="Rail_txt" 
+                         Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="35" Margin="5,0,5,0"
+                         TextAlignment="Center" TextWrapping="NoWrap"/>
+
+                <WrapPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="10,0,10,0">
+                    <Label Content="Rail Accuracy"/>
+                    <controls:NumericUpDown  x:Name="RailAccuracy_nud" 
+                         VerticalAlignment="Bottom"   
+                         Width="100" BorderThickness="0" Foreground="#FFA50000" FontSize="16" FontWeight="Bold"
+                        HideUpDownButtons="True" HasDecimals="True" StringFormat="{}{0:N8}"/>
+                    <Label Content="mm/step"/>
+                    <Label x:Name="FNum" />
+                </WrapPanel>
+
+
+            </Grid>
+
+
+        </GroupBox>
+
+        <GroupBox Header="Serial Port" 
+                                  Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                  Height="auto" MinWidth="150">
+
+            <StackPanel >
+                <Grid Margin="0,5,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border BorderThickness="1" CornerRadius="10">
+                        <ComboBox x:Name="cmb_ports"
+                                  SelectedItem="{Binding Port, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                                  ItemsSource="{Binding portslist, Source={x:Static macrophotography:ArduinoPorts.Instance}}"
+                                                    Grid.Row="0" 
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top"                                                     
+                                                    Width="78" Height="22" UseLayoutRounding="True"/>
+                    </Border>
+
+                    <Label Content="Ports" 
+                                               HorizontalAlignment="Left" Grid.Row="0" VerticalAlignment="Top" Height="26" Width="50"/>
+                    <Button x:Name="SearchPort_btn" Content="Seach Arduino"
+                                            Grid.Row="1" Width="100" Margin="5"  />
+
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Magnification" 
+                                      Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" 
+                                      Height="auto">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <controls:NumericUpDown x:Name="NumUD_Magni"
+                                        Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Minimum="{Binding MagniMin, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Maximum="{Binding MagniMax, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                        Grid.Column="0" HorizontalAlignment="Stretch" TextAlignment="Left" BorderThickness="0"
+                                        HasDecimals="True" HideUpDownButtons="True" Interval="0.5"
+                                           />
+
+                <Slider x:Name="Sld_Magni"
+                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0"
+                        AutoToolTipPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Grid.Column="1"
+                        Value="{Binding Magni, Source={x:Static macrophotography:StepperManager.Instance}}" 
+                        Minimum="{Binding MagniMin, Source={x:Static macrophotography:StepperManager.Instance}}"
+                        Maximum="{Binding MagniMax, Source={x:Static macrophotography:StepperManager.Instance}}"/>
+
+
+
+            </Grid>
+        </GroupBox>
+
+
+
+    </Grid>
+
+</UserControl>

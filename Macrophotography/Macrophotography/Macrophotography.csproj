@@ -329,6 +329,7 @@
     <Compile Include="ArduinoPorts.cs" />
     <Compile Include="Classes\HorizontalScrollBehavior.cs" />
     <Compile Include="Classes\Lens.cs" />
+    <Compile Include="Classes\LensStateConverter.cs" />
     <Compile Include="Classes\MilimetersConverter.cs" />
     <Compile Include="Classes\ProgressReport.cs" />
     <Compile Include="Classes\Rail.cs" />
@@ -362,6 +363,9 @@
     <Compile Include="controls\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="controls\SettingsVM.xaml.cs">
+      <DependentUpon>SettingsVM.xaml</DependentUpon>
+    </Compile>
     <Compile Include="controls\Stepper.xaml.cs">
       <DependentUpon>Stepper.xaml</DependentUpon>
     </Compile>
@@ -372,6 +376,9 @@
       <DependentUpon>VisualSFM.xaml</DependentUpon>
     </Compile>
     <Compile Include="Layouts\LayoutBaseMacro.cs" />
+    <Compile Include="Layouts\MacroReviewLayout.xaml.cs">
+      <DependentUpon>MacroReviewLayout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Layouts\ReviewLayout.xaml.cs">
       <DependentUpon>ReviewLayout.xaml</DependentUpon>
     </Compile>
@@ -437,6 +444,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="controls\SettingsVM.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="controls\Stepper.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -450,6 +461,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Layouts\LayoutBaseResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Layouts\MacroReviewLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -560,7 +575,12 @@
     <Resource Include="Resources\appbar.delete.png" />
     <Resource Include="Resources\appbar.disk.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\windows-remote-arduino-samples\remote-wiring\Microsoft.Maker.win10\Microsoft.Maker.Serial\Microsoft.Maker.Serial.vcxproj">
+      <Project>{8376216c-282a-4927-b9ef-c2d545fe0bca}</Project>
+      <Name>Microsoft.Maker.Serial</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

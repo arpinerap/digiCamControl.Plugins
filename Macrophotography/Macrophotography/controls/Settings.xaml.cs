@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 using System.Data.SqlClient;
 using Macrophotography.Classes;
 using System.IO.Ports;
@@ -19,6 +20,7 @@ using System.Management;
 using CameraControl.Core;
 using CameraControl.Core.Classes;
 using CameraControl.Devices;
+using System.Management;
 
 namespace Macrophotography.controls
 {
@@ -30,6 +32,8 @@ namespace Macrophotography.controls
         int ManuLensInt;
         int MicroLensInt;
 
+        //ManagementEventWatcher watcher;
+        //private TaskScheduler _taskScheduler;
 
         public Settings()
         {
@@ -44,12 +48,49 @@ namespace Macrophotography.controls
             Fill_RailData();
             LiveViewViewModel.Instance.SetAFLensConnected();
             DefaultRadiobutton();
+
+            ArduinoPorts.Instance.ArduinoInit();
+            /*
+            ArduinoPorts.Instance.IsArduinoDetected = false;
+
+            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+            watcher = new ManagementEventWatcher("SELECT * FROM Win32_DeviceChangeEvent WHERE EventType = 2 or EventType = 3");
+            watcher.EventArrived += (sender, eventArgs) => USBChangedEvent(eventArgs);
+            watcher.Start();
+            */
+            
+        }
+        /*
+        private void USBChangedEvent(EventArrivedEventArgs args)
+        {
+            // do it async so it is performed in the UI thread if this class has been created in the UI thread
+            Task.Factory.StartNew(USBChangedEventAsync, CancellationToken.None, TaskCreationOptions.None, _taskScheduler);
         }
 
+        public void USBChangedEventAsync()
+        {
+            if (ArduinoPorts.Instance.IsArduinoNotDetected)
+            {
+                
+                Task.Delay(3000);
+                ArduinoPorts.Instance.SearchArduino();
 
-
-
+            }
+            else if (ArduinoPorts.Instance.Port == null)
+            {                
+                ArduinoPorts.Instance.SearchArduino();
+            }
+            else
+            {
+                Task.Delay(3000);
+                ArduinoPorts.Instance.CheckArduino();
+            }                        
+        }
+        */
+        
         # region RadioButtons
+
         public void ChkAFLens()
         {
             LensPresets_grpbx.IsEnabled = false;
@@ -161,7 +202,7 @@ namespace Macrophotography.controls
             ChkManuProp();
         }
 
-        public void RadioButtonClick()
+        public void RadioButtonClick(object sender, RoutedEventArgs e)
         {
             if (AFLensRdb.IsChecked == true)
             {
@@ -176,14 +217,14 @@ namespace Macrophotography.controls
                 aperture_nud.Value = 0;
                 StepperManager.Instance.Magni = 2;
             }
-            if (MicroLensRdb.IsChecked == true)
+            else if (MicroLensRdb.IsChecked == true)
             {
                 ChkMicroLens();
                 Clear_LensData();
                 NA_nud.Value = 0;
                 StepperManager.Instance.Magni = 5;
             }
-            if (ManuPropRdb.IsChecked == true)
+            else if (ManuPropRdb.IsChecked == true)
             {
                 ChkManuProp();
                 Clear_LensData();
@@ -197,7 +238,7 @@ namespace Macrophotography.controls
         {
             Clear_LensData();
             ChkAFLens();           
-            ApertureAF_combo.SelectedItem = ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value;
+            //ApertureAF_combo.SelectedItem = ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value;
 
         }
         private void ManuLensRdb_Click(object sender, RoutedEventArgs e)
@@ -353,7 +394,7 @@ namespace Macrophotography.controls
             Lens_txt.Text = "";
             StepperManager.Instance.NA = 0;
             StepperManager.Instance.Aperture = 0;
-            ApertureAF_combo.SelectedIndex = -1;
+            //ApertureAF_combo.SelectedIndex = -1;
             StepperManager.Instance.ShotDOF = 0;
             StepperManager.Instance.ShotStep = 0;
         }
@@ -575,48 +616,67 @@ namespace Macrophotography.controls
 
         public void sDoFCalcAperture()
         {
-            if (StepperManager.Instance.Aperture != 0 && E_nud.Value != 0 && Pitch_nud.Value != 0 && StepperManager.Instance.Magni != 0)
+            if (StepperManager.Instance.Aperture != 0 && StepperManager.Instance.E != 0 && StepperManager.Instance.Pitch != 0 && StepperManager.Instance.Magni != 0)
             {
                 double mShotDOF;
-                mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * StepperManager.Instance.Aperture * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni));
+                mShotDOF = 2 * StepperManager.Instance.E * StepperManager.Instance.Pitch * StepperManager.Instance.Aperture * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni);
                 StepperManager.Instance.ShotDOF = mShotDOF * 0.001;
+                LOG.Content = "    pase por sDoFCalcAperture";
             }           
         }
 
         public void sDoFCalcApertureAF()
         {
-            if (ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value != null && E_nud.Value != 0 && Pitch_nud.Value != 0 && StepperManager.Instance.Magni != 0)
-            {
+            if (ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value != null && StepperManager.Instance.E != 0 && StepperManager.Instance.Pitch != 0 && StepperManager.Instance.Magni != 0)
+                {
+                
+                //StepperManager.Instance.Aperture = Convert.ToDouble(ApertureAF_combo.SelectedValue) / 10;
+                StepperManager.Instance.ApertureAF = Convert.ToDouble(ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value.Substring(0)) / 10;
+
                 double mShotDOF;
-                mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * (Convert.ToDouble(ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value.Substring(2)) / 10) * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni));
+                //mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * (Convert.ToDouble(ServiceProvider.DeviceManager.SelectedCameraDevice.FNumber.Value.Substring(2)) / 10) * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni));
+                //mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * (Convert.ToDouble(ApertureAF_combo.SelectedValue) / 10) * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni));
+
+                //mShotDOF = Convert.ToDouble(2 * E_nud.Value * Pitch_nud.Value * StepperManager.Instance.ApertureAF * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni));
+                mShotDOF = 2 * StepperManager.Instance.E * StepperManager.Instance.Pitch * StepperManager.Instance.ApertureAF * (StepperManager.Instance.Magni + 1) / (StepperManager.Instance.Magni * StepperManager.Instance.Magni);
                 StepperManager.Instance.ShotDOF = mShotDOF * 0.001;
+                //FNum.Content = Convert.ToDouble(ApertureAF_combo.SelectedValue)/10;
+                FNum.Content = StepperManager.Instance.ApertureAF;
+                LOG.Content = "    pase por sDoFCalcApertureAF";
             }          
         }
 
         public void sDoFCalcNA()
         {
-            if (StepperManager.Instance.NA != 0 && Lambda_nud.Value != 0 && E_nud.Value != 0 && Pitch_nud.Value != 0 && StepperManager.Instance.Magni != 0)
+            if (StepperManager.Instance.NA != 0 && StepperManager.Instance.Lambda != 0 && StepperManager.Instance.E != 0 && StepperManager.Instance.Pitch != 0 && StepperManager.Instance.Magni != 0)
             {
                 double mShotDOF;
-                mShotDOF = Convert.ToDouble(10000000 / 1 * ((Lambda_nud.Value * N_nud.Value * 0.0000000001 / (StepperManager.Instance.NA * StepperManager.Instance.NA) + (E_nud.Value * Pitch_nud.Value * 0.0000001 / (StepperManager.Instance.NA * StepperManager.Instance.Magni)))));
+                mShotDOF = 10000000 / 1 * ((StepperManager.Instance.Lambda * StepperManager.Instance.N * 0.0000000001 / (StepperManager.Instance.NA * StepperManager.Instance.NA) + (StepperManager.Instance.E * StepperManager.Instance.Pitch * 0.0000001 / (StepperManager.Instance.NA * StepperManager.Instance.Magni))));
                 StepperManager.Instance.ShotDOF = mShotDOF * 0.001;
+                FNum.Content = mShotDOF;
+                LOG.Content = "    pase por sDoFCalcNA";
             }           
         }
 
         public void sDoFCalc()
         {
-            if (AFLensRdb.IsChecked == true)
-            { sDoFCalcApertureAF(); }
-            if (ManuLensRdb.IsChecked == true)
-            { sDoFCalcAperture(); }
-            if (MicroLensRdb.IsChecked == true)
-            { sDoFCalcNA(); }
-            if (ManuPropRdb.IsChecked == true)
-            { 
-                //StepperManager.Instance.ShotStep = Convert.ToInt16(ShotStep_nud.Value);
-                //StepperManager.Instance.ShotStep = 0;
+            if (LiveViewViewModel.Instance.AFLensConnected == true)
+            {
+                sDoFCalcApertureAF();
             }
+            else
+            {
+                if (ManuLensRdb.IsChecked == true)
+                {
+                    sDoFCalcAperture();
+                }
 
+                if (MicroLensRdb.IsChecked == true)
+                {
+                    sDoFCalcNA();
+                }                
+            }
+                        
             StepperManager.Instance.UpdateShotStep();
             
         }
@@ -640,9 +700,7 @@ namespace Macrophotography.controls
 
         private void SearchPort_btn_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.DetectArduino();
-            System.Threading.Thread.Sleep(2500);
-            ArduinoPorts.Instance.SendCommand(10, 1, 0);
+            ArduinoPorts.Instance.SearchArduino();
         }
 
         private void ValueChanged(object sender, TextChangedEventArgs e)
@@ -655,6 +713,10 @@ namespace Macrophotography.controls
             DefaultRadiobutton();
         }
 
+        private void ApertureAF_combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            sDoFCalc();
+        }
         
     }
 }

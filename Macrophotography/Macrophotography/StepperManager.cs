@@ -47,8 +47,9 @@ namespace Macrophotography
         
         private double _magni = 2;
         private double _magniMax = 40;
-        private double _magniMin = 0.5;
+        private double _magniMin = 0.25;
         private double _railAccuracy = 0;
+
         private int _InitStackDelay = 0;
         private int _StabilizationDelay = 0;
 
@@ -58,14 +59,21 @@ namespace Macrophotography
         private int _PlusFarShots = 0;
 
         private double _aperture = 0;
+        private double _apertureAF = 0;
         private double _nA = 0;
+
+        private double _pitch = 4.7;
+        private double _e = 2;
+        private int _lambda = 550;
+        private double _n = 1;
 
         private int _LinesNumber = 0;
 
         private int _LightValue = 20;
         private int _LightValue2 = 20;
 
-        public Stopwatch stopwatch;
+        private int _degrees = 20;
+
 
         #endregion
 
@@ -467,6 +475,16 @@ namespace Macrophotography
             }
         }
 
+        public double ApertureAF
+        {
+            get { return _apertureAF; }
+            set
+            {
+                _apertureAF = value;
+                RaisePropertyChanged(() => ApertureAF);
+            }
+        }
+
         public double NA
         {
             get { return _nA; }
@@ -474,6 +492,46 @@ namespace Macrophotography
             {
                 _nA = value;
                 RaisePropertyChanged(() => NA);
+            }
+        }
+      
+        public double Pitch
+        {
+            get { return _pitch; }
+            set
+            {
+                _pitch = value;
+                RaisePropertyChanged(() => Pitch);
+            }
+        }
+
+        public double E
+        {
+            get { return _e; }
+            set
+            {
+                _e = value;
+                RaisePropertyChanged(() => E);
+            }
+        }
+
+        public int Lambda
+        {
+            get { return _lambda; }
+            set
+            {
+                _lambda = value;
+                RaisePropertyChanged(() => Lambda);
+            }
+        }
+
+        public double N
+        {
+            get { return _n; }
+            set
+            {
+                _n = value;
+                RaisePropertyChanged(() => N);
             }
         }
 
@@ -506,6 +564,17 @@ namespace Macrophotography
                 RaisePropertyChanged(() => LightValue2);
             }
         }
+
+        public int Degrees
+        {
+            get { return _degrees; }
+            set
+            {
+                _degrees = value;
+                RaisePropertyChanged(() => Degrees);
+            }
+        }
+
 
         /*public static Stopwatch stopwatch
         {

@@ -8,13 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Macrophotography.controls;
+using System.Management;
 
 namespace Macrophotography
 {
     public class ArduinoPorts : ViewModelBase
     {
 
-        #region RaisePropertyChanged Variables
+        #region Variables
 
         private static ArduinoPorts _instance;
         private SerialPort sp = new SerialPort();
@@ -28,8 +29,140 @@ namespace Macrophotography
 
         private string cmd = "0";
 
+        ManagementEventWatcher watcher;
+        private TaskScheduler _taskScheduler;
+
         #endregion
 
+        #region Arduino AutoDetect
+
+        public void ArduinoInit()
+        {
+            IsArduinoDetected = false;
+
+            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+            //watcher = new ManagementEventWatcher("SELECT * FROM Win32_DeviceChangeEvent WHERE EventType = 2 or EventType = 3");
+            //watcher.EventArrived += (sender, eventArgs) => USBChangedEvent(eventArgs);
+            //watcher.Start();
+        }
+
+
+        private void USBChangedEvent(EventArrivedEventArgs args)
+        {
+            // do it async so it is performed in the UI thread if this class has been created in the UI thread
+            Task.Factory.StartNew(USBChangedEventAsync, CancellationToken.None, TaskCreationOptions.None, _taskScheduler);
+        }
+        
+
+        public void USBChangedEventAsync()
+        {
+            if (ArduinoPorts.Instance.IsArduinoNotDetected)
+            {
+
+                //Task.Delay(3000);
+                ArduinoPorts.Instance.SearchArduino();
+
+            }
+            else if (ArduinoPorts.Instance.Port == null)
+            {
+                //Task.Delay(3000);
+                ArduinoPorts.Instance.SearchArduino();
+            }
+            else
+            {
+                //Task.Delay(3000);
+                ArduinoPorts.Instance.CheckArduino();
+            }
+        }
+
+        public void SearchArduino()
+        {
+            Thread SearchArduino = new Thread(DetectArduino);
+            SearchArduino.Start();
+            SearchArduino.Join();
+            ArduinoPorts.Instance.SendCommand(11, 1, 0);
+        }
+
+
+        public void DetectArduino()
+        {
+            if (sp.IsOpen)
+            {
+                //sp.DataReceived -= sp_DataReceived;
+                ClosePort();
+            }
+            else
+            {
+                FillPorts();
+                foreach (string port in portslist)
+                {
+                    //sp = new SerialPort(port, 9600);
+                    sp = new SerialPort(port, SPbaudrate);
+                    int intReturnASCII = 0;
+                    char charReturnValue = (Char)intReturnASCII;
+                    ClosePort();
+                    sp.Open();
+                    sp.WriteLine("1535 ");
+                    Thread.Sleep(1000);
+                    int count = sp.BytesToRead;
+                    string returnMessage = "";
+                    while (count > 0)
+                    {
+                        intReturnASCII = sp.ReadByte();
+                        returnMessage = returnMessage + Convert.ToChar(intReturnASCII);
+                        count--;
+                    }
+                    sp.Close();
+                    if (returnMessage.Contains("YES"))
+                    {
+                        Port = sp.PortName;
+                        OpenPort(Port);
+                        IsArduinoDetected = true;
+                        //Con.Content = "Desconectar";
+                    }
+                }
+                if (Port == null)
+                {
+                    ClosePort();
+                    ClearPorts();
+                    IsArduinoDetected = false;
+                }
+            }
+        }
+
+        public void CheckArduino()
+        {
+            if (sp.IsOpen)
+            {
+                sp.WriteLine("1535 ");
+                Thread.Sleep(1000);
+                string returnMessage = "";
+                int intReturnASCII = 0;
+                intReturnASCII = sp.ReadByte();
+                returnMessage = returnMessage + Convert.ToChar(intReturnASCII);
+
+                if (returnMessage.Contains("YES"))
+                {
+                    IsArduinoDetected = true;
+                }
+                else
+                {
+                    IsArduinoDetected = false;
+                    ClosePort();
+                    ClearPorts();
+
+                }
+
+            }
+            else
+            {
+                IsArduinoDetected = false;
+                ClearPorts();
+            }
+        }
+
+        #endregion
 
         #region RaisePropertyChanged Methods
 
@@ -118,47 +251,13 @@ namespace Macrophotography
             portslist = SerialPort.GetPortNames();           
         }
 
-
-        public void DetectArduino()
+        public void ClearPorts()
         {
-            if (sp.IsOpen)
-            {
-                sp.DataReceived -= sp_DataReceived;
-                ClosePort();
-            }
-            else
-            {
-                FillPorts();
-                foreach (string port in portslist)
-                {
-                    //sp = new SerialPort(port, 9600);
-                    sp = new SerialPort(port, SPbaudrate);
-                    int intReturnASCII = 0;
-                    char charReturnValue = (Char)intReturnASCII;
-                    ClosePort();
-                    sp.Open();
-                    sp.WriteLine("1535 ");
-                    Thread.Sleep(500);
-                    int count = sp.BytesToRead;
-                    string returnMessage = "";
-                    while (count > 0)
-                    {
-                        intReturnASCII = sp.ReadByte();
-                        returnMessage = returnMessage + Convert.ToChar(intReturnASCII);
-                        count--;
-                    }
-                    Task.Delay(1000);
-                    sp.Close();
-                    if (returnMessage.Contains("YES"))
-                    {
-                        Port = sp.PortName;
-                        OpenPort(Port);
-                        IsArduinoDetected = true;
-                        //Con.Content = "Desconectar";
-                    }
-                }
-            }
+            portslist = null;
+            Port = null;
         }
+
+        
 
 
         # endregion
@@ -210,7 +309,7 @@ namespace Macrophotography
                 {
                     ClosePort();
                     OpenPort(_port);
-                    int checksum = motor + time + power1;
+                    int checksum = motor + time + power1 + power2;
                     cmd = cmd.Remove(0);
                     cmd = Convert.ToString(motor);
                     cmd += " ";
@@ -233,7 +332,7 @@ namespace Macrophotography
 
         void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            // Unlock Motion Control Buttons when confimation mesaage arrives fron Arduino
+            // Unlock Motion Control Buttons when confimation mesage arrives fron Arduino
             try
             {
                 SerialPort spL = (SerialPort)sender;

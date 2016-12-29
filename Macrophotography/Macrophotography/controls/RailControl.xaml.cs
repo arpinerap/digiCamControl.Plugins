@@ -236,6 +236,41 @@ namespace Macrophotography.controls
         }
 
         private async void Start_btn_Click(object sender, RoutedEventArgs e)
+        {
+            await Start_btn_Click();
+        }
+
+        private async void Start2_btn_Click(object sender, RoutedEventArgs e)
+        {
+            int rounds = 360 / StepperManager.Instance.Degrees;
+
+            for (int i = 0; i < rounds; i++)
+            {
+                int TaskNumber = i + 1;
+                await Start_btn_Click();
+                StepperManager.Instance.IsStacking = true;
+                Progress_lbl.Content = "Finishing Task " + TaskNumber;
+                Task wait = Task.Delay(2000);
+                await wait;
+                ArduinoPorts.Instance.SendCommand(6, 40, StepperManager.Instance.Speed3d);
+                StepperManager.Instance.IsStacking = true;
+                Progress_lbl.Content = "Rotating...";
+                await wait;
+                StepperManager.Instance.IsStacking = false;
+                /*
+                Thread Stack = new Thread(Start_btn_Click);
+                Stack.IsBackground = true;
+                Stack.Start();
+                Stack.Join();
+                //Task.Delay(2000);
+                ArduinoPorts.Instance.SendCommand(6, 40, StepperManager.Instance.Speed3d);
+                //Task.Delay(500);
+                */
+            }                
+        }
+
+
+        private async Task Start_btn_Click()
         {               
             // Update display to indicate we are running
             StepperManager.Instance.IsStacking = true;
@@ -283,11 +318,12 @@ namespace Macrophotography.controls
             {
                 // -----------------Reset the UI
                 Progress_lbl.Content = "Done";
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
                 StepperManager.Instance.IsStacking = false;
                 m_cancelTokenSource = null;
             }            
         }
+
 
         private void CancelStack_btn_Click(object sender, RoutedEventArgs e)
         {
@@ -470,8 +506,6 @@ namespace Macrophotography.controls
                 Log.Error("Take test photo", exception);
             }           
         }
-
         
-
     }
 }

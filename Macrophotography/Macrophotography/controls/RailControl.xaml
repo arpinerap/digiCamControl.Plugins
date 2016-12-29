@@ -295,15 +295,15 @@
             <Grid IsEnabled="{Binding IsFree, Source={x:Static macrophotography:StepperManager.Instance}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="90"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="180*"/>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="90"/>
                 </Grid.ColumnDefinitions>
 
 
@@ -377,18 +377,17 @@
 
                 <controls:ToggleSwitch x:Name="NearFocusLock"
                                         OnLabel="Lock" OffLabel="Free"
-                                        FlowDirection="RightToLeft"
-                                        
-                                        Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                        HorizontalAlignment="Left" Padding="-10">
+                                        FlowDirection="RightToLeft"                                        
+                                        Grid.Row="2" Grid.Column="0" Grid.RowSpan="3"
+                                        HorizontalAlignment="Center" Padding="-10" Margin="10,10,0,0">
 
 
                 </controls:ToggleSwitch>
 
                 <controls:ToggleSwitch x:Name="FarFocusLock"
                                         OnLabel="Lock" OffLabel="Free"
-                                        Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
-                                        HorizontalAlignment="Right" Padding="-10">
+                                        Grid.Row="2" Grid.Column="2" Grid.RowSpan="3"
+                                        HorizontalAlignment="Center" Padding="-10" Margin="0,10,10,0">
 
                 </controls:ToggleSwitch>
 
@@ -551,6 +550,10 @@
                                     Minimum="5000" Interval="1000" IsEnabled="{Binding IsFree}" 
                                     Grid.Column="1" Grid.Row="1" Margin="3"/>
 
+                    <controls:NumericUpDown Value="{Binding Degrees, Source={x:Static macrophotography:StepperManager.Instance}}"
+                                    Minimum="10" Interval="360" IsEnabled="{Binding IsFree}" 
+                                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Margin="3"/>
+
                     <Grid Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Top" Visibility="{Binding IsNotStacking, Source={x:Static macrophotography:StepperManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter1}}">
                         <my:PulseButton x:Name="Capture_btn" Content="Capture" 
                         HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"
@@ -584,7 +587,7 @@
                         ButtonHighlightBrush="{x:Null}" 
                         ButtonPressedBrush="#FFB02213"
                         Foreground="White"
-                        PulseEasing="{StaticResource EasingIn}" FontFamily="Malgun Gothic" Click="Start_btn_Click">
+                        PulseEasing="{StaticResource EasingIn}" FontFamily="Malgun Gothic" Click="Start2_btn_Click">
 
                         </my:PulseButton>
                     </Grid>

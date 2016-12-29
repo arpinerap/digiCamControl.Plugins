@@ -105,7 +105,7 @@ namespace Macrophotography
                     e.Cancel = true;
                     ServiceProvider.WindowsManager.ExecuteCommand("MacroLiveView_Hide");
                 }
-                ArduinoPorts.Instance.SendCommand(10, 0, 0);
+                ArduinoPorts.Instance.SendCommand(11, 0, 0);
                 System.Threading.Tasks.Task.Delay(300);
                 ArduinoPorts.Instance.ClosePort();
                 ServiceProvider.DeviceManager.SelectedCameraDevice.StopLiveView();
@@ -118,10 +118,7 @@ namespace Macrophotography
 
         private void MetroWindow_Activated(object sender, EventArgs e)
         {
-            ArduinoPorts.Instance.DetectArduino();
-            //System.Threading.Thread.Sleep(2500);
-            Task.Delay(6000);
-            ArduinoPorts.Instance.SendCommand(10, 1, 0);
+            ArduinoPorts.Instance.SearchArduino();
         }
 
     #endregion
@@ -332,10 +329,7 @@ namespace Macrophotography
 
         private void Arduino_Button_Click(object sender, RoutedEventArgs e)
         {
-            ArduinoPorts.Instance.DetectArduino();
-            //System.Threading.Thread.Sleep(2500);
-            Task.Delay(5000);
-            ArduinoPorts.Instance.SendCommand(10, 1, 0);
+            ArduinoPorts.Instance.SearchArduino();
         }
 
        

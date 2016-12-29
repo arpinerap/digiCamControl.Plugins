@@ -382,7 +382,7 @@
 
         <!--<Image Grid.Row="0" Grid.Column="1" Margin="5" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.DisplayImage}" Visibility="{Binding LiveViewNotRunning, Converter={StaticResource BooleanToVisibilityConverter1}}"/>-->
         <Grid Grid.Row="0" Grid.Column="1" ShowGridLines="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="{Binding LiveViewNotRunning, Converter={StaticResource BooleanToVisibilityConverter1}}">
-            <layouts:ReviewLayout/>
+            <layouts:MacroReviewLayout/>
         </Grid>
         
 
@@ -510,7 +510,7 @@
                         <local:RailControl/>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Session">
+                <!--<TabItem Header="Session">
                     <ListBox VirtualizingStackPanel.IsVirtualizing="True" Name="ImageLIstBox" ItemsSource="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.Files, IsAsync=True}" 
                              BorderThickness="0" IsSynchronizedWithCurrentItem="True" Focusable="False" VerticalAlignment="Stretch" Margin="0" ScrollViewer.CanContentScroll="False">
                         <i:Interaction.Behaviors>
@@ -542,7 +542,7 @@
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
                     </ListBox>
-                </TabItem>
+                </TabItem>-->
                 <TabItem Header="Session2">
                     <layouts:PanelLayout/>
                 </TabItem>

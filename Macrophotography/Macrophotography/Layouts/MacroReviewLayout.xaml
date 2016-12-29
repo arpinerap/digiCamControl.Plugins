@@ -1,0 +1,60 @@
+﻿<UserControl x:Name="MacroReviewLayout1" x:Class="Macrophotography.Layouts.MacroReviewLayout"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Core="clr-namespace:CameraControl.Core;assembly=CameraControl.Core"
+             xmlns:Layouts="clr-namespace:Macrophotography.Layouts"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:translation="clr-namespace:CameraControl.Core.Translation;assembly=CameraControl.Core"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:classes="clr-namespace:CameraControl.Core.Classes;assembly=CameraControl.Core"
+             xmlns:classes2="clr-namespace:Macrophotography.Classes"
+             xmlns:viewModel="clr-namespace:Macrophotography.ViewModel"
+             xmlns:zoompan="clr-namespace:CameraControl.Core.Controls.ZoomAndPan;assembly=CameraControl.Core"
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="LayoutBaseResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <viewModel:ImageListViewModel/>
+    </UserControl.DataContext>
+
+    <Grid>
+        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" ClipToBounds="True">
+            <Grid RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+                <Grid.LayoutTransform>
+                    <RotateTransform  Angle="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.FileItem.RotationAngle}" />
+                </Grid.LayoutTransform>
+                <zoompan:ZoomAndPanControl Name="zoomAndPanControl" MouseWheel="zoomAndPanControl_MouseWheel" >
+                    <Image Name="Image" Source="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.DisplayImage}" HorizontalAlignment="Center" Margin="15" Stretch="Uniform" 
+                           Width="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.FileItem.FileInfo.Width}" 
+                           Height="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=SelectedBitmap.FileItem.FileInfo.Height}">
+                        <Image.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=ImageDoubleClickCommand}" />
+                        </Image.InputBindings>
+                        <Image.Effect>
+                            <DropShadowEffect ShadowDepth="10" Color="Black" BlurRadius="20" />
+                        </Image.Effect>
+                    </Image>
+                </zoompan:ZoomAndPanControl>
+            </Grid>
+        </Grid>
+            
+    </Grid>
+</UserControl>
